@@ -102,6 +102,18 @@ db.serialize(() => {
         )
     `);
 
+    db.run(`
+        CREATE TABLE IF NOT EXISTS contactos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            email TEXT NOT NULL,
+            asunto TEXT NOT NULL,
+            mensaje TEXT NOT NULL,
+            leido INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
     console.log('📊 Tablas creadas correctamente');
 });
 
@@ -261,7 +273,6 @@ app.post('/api/documentos', upload.single('archivo'), (req, res) => {
         [nombre, tipo, descripcion, rutaArchivo],
         function (err) {
             if (err) {
-                // Eliminar archivo si hay error en BD
                 fs.unlink(req.file.path, () => {});
                 res.status(500).json({ error: err.message });
             } else {
@@ -281,7 +292,6 @@ app.delete('/api/documentos/:id', (req, res) => {
             if (err) {
                 res.status(500).json({ error: err.message });
             } else {
-                // Eliminar archivo del servidor
                 if (row && row.ruta_archivo) {
                     const filePath = path.join(__dirname, '..', row.ruta_archivo);
                     fs.unlink(filePath, (err) => {
@@ -294,6 +304,38 @@ app.delete('/api/documentos/:id', (req, res) => {
     });
 });
 
+// ============ RUTAS CONTACTOS ============
+app.get('/api/contactos', (req, res) => {
+    db.all('SELECT * FROM contactos ORDER BY created_at DESC', (err, rows) => {
+        if (err) res.status(500).json({ error: err.message });
+        else res.json(rows || []);
+    });
+});
+
+app.post('/api/contactos', (req, res) => {
+    const { nombre, email, asunto, mensaje } = req.body;
+    
+    if (!nombre || !email || !asunto || !mensaje) {
+        return res.status(400).json({ error: 'Todos los campos son requeridos' });
+    }
+
+    db.run(
+        'INSERT INTO contactos (nombre, email, asunto, mensaje) VALUES (?, ?, ?, ?)',
+        [nombre, email, asunto, mensaje],
+        function (err) {
+            if (err) res.status(500).json({ error: err.message });
+            else res.json({ id: this.lastID, message: 'Mensaje guardado correctamente' });
+        }
+    );
+});
+
+app.delete('/api/contactos/:id', (req, res) => {
+    db.run('DELETE FROM contactos WHERE id=?', [req.params.id], (err) => {
+        if (err) res.status(500).json({ error: err.message });
+        else res.json({ message: 'Mensaje eliminado' });
+    });
+});
+
 // Ruta de prueba
 app.get('/', (req, res) => {
     res.json({ 
@@ -302,7 +344,8 @@ app.get('/', (req, res) => {
             noticias: '/api/noticias',
             semilleros: '/api/semilleros',
             proyectos: '/api/proyectos',
-            documentos: '/api/documentos'
+            documentos: '/api/documentos',
+            contactos: '/api/contactos'
         }
     });
 });
