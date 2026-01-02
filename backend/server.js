@@ -61,6 +61,18 @@ db.serialize(() => {
         )
     `);
 
+        db.run(`
+        CREATE TABLE IF NOT EXISTS documentos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            tipo TEXT NOT NULL,
+            descripcion TEXT,
+            url TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
+
     console.log('📊 Tablas creadas correctamente');
 });
 
@@ -215,6 +227,34 @@ app.delete('/api/proyectos/:id', (req, res) => {
         else res.json({ message: 'Proyecto eliminado' });
     });
 });
+
+// ============ RUTAS DOCUMENTOS ============
+app.get('/api/documentos', (req, res) => {
+    db.all('SELECT * FROM documentos ORDER BY created_at DESC', (err, rows) => {
+        if (err) res.status(500).json({ error: err.message });
+        else res.json(rows || []);
+    });
+});
+
+app.post('/api/documentos', (req, res) => {
+    const { nombre, tipo, descripcion, url } = req.body;
+    db.run(
+        'INSERT INTO documentos (nombre, tipo, descripcion, url) VALUES (?, ?, ?, ?)',
+        [nombre, tipo, descripcion, url],
+        function (err) {
+            if (err) res.status(500).json({ error: err.message });
+            else res.json({ id: this.lastID, message: 'Documento creado' });
+        }
+    );
+});
+
+app.delete('/api/documentos/:id', (req, res) => {
+    db.run('DELETE FROM documentos WHERE id=?', [req.params.id], (err) => {
+        if (err) res.status(500).json({ error: err.message });
+        else res.json({ message: 'Documento eliminado' });
+    });
+});
+
 
 // ============ INICIAR SERVIDOR ============
 app.listen(PORT, () => {
