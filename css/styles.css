@@ -1,0 +1,78 @@
+/* Variables de color CEAI/SENA */
+:root {
+    --ceai-verde: #39A900;
+    --ceai-verde-oscuro: #007832;
+    --ceai-azul: #00304D;
+}
+
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--ceai-azul);
+}
+
+/* Navbar personalizada */
+.bg-ceai-dark {
+    background-color: var(--ceai-azul) !important;
+}
+
+.navbar-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--ceai-verde) !important;
+}
+
+.navbar-nav .nav-link {
+    margin-left: 15px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--ceai-verde) !important;
+}
+
+/* Footer */
+footer {
+    background-color: var(--ceai-azul);
+    margin-top: auto;
+}
+
+/* Botones */
+.btn-ceai {
+    background-color: var(--ceai-verde);
+    border-color: var(--ceai-verde);
+    color: white;
+    font-weight: 600;
+}
+
+.btn-ceai:hover {
+    background-color: var(--ceai-verde-oscuro);
+    border-color: var(--ceai-verde-oscuro);
+    color: white;
+}
+
+/* Cards */
+.card {
+    border-left: 4px solid var(--ceai-verde);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(57, 169, 0, 0.2);
+}
