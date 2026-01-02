@@ -256,3 +256,11 @@ section h2::after {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 10px 25px rgba(57, 169, 0, 0.3);
 }
+
+#aliados-section {
+    background-color: #00304D;
+}
+
+#aliados-section .card {
+    min-height: 230px;
+}
