@@ -2,15 +2,48 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
+// Crear carpeta de uploads si no existe
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configurar multer para carga de archivos
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+        const timestamp = Date.now();
+        const sanitizedName = file.originalname.replace(/\s+/g, '_');
+        cb(null, `${timestamp}_${sanitizedName}`);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf') {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten archivos PDF'), false);
+        }
+    }
+});
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../'))); // Sirve archivos estáticos del frontend
+app.use(express.static(path.join(__dirname, '../')));
+app.use('/uploads', express.static(uploadsDir));
 
 // Conectar a SQLite
 const db = new sqlite3.Database('./ceai_db.sqlite', (err) => {
@@ -18,9 +51,8 @@ const db = new sqlite3.Database('./ceai_db.sqlite', (err) => {
     else console.log('✅ Base de datos SQLite conectada');
 });
 
-// ============ CREAR TABLAS ============
+// Crear tablas
 db.serialize(() => {
-    // Tabla: Noticias
     db.run(`
         CREATE TABLE IF NOT EXISTS noticias (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +64,6 @@ db.serialize(() => {
         )
     `);
 
-    // Tabla: Semilleros
     db.run(`
         CREATE TABLE IF NOT EXISTS semilleros (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +76,6 @@ db.serialize(() => {
         )
     `);
 
-    // Tabla: Proyectos
     db.run(`
         CREATE TABLE IF NOT EXISTS proyectos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,32 +91,28 @@ db.serialize(() => {
         )
     `);
 
-        db.run(`
+    db.run(`
         CREATE TABLE IF NOT EXISTS documentos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL,
             tipo TEXT NOT NULL,
             descripcion TEXT,
-            url TEXT NOT NULL,
+            ruta_archivo TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `);
 
-
     console.log('📊 Tablas creadas correctamente');
 });
 
-// ============ RUTAS API: NOTICIAS ============
-
-// GET todas las noticias
+// ============ RUTAS NOTICIAS ============
 app.get('/api/noticias', (req, res) => {
     db.all('SELECT * FROM noticias ORDER BY fecha DESC', (err, rows) => {
         if (err) res.status(500).json({ error: err.message });
-        else res.json(rows);
+        else res.json(rows || []);
     });
 });
 
-// GET noticia por ID
 app.get('/api/noticias/:id', (req, res) => {
     db.get('SELECT * FROM noticias WHERE id = ?', [req.params.id], (err, row) => {
         if (err) res.status(500).json({ error: err.message });
@@ -94,7 +120,6 @@ app.get('/api/noticias/:id', (req, res) => {
     });
 });
 
-// POST crear noticia
 app.post('/api/noticias', (req, res) => {
     const { titulo, descripcion, fecha, imagen } = req.body;
     db.run(
@@ -107,7 +132,6 @@ app.post('/api/noticias', (req, res) => {
     );
 });
 
-// PUT actualizar noticia
 app.put('/api/noticias/:id', (req, res) => {
     const { titulo, descripcion, fecha, imagen } = req.body;
     db.run(
@@ -120,7 +144,6 @@ app.put('/api/noticias/:id', (req, res) => {
     );
 });
 
-// DELETE noticia
 app.delete('/api/noticias/:id', (req, res) => {
     db.run('DELETE FROM noticias WHERE id=?', [req.params.id], (err) => {
         if (err) res.status(500).json({ error: err.message });
@@ -128,17 +151,14 @@ app.delete('/api/noticias/:id', (req, res) => {
     });
 });
 
-// ============ RUTAS API: SEMILLEROS ============
-
-// GET todos los semilleros
+// ============ RUTAS SEMILLEROS ============
 app.get('/api/semilleros', (req, res) => {
     db.all('SELECT * FROM semilleros', (err, rows) => {
         if (err) res.status(500).json({ error: err.message });
-        else res.json(rows);
+        else res.json(rows || []);
     });
 });
 
-// POST crear semillero
 app.post('/api/semilleros', (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen } = req.body;
     db.run(
@@ -151,7 +171,6 @@ app.post('/api/semilleros', (req, res) => {
     );
 });
 
-// PUT actualizar semillero
 app.put('/api/semilleros/:id', (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen } = req.body;
     db.run(
@@ -164,7 +183,6 @@ app.put('/api/semilleros/:id', (req, res) => {
     );
 });
 
-// DELETE semillero
 app.delete('/api/semilleros/:id', (req, res) => {
     db.run('DELETE FROM semilleros WHERE id=?', [req.params.id], (err) => {
         if (err) res.status(500).json({ error: err.message });
@@ -172,29 +190,25 @@ app.delete('/api/semilleros/:id', (req, res) => {
     });
 });
 
-// ============ RUTAS API: PROYECTOS ============
-
-// GET proyectos por semillero
+// ============ RUTAS PROYECTOS ============
 app.get('/api/proyectos/semillero/:semillero_id', (req, res) => {
     db.all(
         'SELECT * FROM proyectos WHERE semillero_id = ? ORDER BY id DESC',
         [req.params.semillero_id],
         (err, rows) => {
             if (err) res.status(500).json({ error: err.message });
-            else res.json(rows);
+            else res.json(rows || []);
         }
     );
 });
 
-// GET todos los proyectos
 app.get('/api/proyectos', (req, res) => {
     db.all('SELECT * FROM proyectos ORDER BY id DESC', (err, rows) => {
         if (err) res.status(500).json({ error: err.message });
-        else res.json(rows);
+        else res.json(rows || []);
     });
 });
 
-// POST crear proyecto
 app.post('/api/proyectos', (req, res) => {
     const { semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia } = req.body;
     db.run(
@@ -207,7 +221,6 @@ app.post('/api/proyectos', (req, res) => {
     );
 });
 
-// PUT actualizar proyecto
 app.put('/api/proyectos/:id', (req, res) => {
     const { semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia } = req.body;
     db.run(
@@ -220,7 +233,6 @@ app.put('/api/proyectos/:id', (req, res) => {
     );
 });
 
-// DELETE proyecto
 app.delete('/api/proyectos/:id', (req, res) => {
     db.run('DELETE FROM proyectos WHERE id=?', [req.params.id], (err) => {
         if (err) res.status(500).json({ error: err.message });
@@ -236,27 +248,79 @@ app.get('/api/documentos', (req, res) => {
     });
 });
 
-app.post('/api/documentos', (req, res) => {
-    const { nombre, tipo, descripcion, url } = req.body;
+app.post('/api/documentos', upload.single('archivo'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No se subió ningún archivo' });
+    }
+
+    const { nombre, tipo, descripcion } = req.body;
+    const rutaArchivo = `/uploads/${req.file.filename}`;
+
     db.run(
-        'INSERT INTO documentos (nombre, tipo, descripcion, url) VALUES (?, ?, ?, ?)',
-        [nombre, tipo, descripcion, url],
+        'INSERT INTO documentos (nombre, tipo, descripcion, ruta_archivo) VALUES (?, ?, ?, ?)',
+        [nombre, tipo, descripcion, rutaArchivo],
         function (err) {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ id: this.lastID, message: 'Documento creado' });
+            if (err) {
+                // Eliminar archivo si hay error en BD
+                fs.unlink(req.file.path, () => {});
+                res.status(500).json({ error: err.message });
+            } else {
+                res.json({ id: this.lastID, message: 'Documento creado', ruta: rutaArchivo });
+            }
         }
     );
 });
 
 app.delete('/api/documentos/:id', (req, res) => {
-    db.run('DELETE FROM documentos WHERE id=?', [req.params.id], (err) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json({ message: 'Documento eliminado' });
+    db.get('SELECT ruta_archivo FROM documentos WHERE id=?', [req.params.id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        db.run('DELETE FROM documentos WHERE id=?', [req.params.id], (err) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            } else {
+                // Eliminar archivo del servidor
+                if (row && row.ruta_archivo) {
+                    const filePath = path.join(__dirname, '..', row.ruta_archivo);
+                    fs.unlink(filePath, (err) => {
+                        if (err) console.error('Error eliminando archivo:', err);
+                    });
+                }
+                res.json({ message: 'Documento eliminado' });
+            }
+        });
     });
 });
 
+// Ruta de prueba
+app.get('/', (req, res) => {
+    res.json({ 
+        mensaje: 'API CEAI funcionando',
+        endpoints: {
+            noticias: '/api/noticias',
+            semilleros: '/api/semilleros',
+            proyectos: '/api/proyectos',
+            documentos: '/api/documentos'
+        }
+    });
+});
 
-// ============ INICIAR SERVIDOR ============
+// Manejo de errores en multer
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: 'Archivo muy grande (máximo 50MB)' });
+        }
+    }
+    if (err) {
+        return res.status(400).json({ error: err.message });
+    }
+    next();
+});
+
+// Iniciar servidor
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
