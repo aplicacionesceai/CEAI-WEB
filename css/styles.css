@@ -5,26 +5,46 @@
     --ceai-azul: #00304D;
 }
 
-/* Estilos generales */
+/* Reset y base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     line-height: 1.6;
     color: #333;
+    display: flex;
+    flex-direction: column;
 }
 
+main {
+    flex: 1;
+}
+
+/* Tipografía */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     color: var(--ceai-azul);
 }
 
-/* Navbar personalizada */
+a {
+    color: var(--ceai-verde);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--ceai-verde-oscuro);
+}
+
+/* Navbar */
 .bg-ceai-dark {
     background-color: var(--ceai-azul) !important;
 }
@@ -33,7 +53,6 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 1.5rem;
-    color: var(--ceai-verde) !important;
 }
 
 .navbar-nav .nav-link {
@@ -42,14 +61,23 @@ h1, h2, h3, h4, h5, h6 {
     transition: color 0.3s;
 }
 
-.navbar-nav .nav-link:hover {
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
     color: var(--ceai-verde) !important;
 }
 
-/* Footer */
-footer {
-    background-color: var(--ceai-azul);
-    margin-top: auto;
+/* Hero Section */
+.hero-section {
+    padding-top: 100px;
+}
+
+.hero-section h1 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* Botones */
@@ -58,21 +86,159 @@ footer {
     border-color: var(--ceai-verde);
     color: white;
     font-weight: 600;
+    transition: all 0.3s;
 }
 
 .btn-ceai:hover {
     background-color: var(--ceai-verde-oscuro);
     border-color: var(--ceai-verde-oscuro);
     color: white;
+    transform: translateY(-2px);
+}
+
+.btn-outline-ceai {
+    color: var(--ceai-verde);
+    border-color: var(--ceai-verde);
+}
+
+.btn-outline-ceai:hover {
+    background-color: var(--ceai-verde);
+    border-color: var(--ceai-verde);
 }
 
 /* Cards */
 .card {
+    border: 1px solid #ddd;
     border-left: 4px solid var(--ceai-verde);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 15px rgba(57, 169, 0, 0.2);
+}
+
+.card-noticia img,
+.card-semillero img {
+    object-fit: cover;
+    height: 200px;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-footer {
+    border-top: 1px solid #ddd;
+    padding: 0.75rem 1.25rem;
+}
+
+/* Formularios */
+.form-control {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--ceai-verde);
+    box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--ceai-azul);
+    margin-bottom: 8px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--ceai-azul);
+    color: white;
+    margin-top: auto;
+}
+
+footer h5, footer h6 {
+    color: var(--ceai-verde);
+}
+
+footer a {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+footer a:hover {
+    color: var(--ceai-verde);
+}
+
+/* Secciones */
+section {
+    padding: 60px 0;
+}
+
+section h2 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--ceai-verde);
+}
+
+/* Badge de estado */
+.badge {
+    padding: 6px 10px;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 80px;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    section {
+        padding: 40px 0;
+    }
+
+    section h2 {
+        font-size: 1.5rem;
+    }
+
+    .navbar-nav .nav-link {
+        margin-left: 0;
+        padding: 8px 0;
+    }
+}
+
+/* Utilidades */
+.text-ceai-verde {
+    color: var(--ceai-verde);
+}
+
+.text-ceai-azul {
+    color: var(--ceai-azul);
+}
+
+.bg-ceai-light {
+    background-color: rgba(57, 169, 0, 0.05);
+}
+
+.border-ceai {
+    border-color: var(--ceai-verde);
 }

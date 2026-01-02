@@ -16,36 +16,103 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">CEAI</a>
+            <a class="navbar-brand fw-bold" href="index.html">
+                <span style="color: var(--ceai-verde);">CEAI</span> SENA
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="innovacion.html">Área de Innovación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="semilleros.html">Semilleros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grupo-investigacion.html">Grupo de Investigación</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="semillerosDropdown" role="button" data-bs-toggle="dropdown">Semilleros</a>
+                        <ul class="dropdown-menu" aria-labelledby="semillerosDropdown">
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=1">Soluciones Digitales</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=2">Automatización e Instrumentación</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=3">Fábrica Digital Interactiva</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=4">Gestión Energética</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=5">IA Aplicada al Entorno</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="aliados.html">Aliados</a></li>
                     <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main -->
-    <main class="py-5">
-        <div class="container">
-            <h1 class="mb-4">Bienvenido al CEAI</h1>
-            <p class="lead">Área de Innovación y Competitividad - SENA Regional Valle</p>
+    <!-- Hero Section -->
+    <section class="hero-section text-white py-5" style="background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-verde-oscuro) 100%);">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Bienvenido al CEAI</h1>
+                    <p class="lead mb-4">Área de Innovación y Competitividad - SENA Regional Valle</p>
+                    <p class="fs-5">Transformando ideas en soluciones tecnológicas para el ecosistema formativo y productivo.</p>
+                    <a href="contacto.html" class="btn btn-ceai btn-lg mt-3">Contáctanos</a>
+                </div>
+                <div class="col-lg-4 text-center d-none d-lg-block">
+                    <div style="font-size: 120px; color: var(--ceai-verde);">🚀</div>
+                </div>
+            </div>
         </div>
-    </main>
+    </section>
+
+    <!-- Últimas Noticias -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="mb-4 text-center">Últimas Noticias y Eventos</h2>
+            <div class="row" id="noticiasContainer">
+                <!-- Las noticias se cargan aquí con JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Semilleros Destacados -->
+    <section class="py-5" style="background-color: #f8f9fa;">
+        <div class="container">
+            <h2 class="mb-4 text-center">Nuestros Semilleros de Investigación</h2>
+            <div class="row" id="semillerosContainer">
+                <!-- Los semilleros se cargan aquí con JavaScript -->
+            </div>
+            <div class="text-center mt-4">
+                <a href="semilleros.html" class="btn btn-outline-primary btn-lg">Ver todos los semilleros</a>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="bg-ceai-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p>&copy; 2026 CEAI SENA. Todos los derechos reservados.</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5 style="color: var(--ceai-verde);">CEAI SENA</h5>
+                    <p class="small">Área de Innovación y Competitividad - Regional Valle</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6>Enlaces Rápidos</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                        <li><a href="contacto.html" class="text-white-50 text-decoration-none">Contacto</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6>Enlaces Externos</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="https://www.sena.edu.co" target="_blank" class="text-white-50 text-decoration-none">SENA Colombia</a></li>
+                        <li><a href="https://www.sena.edu.co/es-co/" target="_blank" class="text-white-50 text-decoration-none">Regional Valle</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <p class="text-center small mb-0">&copy; 2026 CEAI SENA Regional Valle. Todos los derechos reservados.</p>
         </div>
     </footer>
 
