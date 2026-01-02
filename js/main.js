@@ -29,7 +29,7 @@ async function cargarNoticias() {
     }
 }
 
-// Cargar semilleros desde API
+// Cargar semilleros desde API (home)
 async function cargarSemillerosHome() {
     const container = document.getElementById('semillerosContainer');
     if (!container) return;
@@ -88,7 +88,7 @@ async function cargarSemillerosPagina() {
     }
 }
 
-// Cargar proyectos en página de detalle de semillero
+// Cargar proyectos por semillero
 async function cargarProyectosSemillero() {
     const urlParams = new URLSearchParams(window.location.search);
     const semilleroId = parseInt(urlParams.get('id')) || 1;
@@ -104,15 +104,19 @@ async function cargarProyectosSemillero() {
         const container = document.getElementById('proyectosContainer');
         if (!container) return;
 
-        document.getElementById('semilleroTitle').textContent = semillero ? semillero.nombre : 'Semillero no encontrado';
+        const title = document.getElementById('semilleroTitle');
+        if (title) {
+            title.textContent = semillero ? semillero.nombre : 'Semillero no encontrado';
+        }
 
-        container.innerHTML = proyectos.map((proyecto, index) => `
+        container.innerHTML = proyectos.map((proyecto) => `
             <div class="col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">${proyecto.titulo}</h5>
                         <p class="card-text">
-                            <strong>Estado:</strong> <span class="badge ${proyecto.estado === 'En ejecución' ? 'bg-primary' : 'bg-success'}">${proyecto.estado}</span>
+                            <strong>Estado:</strong> 
+                            <span class="badge ${proyecto.estado === 'En ejecución' ? 'bg-primary' : 'bg-success'}">${proyecto.estado}</span>
                         </p>
                         <p class="card-text"><strong>Objetivo:</strong> ${proyecto.objetivo}</p>
                         <p class="card-text"><strong>Aliados:</strong> ${proyecto.aliados}</p>
@@ -127,7 +131,35 @@ async function cargarProyectosSemillero() {
     }
 }
 
-// Manejar envío del formulario de contacto
+// NUEVO: Cargar documentos en Servicios
+async function cargarDocumentosServicios() {
+    const container = document.getElementById('documentosServicios');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API}/documentos`);
+        const documentos = await response.json();
+
+        if (!documentos.length) {
+            container.innerHTML = '<p class="text-muted mb-0">Próximamente documentos para descarga.</p>';
+            return;
+        }
+
+        container.innerHTML = documentos.map(doc => `
+            <a href="${doc.ruta_archivo}"
+               class="btn btn-outline-success"
+               target="_blank"
+               rel="noopener noreferrer">
+                📄 ${doc.nombre} (${doc.tipo})
+            </a>
+        `).join('');
+    } catch (error) {
+        console.error('Error cargando documentos de servicios:', error);
+        container.innerHTML = '<p class="text-danger mb-0">No se pudieron cargar los documentos.</p>';
+    }
+}
+
+// Formulario de contacto
 function setupContactForm() {
     const form = document.getElementById('contactForm');
     if (!form) return;
@@ -153,5 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarSemillerosHome();
     cargarSemillerosPagina();
     cargarProyectosSemillero();
+    cargarDocumentosServicios();   // <-- NUEVO
     setupContactForm();
 });

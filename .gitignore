@@ -13,3 +13,8 @@ package-lock.json
 # Archivos locales sensibles
 .env
 secrets.txt
+
+# Uploads
+uploads/
+uploads/*
+!uploads/.gitkeep
