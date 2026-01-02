@@ -60,6 +60,8 @@ db.serialize(() => {
             descripcion TEXT NOT NULL,
             fecha TEXT NOT NULL,
             imagen TEXT,
+            tipo TEXT DEFAULT 'Noticia',
+            destacada INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `);
@@ -133,10 +135,18 @@ app.get('/api/noticias/:id', (req, res) => {
 });
 
 app.post('/api/noticias', (req, res) => {
-    const { titulo, descripcion, fecha, imagen } = req.body;
+    const { titulo, descripcion, fecha, imagen, tipo, destacada } = req.body;
+
+    if (!titulo || !descripcion || !fecha) {
+        return res.status(400).json({ error: 'Título, descripción y fecha son obligatorios' });
+    }
+
+    const tipoValue = tipo || 'Noticia';
+    const destacadaValue = destacada ? 1 : 0;
+
     db.run(
-        'INSERT INTO noticias (titulo, descripcion, fecha, imagen) VALUES (?, ?, ?, ?)',
-        [titulo, descripcion, fecha, imagen],
+        'INSERT INTO noticias (titulo, descripcion, fecha, imagen, tipo, destacada) VALUES (?, ?, ?, ?, ?, ?)',
+        [titulo, descripcion, fecha, imagen, tipoValue, destacadaValue],
         function (err) {
             if (err) res.status(500).json({ error: err.message });
             else res.json({ id: this.lastID, message: 'Noticia creada' });
@@ -145,10 +155,14 @@ app.post('/api/noticias', (req, res) => {
 });
 
 app.put('/api/noticias/:id', (req, res) => {
-    const { titulo, descripcion, fecha, imagen } = req.body;
+    const { titulo, descripcion, fecha, imagen, tipo, destacada } = req.body;
+
+    const tipoValue = tipo || 'Noticia';
+    const destacadaValue = destacada ? 1 : 0;
+
     db.run(
-        'UPDATE noticias SET titulo=?, descripcion=?, fecha=?, imagen=? WHERE id=?',
-        [titulo, descripcion, fecha, imagen, req.params.id],
+        'UPDATE noticias SET titulo=?, descripcion=?, fecha=?, imagen=?, tipo=?, destacada=? WHERE id=?',
+        [titulo, descripcion, fecha, imagen, tipoValue, destacadaValue, req.params.id],
         (err) => {
             if (err) res.status(500).json({ error: err.message });
             else res.json({ message: 'Noticia actualizada' });
@@ -314,7 +328,6 @@ app.get('/api/contactos', (req, res) => {
 
 app.post('/api/contactos', (req, res) => {
     const { nombre, email, asunto, mensaje } = req.body;
-    
     if (!nombre || !email || !asunto || !mensaje) {
         return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }

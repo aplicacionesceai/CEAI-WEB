@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Proyecto - CEAI SENA</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        .proyecto-header {
+            background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-verde-oscuro) 100%);
+            color: white;
+            padding: 3rem 0;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .proyecto-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .proyecto-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .proyecto-meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .proyecto-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            margin: -40px 0 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .proyecto-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .proyecto-section h3 {
+            color: var(--ceai-azul);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--ceai-verde);
+            padding-left: 1rem;
+        }
+
+        .proyecto-section p,
+        .proyecto-section li {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .proyecto-section ul {
+            padding-left: 1.5rem;
+        }
+
+        .proyecto-section li {
+            margin-bottom: 0.8rem;
+        }
+
+        .estado-badge {
+            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 1rem;
+        }
+
+        .estado-ejecucion {
+            background-color: #e3f2fd;
+            color: #0277bd;
+        }
+
+        .estado-finalizado {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .estado-revision {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb-custom a {
+            color: var(--ceai-verde);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-custom a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-left: 4px solid var(--ceai-verde);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box strong {
+            color: var(--ceai-azul);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #555;
+        }
+
+        .btn-volver {
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <span style="color: var(--ceai-verde);">CEAI</span> SENA
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="innovacion.html">Área de Innovación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grupo-investigacion.html">Grupo de Investigación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="semilleros.html">Semilleros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="aliados.html">Aliados</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header del Proyecto -->
+    <section class="proyecto-header">
+        <div class="container">
+            <nav class="breadcrumb-custom">
+                <a href="semilleros.html">Semilleros</a>
+                <span class="mx-2">›</span>
+                <a href="#" id="enlaceSemillero">Semillero</a>
+                <span class="mx-2">›</span>
+                <span>Proyecto</span>
+            </nav>
+            <h1 class="proyecto-title" id="proyectoTitulo">Cargando...</h1>
+            <div class="proyecto-meta">
+                <div class="proyecto-meta-item" id="estadoBadge">
+                    Cargando...
+                </div>
+                <div class="proyecto-meta-item" id="semilleroBadge">
+                    Semillero: -
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenido del Proyecto -->
+    <section class="py-5">
+        <div class="container">
+            <div class="proyecto-content">
+                <!-- Objetivo -->
+                <div class="proyecto-section" id="seccionObjetivo" style="display: none;">
+                    <h3>🎯 Objetivo General</h3>
+                    <p id="proyectoObjetivo">-</p>
+                </div>
+
+                <!-- Entregables -->
+                <div class="proyecto-section" id="seccionEntregables" style="display: none;">
+                    <h3>📦 Entregables</h3>
+                    <p id="proyectoEntregables">-</p>
+                </div>
+
+                <!-- Evidencia -->
+                <div class="proyecto-section" id="seccionEvidencia" style="display: none;">
+                    <h3>📸 Evidencia</h3>
+                    <p id="proyectoEvidencia">-</p>
+                </div>
+
+                <!-- Aliados -->
+                <div class="proyecto-section" id="seccionAliados" style="display: none;">
+                    <h3>🤝 Aliados</h3>
+                    <p id="proyectoAliados">-</p>
+                </div>
+
+                <!-- Botones de navegación -->
+                <div class="btn-volver">
+                    <a href="#" id="btnVolverSemillero" class="btn btn-ceai btn-lg">
+                        ← Volver al Semillero
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-ceai-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5 style="color: var(--ceai-verde);">CEAI SENA</h5>
+                    <p class="small">Área de Innovación y Competitividad - Regional Valle</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6>Enlaces Rápidos</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                        <li><a href="contacto.html" class="text-white-50 text-decoration-none">Contacto</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6>Enlaces Externos</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="https://www.sena.edu.co" target="_blank" class="text-white-50 text-decoration-none">SENA Colombia</a></li>
+                        <li><a href="https://www.sena.edu.co/es-co/" target="_blank" class="text-white-50 text-decoration-none">Regional Valle</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <p class="text-center small mb-0">&copy; 2026 CEAI SENA Regional Valle. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const API = 'http://localhost:5000/api';
+
+        function obtenerIdDelURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function cargarProyecto() {
+            const proyectoId = obtenerIdDelURL();
+
+            if (!proyectoId) {
+                document.body.innerHTML = '<div class="container mt-5"><h2>Error: No se especificó ID del proyecto</h2></div>';
+                return;
+            }
+
+            try {
+                // Cargar proyecto
+                const resProyecto = await fetch(API + '/proyectos/' + proyectoId);
+                const proyecto = await resProyecto.json();
+
+                if (!proyecto.id) {
+                    document.body.innerHTML = '<div class="container mt-5"><h2>Proyecto no encontrado</h2></div>';
+                    return;
+                }
+
+                // Cargar semillero
+                const resSemillero = await fetch(API + '/semilleros/' + proyecto.semillero_id);
+                const semillero = await resSemillero.json();
+
+                // Llenar datos del proyecto
+                document.getElementById('proyectoTitulo').textContent = proyecto.titulo || 'Sin título';
+                document.title = proyecto.titulo + ' - CEAI SENA';
+
+                // Estado badge
+                var estadoClass = 'estado-ejecucion';
+                if (proyecto.estado === 'Finalizado') estadoClass = 'estado-finalizado';
+                else if (proyecto.estado === 'En revisión') estadoClass = 'estado-revision';
+
+                document.getElementById('estadoBadge').innerHTML = '<span class="estado-badge ' + estadoClass + '">' + (proyecto.estado || 'Estado desconocido') + '</span>';
+
+                // Semillero badge
+                document.getElementById('semilleroBadge').textContent = 'Semillero: ' + (semillero.nombre || 'Desconocido');
+                document.getElementById('enlaceSemillero').href = 'semillero-detalle.html?id=' + proyecto.semillero_id;
+                document.getElementById('enlaceSemillero').textContent = semillero.nombre || 'Semillero';
+                document.getElementById('btnVolverSemillero').href = 'semillero-detalle.html?id=' + proyecto.semillero_id;
+
+                // Objetivo
+                if (proyecto.objetivo && proyecto.objetivo.trim() !== '') {
+                    document.getElementById('proyectoObjetivo').textContent = proyecto.objetivo;
+                    document.getElementById('seccionObjetivo').style.display = 'block';
+                }
+
+                // Entregables
+                if (proyecto.entregables && proyecto.entregables.trim() !== '') {
+                    document.getElementById('proyectoEntregables').textContent = proyecto.entregables;
+                    document.getElementById('seccionEntregables').style.display = 'block';
+                }
+
+                // Evidencia
+                if (proyecto.evidencia && proyecto.evidencia.trim() !== '') {
+                    document.getElementById('proyectoEvidencia').textContent = proyecto.evidencia;
+                    document.getElementById('seccionEvidencia').style.display = 'block';
+                }
+
+                // Aliados
+                if (proyecto.aliados && proyecto.aliados.trim() !== '') {
+                    document.getElementById('proyectoAliados').textContent = proyecto.aliados;
+                    document.getElementById('seccionAliados').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error cargando proyecto', err);
+                document.body.innerHTML = '<div class="container mt-5"><h2>Error al cargar el proyecto</h2><p>' + err.message + '</p></div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarProyecto();
+        });
+    </script>
+</body>
+</html>

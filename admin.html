@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrativo - CEAI SENA</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos CEAI -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -78,7 +88,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
-        /* Contenido del mensaje en el modal de contacto */
         #detalleMensaje {
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -89,7 +98,6 @@
     </style>
 </head>
 <body>
-    <!-- Protección básica: si no hay sesión, redirige a login -->
     <script>
         if (localStorage.getItem('ceai_admin_logged') !== 'true') {
             window.location.href = 'login.html';
@@ -126,6 +134,7 @@
                 <!-- DASHBOARD -->
                 <div id="dashboard" class="content-section active">
                     <h2 class="mb-4">📊 Dashboard</h2>
+
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <div class="card text-center">
@@ -167,6 +176,60 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-9 mb-3">
+                            <div class="card">
+                                <div class="card-body d-flex flex-wrap gap-2 align-items-center">
+                                    <h5 class="card-title mb-0 me-3">⚡ Acciones rápidas</h5>
+                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('noticias')">Nueva noticia</button>
+                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('semilleros')">Nuevo semillero</button>
+                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('proyectos')">Nuevo proyecto</button>
+                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('documentos')">Subir documento</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Contenido por tipo</h5>
+                                    <canvas id="chartContenido"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Mensajes de contacto por día</h5>
+                                    <canvas id="chartContactos"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Últimos registros -->
+                    <div class="row mt-2">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Últimas noticias</h5>
+                                    <ul id="ultimasNoticias" class="list-group list-group-flush small"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Últimos contactos</h5>
+                                    <ul id="ultimosContactos" class="list-group list-group-flush small"></ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -182,9 +245,18 @@
                                     <label class="form-label">Título</label>
                                     <input type="text" class="form-control" id="noticiaTitulo" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label class="form-label">Fecha</label>
                                     <input type="date" class="form-control" id="noticiaFecha" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Tipo</label>
+                                    <select class="form-control" id="noticiaTipo" required>
+                                        <option value="Noticia">Noticia</option>
+                                        <option value="Evento">Evento</option>
+                                        <option value="Convocatoria">Convocatoria</option>
+                                        <option value="Resultado">Resultado</option>
+                                    </select>
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label class="form-label">Descripción</label>
@@ -195,7 +267,14 @@
                                     <input type="url" class="form-control" id="noticiaImagen" placeholder="https://...">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label d-block">&nbsp;</label>
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="noticiaDestacada">
+                                        <label class="form-check-label" for="noticiaDestacada">
+                                            ⭐ Destacar en carousel del home
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
                                     <button type="submit" class="btn btn-ceai w-100">Crear Noticia</button>
                                 </div>
                             </div>
@@ -407,43 +486,126 @@
       </div>
     </div>
 
+    <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toasts -->
+    <script src="js/toasts.js"></script>
+
     <script>
         const API = 'http://localhost:5000/api';
+        let chartContenidoRef = null;
+        let chartContactosRef = null;
+        let contactosCache = [];
 
-        // Cambiar sección desde la sidebar
+        function irSeccion(id) {
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.sidebar-link[data-section="${id}"]`).classList.add('active');
+
+            if (id === 'noticias') cargarNoticias();
+            if (id === 'semilleros') cargarSemilleros();
+            if (id === 'proyectos') cargarProyectos();
+            if (id === 'documentos') cargarDocumentos();
+            if (id === 'contactos') cargarContactos();
+            if (id === 'dashboard') cargarDashboard();
+        }
+
         document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const id = link.dataset.section;
-
-                document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-
-                document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-                link.classList.add('active');
-
-                if (id === 'noticias') cargarNoticias();
-                if (id === 'semilleros') cargarSemilleros();
-                if (id === 'proyectos') cargarProyectos();
-                if (id === 'documentos') cargarDocumentos();
-                if (id === 'contactos') cargarContactos();
-                if (id === 'dashboard') cargarDashboard();
-            });
+            link.addEventListener('click', () => irSeccion(link.dataset.section));
         });
 
         // ============ DASHBOARD ============
         async function cargarDashboard() {
-            const noticias = await fetch(`${API}/noticias`).then(r => r.json());
+            const noticias   = await fetch(`${API}/noticias`).then(r => r.json());
             const semilleros = await fetch(`${API}/semilleros`).then(r => r.json());
-            const proyectos = await fetch(`${API}/proyectos`).then(r => r.json());
+            const proyectos  = await fetch(`${API}/proyectos`).then(r => r.json());
             const documentos = await fetch(`${API}/documentos`).then(r => r.json());
-            const contactos = await fetch(`${API}/contactos`).then(r => r.json());
+            const contactos  = await fetch(`${API}/contactos`).then(r => r.json());
             
-            document.getElementById('countNoticias').textContent = noticias.length;
+            document.getElementById('countNoticias').textContent   = noticias.length;
             document.getElementById('countSemilleros').textContent = semilleros.length;
-            document.getElementById('countProyectos').textContent = proyectos.length;
+            document.getElementById('countProyectos').textContent  = proyectos.length;
             document.getElementById('countDocumentos').textContent = documentos.length;
-            document.getElementById('countContactos').textContent = contactos.length;
+            document.getElementById('countContactos').textContent  = contactos.length;
+
+            const ctx1 = document.getElementById('chartContenido').getContext('2d');
+            if (chartContenidoRef) chartContenidoRef.destroy();
+
+            chartContenidoRef = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Noticias', 'Semilleros', 'Proyectos', 'Documentos'],
+                    datasets: [{
+                        data: [noticias.length, semilleros.length, proyectos.length, documentos.length],
+                        backgroundColor: ['#39A900', '#2d8a00', '#00304D', '#76c043']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+
+            const porDia = {};
+            contactos.forEach(c => {
+                if (!c.created_at) return;
+                const d = new Date(c.created_at);
+                const key = d.toLocaleDateString('es-ES');
+                porDia[key] = (porDia[key] || 0) + 1;
+            });
+
+            const labels = Object.keys(porDia);
+            const valores = Object.values(porDia);
+
+            const ctx2 = document.getElementById('chartContactos').getContext('2d');
+            if (chartContactosRef) chartContactosRef.destroy();
+
+            chartContactosRef = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: valores,
+                        borderColor: '#39A900',
+                        backgroundColor: 'rgba(57,169,0,0.2)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+
+            const ulNoticias = document.getElementById('ultimasNoticias');
+            ulNoticias.innerHTML = noticias
+                .slice(-5)
+                .reverse()
+                .map(n => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${n.titulo}</span>
+                        <span class="text-muted ms-2">${n.fecha}</span>
+                    </li>
+                `).join('');
+
+            const ulContactos = document.getElementById('ultimosContactos');
+            ulContactos.innerHTML = contactos
+                .slice(-5)
+                .reverse()
+                .map(c => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${c.nombre}</span>
+                        <span class="text-muted ms-2">
+                            ${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}
+                        </span>
+                    </li>
+                `).join('');
         }
 
         // ============ NOTICIAS ============
@@ -452,7 +614,7 @@
             const noticias = await response.json();
             
             const lista = document.getElementById('listaNoticias');
-            if (noticias.length === 0) {
+            if (!noticias.length) {
                 lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>';
                 return;
             }
@@ -464,6 +626,8 @@
                             <th>ID</th>
                             <th>Título</th>
                             <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Destacada</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -473,6 +637,8 @@
                                 <td>${n.id}</td>
                                 <td>${n.titulo}</td>
                                 <td>${n.fecha}</td>
+                                <td>${n.tipo || 'Noticia'}</td>
+                                <td>${n.destacada === 1 ? '⭐' : ''}</td>
                                 <td>
                                     <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button>
                                 </td>
@@ -490,7 +656,9 @@
                 titulo: document.getElementById('noticiaTitulo').value,
                 descripcion: document.getElementById('noticiaDescripcion').value,
                 fecha: document.getElementById('noticiaFecha').value,
-                imagen: document.getElementById('noticiaImagen').value
+                imagen: document.getElementById('noticiaImagen').value,
+                tipo: document.getElementById('noticiaTipo').value,
+                destacada: document.getElementById('noticiaDestacada').checked ? 1 : 0
             };
             
             const response = await fetch(`${API}/noticias`, {
@@ -500,18 +668,26 @@
             });
             
             if (response.ok) {
-                alert('✅ Noticia creada');
+                toast.success('Noticia creada correctamente');
                 document.getElementById('formNoticia').reset();
                 cargarNoticias();
                 cargarDashboard();
+            } else {
+                const error = await response.json();
+                toast.error('Error al crear noticia: ' + (error.error || ''));
             }
         });
 
         async function eliminarNoticia(id) {
             if (!confirm('¿Eliminar esta noticia?')) return;
-            await fetch(`${API}/noticias/${id}`, { method: 'DELETE' });
-            cargarNoticias();
-            cargarDashboard();
+            const res = await fetch(`${API}/noticias/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.info('Noticia eliminada');
+                cargarNoticias();
+                cargarDashboard();
+            } else {
+                toast.error('Error al eliminar noticia');
+            }
         }
 
         // ============ SEMILLEROS ============
@@ -524,7 +700,7 @@
                 semilleros.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
             
             const lista = document.getElementById('listaSemilleros');
-            if (semilleros.length === 0) {
+            if (!semilleros.length) {
                 lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
                 return;
             }
@@ -573,18 +749,25 @@
             });
             
             if (response.ok) {
-                alert('✅ Semillero creado');
+                toast.success('Semillero creado');
                 document.getElementById('formSemillero').reset();
                 cargarSemilleros();
                 cargarDashboard();
+            } else {
+                toast.error('Error al crear semillero');
             }
         });
 
         async function eliminarSemillero(id) {
             if (!confirm('¿Eliminar este semillero?')) return;
-            await fetch(`${API}/semilleros/${id}`, { method: 'DELETE' });
-            cargarSemilleros();
-            cargarDashboard();
+            const res = await fetch(`${API}/semilleros/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.info('Semillero eliminado');
+                cargarSemilleros();
+                cargarDashboard();
+            } else {
+                toast.error('Error al eliminar semillero');
+            }
         }
 
         // ============ PROYECTOS ============
@@ -593,7 +776,7 @@
             const proyectos = await response.json();
             
             const lista = document.getElementById('listaProyectos');
-            if (proyectos.length === 0) {
+            if (!proyectos.length) {
                 lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>';
                 return;
             }
@@ -654,18 +837,25 @@
             });
             
             if (response.ok) {
-                alert('✅ Proyecto creado');
+                toast.success('Proyecto creado');
                 document.getElementById('formProyecto').reset();
                 cargarProyectos();
                 cargarDashboard();
+            } else {
+                toast.error('Error al crear proyecto');
             }
         });
 
         async function eliminarProyecto(id) {
             if (!confirm('¿Eliminar este proyecto?')) return;
-            await fetch(`${API}/proyectos/${id}`, { method: 'DELETE' });
-            cargarProyectos();
-            cargarDashboard();
+            const res = await fetch(`${API}/proyectos/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.info('Proyecto eliminado');
+                cargarProyectos();
+                cargarDashboard();
+            } else {
+                toast.error('Error al eliminar proyecto');
+            }
         }
 
         // ============ DOCUMENTOS ============
@@ -675,10 +865,8 @@
         const fileSelected = document.getElementById('fileSelected');
         const fileName = document.getElementById('fileName');
 
-        // Click para abrir selector
         dropZone.addEventListener('click', () => docArchivo.click());
 
-        // Drag over
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.style.backgroundColor = 'rgba(57, 169, 0, 0.1)';
@@ -688,7 +876,6 @@
             dropZone.style.backgroundColor = 'transparent';
         });
 
-        // Drop
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.style.backgroundColor = 'transparent';
@@ -700,7 +887,6 @@
             }
         });
 
-        // Change del input
         docArchivo.addEventListener('change', () => {
             if (docArchivo.files.length > 0) {
                 actualizarNombreArchivo(docArchivo.files[0]);
@@ -709,7 +895,7 @@
 
         function actualizarNombreArchivo(file) {
             if (file.type !== 'application/pdf') {
-                alert('Solo se permiten archivos PDF');
+                toast.warning('Solo se permiten archivos PDF');
                 docArchivo.value = '';
                 dropText.style.display = 'block';
                 fileSelected.style.display = 'none';
@@ -726,7 +912,7 @@
             const documentos = await response.json();
             
             const lista = document.getElementById('listaDocumentos');
-            if (documentos.length === 0) {
+            if (!documentos.length) {
                 lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>';
                 return;
             }
@@ -763,7 +949,7 @@
             e.preventDefault();
             
             if (!docArchivo.files.length) {
-                alert('Por favor selecciona un archivo PDF');
+                toast.warning('Por favor selecciona un archivo PDF');
                 return;
             }
 
@@ -780,7 +966,7 @@
                 });
                 
                 if (response.ok) {
-                    alert('✅ Documento agregado');
+                    toast.success('Documento agregado');
                     document.getElementById('formDocumento').reset();
                     docArchivo.value = '';
                     dropText.style.display = 'block';
@@ -789,27 +975,33 @@
                     cargarDashboard();
                 } else {
                     const error = await response.json();
-                    alert('❌ Error: ' + error.error);
+                    toast.error('Error al subir documento: ' + (error.error || ''));
                 }
             } catch (error) {
-                alert('❌ Error al subir archivo: ' + error.message);
+                toast.error('Error al subir archivo: ' + error.message);
             }
         });
 
         async function eliminarDocumento(id) {
             if (!confirm('¿Eliminar este documento?')) return;
-            await fetch(`${API}/documentos/${id}`, { method: 'DELETE' });
-            cargarDocumentos();
-            cargarDashboard();
+            const res = await fetch(`${API}/documentos/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.info('Documento eliminado');
+                cargarDocumentos();
+                cargarDashboard();
+            } else {
+                toast.error('Error al eliminar documento');
+            }
         }
 
         // ============ CONTACTOS ============
         async function cargarContactos() {
             const response = await fetch(`${API}/contactos`);
             const contactos = await response.json();
+            contactosCache = contactos;
             
             const lista = document.getElementById('listaContactos');
-            if (contactos.length === 0) {
+            if (!contactos.length) {
                 lista.innerHTML = '<p class="text-muted">No hay mensajes aún</p>';
                 return;
             }
@@ -839,11 +1031,11 @@
                                         ${c.mensaje}
                                     </small>
                                 </td>
-                                <td><small>${new Date(c.created_at).toLocaleDateString('es-ES')}</small></td>
+                                <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
                                 <td>
                                     <div class="d-flex gap-1 justify-content-end">
                                         <button class="btn btn-sm btn-ceai"
-                                            onclick='verContacto(${JSON.stringify(JSON.stringify(c))})'>
+                                            onclick="verContacto(${c.id})">
                                             Ver
                                         </button>
                                         <button class="btn btn-sm btn-danger"
@@ -861,13 +1053,19 @@
 
         async function eliminarContacto(id) {
             if (!confirm('¿Eliminar este mensaje?')) return;
-            await fetch(`${API}/contactos/${id}`, { method: 'DELETE' });
-            cargarContactos();
-            cargarDashboard();
+            const res = await fetch(`${API}/contactos/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.info('Mensaje eliminado');
+                cargarContactos();
+                cargarDashboard();
+            } else {
+                toast.error('Error al eliminar mensaje');
+            }
         }
 
-        function verContacto(contactoJson) {
-            const c = JSON.parse(contactoJson);
+        function verContacto(id) {
+            const c = contactosCache.find(x => x.id === id);
+            if (!c) return;
 
             document.getElementById('detalleNombre').textContent = c.nombre;
             document.getElementById('detalleEmail').textContent = c.email;
@@ -881,7 +1079,7 @@
             modal.show();
         }
 
-        // Cargar dashboard al iniciar
+        // Iniciar
         cargarDashboard();
     </script>
 </body>
