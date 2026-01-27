@@ -519,11 +519,11 @@
 
         // ============ DASHBOARD ============
         async function cargarDashboard() {
-            const noticias   = await fetch(`${API}/noticias`).then(r => r.json());
-            const semilleros = await fetch(`${API}/semilleros`).then(r => r.json());
-            const proyectos  = await fetch(`${API}/proyectos`).then(r => r.json());
-            const documentos = await fetch(`${API}/documentos`).then(r => r.json());
-            const contactos  = await fetch(`${API}/contactos`).then(r => r.json());
+            const noticias   = await fetch(`${API}/api/noticias`).then(r => r.json());
+            const semilleros = await fetch(`${API}/api/semilleros`).then(r => r.json());
+            const proyectos  = await fetch(`${API}/api/proyectos`).then(r => r.json());
+            const documentos = await fetch(`${API}/api/documentos`).then(r => r.json());
+            const contactos  = await fetch(`${API}/api/contactos`).then(r => r.json());
             
             document.getElementById('countNoticias').textContent   = noticias.length;
             document.getElementById('countSemilleros').textContent = semilleros.length;
@@ -611,7 +611,7 @@
 
         // ============ NOTICIAS ============
         async function cargarNoticias() {
-            const response = await fetch(`${API}/noticias`);
+            const response = await fetch(`${API}/api/noticias`);
             const noticias = await response.json();
             
             const lista = document.getElementById('listaNoticias');
@@ -662,7 +662,7 @@
                 destacada: document.getElementById('noticiaDestacada').checked ? 1 : 0
             };
             
-            const response = await fetch(`${API}/noticias`, {
+            const response = await fetch(`${API}/api/noticias`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
@@ -681,7 +681,7 @@
 
         async function eliminarNoticia(id) {
             if (!confirm('¿Eliminar esta noticia?')) return;
-            const res = await fetch(`${API}/noticias/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/api/noticias/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Noticia eliminada');
                 cargarNoticias();
@@ -693,7 +693,7 @@
 
         // ============ SEMILLEROS ============
         async function cargarSemilleros() {
-            const response = await fetch(`${API}/semilleros`);
+            const response = await fetch(`${API}/api/semilleros`);
             const semilleros = await response.json();
             
             const select = document.getElementById('proyectoSemillero');
@@ -743,7 +743,7 @@
                 imagen: document.getElementById('semilleroImagen').value
             };
             
-            const response = await fetch(`${API}/semilleros`, {
+            const response = await fetch(`${API}/api/semilleros`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
@@ -761,7 +761,7 @@
 
         async function eliminarSemillero(id) {
             if (!confirm('¿Eliminar este semillero?')) return;
-            const res = await fetch(`${API}/semilleros/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/api/semilleros/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Semillero eliminado');
                 cargarSemilleros();
@@ -773,7 +773,7 @@
 
         // ============ PROYECTOS ============
         async function cargarProyectos() {
-            const response = await fetch(`${API}/proyectos`);
+            const response = await fetch(`${API}/api/proyectos`);
             const proyectos = await response.json();
             
             const lista = document.getElementById('listaProyectos');
@@ -831,7 +831,7 @@
                 evidencia: document.getElementById('proyectoEvidencia').value
             };
             
-            const response = await fetch(`${API}/proyectos`, {
+            const response = await fetch(`${API}/api/proyectos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
@@ -849,7 +849,7 @@
 
         async function eliminarProyecto(id) {
             if (!confirm('¿Eliminar este proyecto?')) return;
-            const res = await fetch(`${API}/proyectos/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/api/proyectos/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Proyecto eliminado');
                 cargarProyectos();
@@ -909,7 +909,7 @@
         }
 
         async function cargarDocumentos() {
-            const response = await fetch(`${API}/documentos`);
+            const response = await fetch(`${API}/api/documentos`);
             const documentos = await response.json();
             
             const lista = document.getElementById('listaDocumentos');
@@ -961,7 +961,7 @@
             formData.append('archivo', docArchivo.files[0]);
             
             try {
-                const response = await fetch(`${API}/documentos`, {
+                const response = await fetch(`${API}/api/documentos`, {
                     method: 'POST',
                     body: formData
                 });
@@ -985,7 +985,7 @@
 
         async function eliminarDocumento(id) {
             if (!confirm('¿Eliminar este documento?')) return;
-            const res = await fetch(`${API}/documentos/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/api/documentos/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Documento eliminado');
                 cargarDocumentos();
@@ -997,7 +997,7 @@
 
         // ============ CONTACTOS ============
         async function cargarContactos() {
-            const response = await fetch(`${API}/contactos`);
+            const response = await fetch(`${API}/api/contactos`);
             const contactos = await response.json();
             contactosCache = contactos;
             
@@ -1054,7 +1054,7 @@
 
         async function eliminarContacto(id) {
             if (!confirm('¿Eliminar este mensaje?')) return;
-            const res = await fetch(`${API}/contactos/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/api/contactos/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Mensaje eliminado');
                 cargarContactos();
