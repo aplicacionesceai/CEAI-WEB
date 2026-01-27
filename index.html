@@ -219,7 +219,7 @@
 
         async function cargarNoticiasHome() {
             try {
-                const res = await fetch(API + '/noticias');
+                const res = await fetch(API + '/api/noticias');
                 const allNoticias = await res.json();
 
                 // SEPARAR: destacadas vs no destacadas
