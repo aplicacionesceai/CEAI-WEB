@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
-
 
 
 const app = express();
@@ -18,10 +16,11 @@ console.log('🔍 PORT:', PORT);
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV || 'undefined');
 console.log('🔍 DATABASE_URL existe:', !!process.env.DATABASE_URL);
 if (process.env.DATABASE_URL) {
+    console.log('✅ DATABASE_URL conectada correctamente');
     console.log('🔍 DATABASE_URL empieza con:', process.env.DATABASE_URL.substring(0, 40) + '...');
-    console.log('🔍 DATABASE_URL length:', process.env.DATABASE_URL.length);
 } else {
-    console.log('🔍 ⚠️ DATABASE_URL NO EXISTE - Problema en Railway');
+    console.log('⚠️ ¡IMPORTANTE! DATABASE_URL no está configurada en Railway');
+    console.log('⚠️ Por favor, agrega DATABASE_URL en Railway → CEAI-WEB → Variables');
 }
 console.log('🔍 ===== FIN VARIABLES =====\n');
 
