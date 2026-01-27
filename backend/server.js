@@ -1,22 +1,19 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 
 // Crear carpeta de uploads si no existe
 const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
-
 
 // Configurar multer para carga de archivos
 const storage = multer.diskStorage({
@@ -30,7 +27,6 @@ const storage = multer.diskStorage({
     }
 });
 
-
 const upload = multer({
     storage: storage,
     limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
@@ -43,358 +39,360 @@ const upload = multer({
     }
 });
 
-
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../')));
 app.use('/uploads', express.static(uploadsDir));
 
-
-// Conectar a SQLite
-const db = new sqlite3.Database('./ceai_db.sqlite', (err) => {
-    if (err) console.error('Error abriendo BD:', err);
-    else console.log('✅ Base de datos SQLite conectada');
+// Conectar a PostgreSQL
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? {
+        rejectUnauthorized: false
+    } : false
 });
 
+// Probar conexión
+pool.connect((err, client, release) => {
+    if (err) {
+        console.error('❌ Error conectando a PostgreSQL:', err);
+    } else {
+        console.log('✅ Base de datos PostgreSQL conectada');
+        release();
+    }
+});
 
 // Crear tablas
-db.serialize(() => {
-    db.run(`
-        CREATE TABLE IF NOT EXISTS noticias (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            titulo TEXT NOT NULL,
-            descripcion TEXT NOT NULL,
-            fecha TEXT NOT NULL,
-            imagen TEXT,
-            tipo TEXT DEFAULT 'Noticia',
-            destacada INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
+const createTables = async () => {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS noticias (
+                id SERIAL PRIMARY KEY,
+                titulo TEXT NOT NULL,
+                descripcion TEXT NOT NULL,
+                fecha TEXT NOT NULL,
+                imagen TEXT,
+                tipo TEXT DEFAULT 'Noticia',
+                destacada INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
 
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS semilleros (
+                id SERIAL PRIMARY KEY,
+                nombre TEXT NOT NULL,
+                linea TEXT NOT NULL,
+                enfoque TEXT NOT NULL,
+                descripcion TEXT NOT NULL,
+                imagen TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
 
-    db.run(`
-        CREATE TABLE IF NOT EXISTS semilleros (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            linea TEXT NOT NULL,
-            enfoque TEXT NOT NULL,
-            descripcion TEXT NOT NULL,
-            imagen TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS proyectos (
+                id SERIAL PRIMARY KEY,
+                semillero_id INTEGER NOT NULL,
+                titulo TEXT NOT NULL,
+                estado TEXT NOT NULL,
+                aliados TEXT,
+                objetivo TEXT,
+                entregables TEXT,
+                evidencia TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (semillero_id) REFERENCES semilleros(id)
+            )
+        `);
 
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS documentos (
+                id SERIAL PRIMARY KEY,
+                nombre TEXT NOT NULL,
+                tipo TEXT NOT NULL,
+                descripcion TEXT,
+                ruta_archivo TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
 
-    db.run(`
-        CREATE TABLE IF NOT EXISTS proyectos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            semillero_id INTEGER NOT NULL,
-            titulo TEXT NOT NULL,
-            estado TEXT NOT NULL,
-            aliados TEXT,
-            objetivo TEXT,
-            entregables TEXT,
-            evidencia TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (semillero_id) REFERENCES semilleros(id)
-        )
-    `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS contactos (
+                id SERIAL PRIMARY KEY,
+                nombre TEXT NOT NULL,
+                email TEXT NOT NULL,
+                asunto TEXT NOT NULL,
+                mensaje TEXT NOT NULL,
+                leido INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
 
+        console.log('📊 Tablas creadas correctamente');
+    } catch (err) {
+        console.error('❌ Error creando tablas:', err);
+    }
+};
 
-    db.run(`
-        CREATE TABLE IF NOT EXISTS documentos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            tipo TEXT NOT NULL,
-            descripcion TEXT,
-            ruta_archivo TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
-
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS contactos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            email TEXT NOT NULL,
-            asunto TEXT NOT NULL,
-            mensaje TEXT NOT NULL,
-            leido INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
-
-
-    console.log('📊 Tablas creadas correctamente');
-});
-
+createTables();
 
 // ============ RUTAS NOTICIAS ============
-app.get('/api/noticias', (req, res) => {
-    db.all('SELECT * FROM noticias ORDER BY fecha DESC', (err, rows) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json(rows || []);
-    });
+app.get('/api/noticias', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM noticias ORDER BY fecha DESC');
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.get('/api/noticias/:id', (req, res) => {
-    db.get('SELECT * FROM noticias WHERE id = ?', [req.params.id], (err, row) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json(row);
-    });
+app.get('/api/noticias/:id', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM noticias WHERE id = $1', [req.params.id]);
+        res.json(result.rows[0] || null);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.post('/api/noticias', (req, res) => {
+app.post('/api/noticias', async (req, res) => {
     const { titulo, descripcion, fecha, imagen, tipo, destacada } = req.body;
-
 
     if (!titulo || !descripcion || !fecha) {
         return res.status(400).json({ error: 'Título, descripción y fecha son obligatorios' });
     }
 
-
     const tipoValue = tipo || 'Noticia';
     const destacadaValue = destacada ? 1 : 0;
 
-
-    db.run(
-        'INSERT INTO noticias (titulo, descripcion, fecha, imagen, tipo, destacada) VALUES (?, ?, ?, ?, ?, ?)',
-        [titulo, descripcion, fecha, imagen, tipoValue, destacadaValue],
-        function (err) {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ id: this.lastID, message: 'Noticia creada' });
-        }
-    );
+    try {
+        const result = await pool.query(
+            'INSERT INTO noticias (titulo, descripcion, fecha, imagen, tipo, destacada) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+            [titulo, descripcion, fecha, imagen, tipoValue, destacadaValue]
+        );
+        res.json({ id: result.rows[0].id, message: 'Noticia creada' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.put('/api/noticias/:id', (req, res) => {
+app.put('/api/noticias/:id', async (req, res) => {
     const { titulo, descripcion, fecha, imagen, tipo, destacada } = req.body;
-
-
     const tipoValue = tipo || 'Noticia';
     const destacadaValue = destacada ? 1 : 0;
 
-
-    db.run(
-        'UPDATE noticias SET titulo=?, descripcion=?, fecha=?, imagen=?, tipo=?, destacada=? WHERE id=?',
-        [titulo, descripcion, fecha, imagen, tipoValue, destacadaValue, req.params.id],
-        (err) => {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ message: 'Noticia actualizada' });
-        }
-    );
+    try {
+        await pool.query(
+            'UPDATE noticias SET titulo=$1, descripcion=$2, fecha=$3, imagen=$4, tipo=$5, destacada=$6 WHERE id=$7',
+            [titulo, descripcion, fecha, imagen, tipoValue, destacadaValue, req.params.id]
+        );
+        res.json({ message: 'Noticia actualizada' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.delete('/api/noticias/:id', (req, res) => {
-    db.run('DELETE FROM noticias WHERE id=?', [req.params.id], (err) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json({ message: 'Noticia eliminada' });
-    });
+app.delete('/api/noticias/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM noticias WHERE id=$1', [req.params.id]);
+        res.json({ message: 'Noticia eliminada' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
-
 
 // ============ RUTAS SEMILLEROS ============
-app.get('/api/semilleros', (req, res) => {
-    db.all('SELECT * FROM semilleros', (err, rows) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json(rows || []);
-    });
+app.get('/api/semilleros', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM semilleros');
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.post('/api/semilleros', (req, res) => {
+app.post('/api/semilleros', async (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen } = req.body;
-    db.run(
-        'INSERT INTO semilleros (nombre, linea, enfoque, descripcion, imagen) VALUES (?, ?, ?, ?, ?)',
-        [nombre, linea, enfoque, descripcion, imagen],
-        function (err) {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ id: this.lastID, message: 'Semillero creado' });
-        }
-    );
+    try {
+        const result = await pool.query(
+            'INSERT INTO semilleros (nombre, linea, enfoque, descripcion, imagen) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+            [nombre, linea, enfoque, descripcion, imagen]
+        );
+        res.json({ id: result.rows[0].id, message: 'Semillero creado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.put('/api/semilleros/:id', (req, res) => {
+app.put('/api/semilleros/:id', async (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen } = req.body;
-    db.run(
-        'UPDATE semilleros SET nombre=?, linea=?, enfoque=?, descripcion=?, imagen=? WHERE id=?',
-        [nombre, linea, enfoque, descripcion, imagen, req.params.id],
-        (err) => {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ message: 'Semillero actualizado' });
-        }
-    );
+    try {
+        await pool.query(
+            'UPDATE semilleros SET nombre=$1, linea=$2, enfoque=$3, descripcion=$4, imagen=$5 WHERE id=$6',
+            [nombre, linea, enfoque, descripcion, imagen, req.params.id]
+        );
+        res.json({ message: 'Semillero actualizado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.delete('/api/semilleros/:id', (req, res) => {
-    db.run('DELETE FROM semilleros WHERE id=?', [req.params.id], (err) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json({ message: 'Semillero eliminado' });
-    });
+app.delete('/api/semilleros/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM semilleros WHERE id=$1', [req.params.id]);
+        res.json({ message: 'Semillero eliminado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
-
 
 // ============ RUTAS PROYECTOS ============
-app.get('/api/proyectos/semillero/:semillero_id', (req, res) => {
-    db.all(
-        'SELECT * FROM proyectos WHERE semillero_id = ? ORDER BY id DESC',
-        [req.params.semillero_id],
-        (err, rows) => {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json(rows || []);
-        }
-    );
+app.get('/api/proyectos/semillero/:semillero_id', async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT * FROM proyectos WHERE semillero_id = $1 ORDER BY id DESC',
+            [req.params.semillero_id]
+        );
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.get('/api/proyectos', (req, res) => {
-    db.all('SELECT * FROM proyectos ORDER BY id DESC', (err, rows) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json(rows || []);
-    });
+app.get('/api/proyectos', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM proyectos ORDER BY id DESC');
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.post('/api/proyectos', (req, res) => {
+app.post('/api/proyectos', async (req, res) => {
     const { semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia } = req.body;
-    db.run(
-        'INSERT INTO proyectos (semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia],
-        function (err) {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ id: this.lastID, message: 'Proyecto creado' });
-        }
-    );
+    try {
+        const result = await pool.query(
+            'INSERT INTO proyectos (semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+            [semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia]
+        );
+        res.json({ id: result.rows[0].id, message: 'Proyecto creado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.put('/api/proyectos/:id', (req, res) => {
+app.put('/api/proyectos/:id', async (req, res) => {
     const { semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia } = req.body;
-    db.run(
-        'UPDATE proyectos SET semillero_id=?, titulo=?, estado=?, aliados=?, objetivo=?, entregables=?, evidencia=? WHERE id=?',
-        [semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia, req.params.id],
-        (err) => {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ message: 'Proyecto actualizado' });
-        }
-    );
+    try {
+        await pool.query(
+            'UPDATE proyectos SET semillero_id=$1, titulo=$2, estado=$3, aliados=$4, objetivo=$5, entregables=$6, evidencia=$7 WHERE id=$8',
+            [semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia, req.params.id]
+        );
+        res.json({ message: 'Proyecto actualizado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.delete('/api/proyectos/:id', (req, res) => {
-    db.run('DELETE FROM proyectos WHERE id=?', [req.params.id], (err) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json({ message: 'Proyecto eliminado' });
-    });
+app.delete('/api/proyectos/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM proyectos WHERE id=$1', [req.params.id]);
+        res.json({ message: 'Proyecto eliminado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
-
 
 // ============ RUTAS DOCUMENTOS ============
-app.get('/api/documentos', (req, res) => {
-    db.all('SELECT * FROM documentos ORDER BY created_at DESC', (err, rows) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json(rows || []);
-    });
+app.get('/api/documentos', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM documentos ORDER BY created_at DESC');
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.post('/api/documentos', upload.single('archivo'), (req, res) => {
+app.post('/api/documentos', upload.single('archivo'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No se subió ningún archivo' });
     }
 
-
     const { nombre, tipo, descripcion } = req.body;
     const rutaArchivo = `/uploads/${req.file.filename}`;
 
-
-    db.run(
-        'INSERT INTO documentos (nombre, tipo, descripcion, ruta_archivo) VALUES (?, ?, ?, ?)',
-        [nombre, tipo, descripcion, rutaArchivo],
-        function (err) {
-            if (err) {
-                fs.unlink(req.file.path, () => {});
-                res.status(500).json({ error: err.message });
-            } else {
-                res.json({ id: this.lastID, message: 'Documento creado', ruta: rutaArchivo });
-            }
-        }
-    );
+    try {
+        const result = await pool.query(
+            'INSERT INTO documentos (nombre, tipo, descripcion, ruta_archivo) VALUES ($1, $2, $3, $4) RETURNING id',
+            [nombre, tipo, descripcion, rutaArchivo]
+        );
+        res.json({ id: result.rows[0].id, message: 'Documento creado', ruta: rutaArchivo });
+    } catch (err) {
+        fs.unlink(req.file.path, () => {});
+        res.status(500).json({ error: err.message });
+    }
 });
 
+app.delete('/api/documentos/:id', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT ruta_archivo FROM documentos WHERE id=$1', [req.params.id]);
+        const row = result.rows[0];
 
-app.delete('/api/documentos/:id', (req, res) => {
-    db.get('SELECT ruta_archivo FROM documentos WHERE id=?', [req.params.id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
+        await pool.query('DELETE FROM documentos WHERE id=$1', [req.params.id]);
+
+        if (row && row.ruta_archivo) {
+            const filePath = path.join(__dirname, '..', row.ruta_archivo);
+            fs.unlink(filePath, (err) => {
+                if (err) console.error('Error eliminando archivo:', err);
+            });
         }
-
-
-        db.run('DELETE FROM documentos WHERE id=?', [req.params.id], (err) => {
-            if (err) {
-                res.status(500).json({ error: err.message });
-            } else {
-                if (row && row.ruta_archivo) {
-                    const filePath = path.join(__dirname, '..', row.ruta_archivo);
-                    fs.unlink(filePath, (err) => {
-                        if (err) console.error('Error eliminando archivo:', err);
-                    });
-                }
-                res.json({ message: 'Documento eliminado' });
-            }
-        });
-    });
+        res.json({ message: 'Documento eliminado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
-
 
 // ============ RUTAS CONTACTOS ============
-app.get('/api/contactos', (req, res) => {
-    db.all('SELECT * FROM contactos ORDER BY created_at DESC', (err, rows) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json(rows || []);
-    });
+app.get('/api/contactos', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM contactos ORDER BY created_at DESC');
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.post('/api/contactos', (req, res) => {
+app.post('/api/contactos', async (req, res) => {
     const { nombre, email, asunto, mensaje } = req.body;
     if (!nombre || !email || !asunto || !mensaje) {
         return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }
 
-
-    db.run(
-        'INSERT INTO contactos (nombre, email, asunto, mensaje) VALUES (?, ?, ?, ?)',
-        [nombre, email, asunto, mensaje],
-        function (err) {
-            if (err) res.status(500).json({ error: err.message });
-            else res.json({ id: this.lastID, message: 'Mensaje guardado correctamente' });
-        }
-    );
+    try {
+        const result = await pool.query(
+            'INSERT INTO contactos (nombre, email, asunto, mensaje) VALUES ($1, $2, $3, $4) RETURNING id',
+            [nombre, email, asunto, mensaje]
+        );
+        res.json({ id: result.rows[0].id, message: 'Mensaje guardado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-app.delete('/api/contactos/:id', (req, res) => {
-    db.run('DELETE FROM contactos WHERE id=?', [req.params.id], (err) => {
-        if (err) res.status(500).json({ error: err.message });
-        else res.json({ message: 'Mensaje eliminado' });
-    });
+app.delete('/api/contactos/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM contactos WHERE id=$1', [req.params.id]);
+        res.json({ message: 'Mensaje eliminado' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
-
 
 // Ruta de prueba
 app.get('/', (req, res) => {
     res.json({ 
-        mensaje: 'API CEAI funcionando',
+        mensaje: 'API CEAI funcionando con PostgreSQL',
         endpoints: {
             noticias: '/api/noticias',
             semilleros: '/api/semilleros',
@@ -404,7 +402,6 @@ app.get('/', (req, res) => {
         }
     });
 });
-
 
 // Manejo de errores en multer
 app.use((err, req, res, next) => {
@@ -419,8 +416,7 @@ app.use((err, req, res, next) => {
     next();
 });
 
-
-// Iniciar servidor - MODIFICADO PARA RAILWAY
+// Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });
