@@ -6,14 +6,29 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// DEBUG - Ver qué está pasando con las variables
+console.log('🔍 ===== VARIABLES DE ENTORNO =====');
+console.log('🔍 PORT:', PORT);
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV || 'undefined');
+console.log('🔍 DATABASE_URL existe:', !!process.env.DATABASE_URL);
+if (process.env.DATABASE_URL) {
+    console.log('🔍 DATABASE_URL empieza con:', process.env.DATABASE_URL.substring(0, 40) + '...');
+    console.log('🔍 DATABASE_URL length:', process.env.DATABASE_URL.length);
+} else {
+    console.log('🔍 ⚠️ DATABASE_URL NO EXISTE - Problema en Railway');
+}
+console.log('🔍 ===== FIN VARIABLES =====\n');
 
 // Crear carpeta de uploads si no existe
 const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
+
 
 // Configurar multer para carga de archivos
 const storage = multer.diskStorage({
@@ -27,6 +42,7 @@ const storage = multer.diskStorage({
     }
 });
 
+
 const upload = multer({
     storage: storage,
     limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
@@ -39,29 +55,49 @@ const upload = multer({
     }
 });
 
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../')));
 app.use('/uploads', express.static(uploadsDir));
 
+
 // Conectar a PostgreSQL
-const pool = new Pool({
+const poolConfig = {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? {
         rejectUnauthorized: false
-    } : false
+    } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+};
+
+console.log('🔍 Pool Config:', { 
+    hasConnectionString: !!poolConfig.connectionString,
+    ssl: poolConfig.ssl ? 'enabled' : 'disabled',
+    max: poolConfig.max
+});
+
+const pool = new Pool(poolConfig);
+
+// Manejo de errores del pool
+pool.on('error', (err) => {
+    console.error('❌ Error en pool de conexiones:', err);
 });
 
 // Probar conexión
 pool.connect((err, client, release) => {
     if (err) {
-        console.error('❌ Error conectando a PostgreSQL:', err);
+        console.error('❌ Error conectando a PostgreSQL:', err.message);
+        console.error('❌ Error code:', err.code);
     } else {
-        console.log('✅ Base de datos PostgreSQL conectada');
+        console.log('✅ Base de datos PostgreSQL conectada correctamente');
         release();
     }
 });
+
 
 // Crear tablas
 const createTables = async () => {
@@ -79,6 +115,7 @@ const createTables = async () => {
             )
         `);
 
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS semilleros (
                 id SERIAL PRIMARY KEY,
@@ -90,6 +127,7 @@ const createTables = async () => {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS proyectos (
@@ -106,6 +144,7 @@ const createTables = async () => {
             )
         `);
 
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS documentos (
                 id SERIAL PRIMARY KEY,
@@ -116,6 +155,7 @@ const createTables = async () => {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS contactos (
@@ -129,13 +169,16 @@ const createTables = async () => {
             )
         `);
 
+
         console.log('📊 Tablas creadas correctamente');
     } catch (err) {
-        console.error('❌ Error creando tablas:', err);
+        console.error('❌ Error creando tablas:', err.message);
     }
 };
 
+
 createTables();
+
 
 // ============ RUTAS NOTICIAS ============
 app.get('/api/noticias', async (req, res) => {
@@ -147,6 +190,7 @@ app.get('/api/noticias', async (req, res) => {
     }
 });
 
+
 app.get('/api/noticias/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM noticias WHERE id = $1', [req.params.id]);
@@ -156,15 +200,19 @@ app.get('/api/noticias/:id', async (req, res) => {
     }
 });
 
+
 app.post('/api/noticias', async (req, res) => {
     const { titulo, descripcion, fecha, imagen, tipo, destacada } = req.body;
+
 
     if (!titulo || !descripcion || !fecha) {
         return res.status(400).json({ error: 'Título, descripción y fecha son obligatorios' });
     }
 
+
     const tipoValue = tipo || 'Noticia';
     const destacadaValue = destacada ? 1 : 0;
+
 
     try {
         const result = await pool.query(
@@ -177,10 +225,12 @@ app.post('/api/noticias', async (req, res) => {
     }
 });
 
+
 app.put('/api/noticias/:id', async (req, res) => {
     const { titulo, descripcion, fecha, imagen, tipo, destacada } = req.body;
     const tipoValue = tipo || 'Noticia';
     const destacadaValue = destacada ? 1 : 0;
+
 
     try {
         await pool.query(
@@ -193,6 +243,7 @@ app.put('/api/noticias/:id', async (req, res) => {
     }
 });
 
+
 app.delete('/api/noticias/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM noticias WHERE id=$1', [req.params.id]);
@@ -201,6 +252,7 @@ app.delete('/api/noticias/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // ============ RUTAS SEMILLEROS ============
 app.get('/api/semilleros', async (req, res) => {
@@ -211,6 +263,7 @@ app.get('/api/semilleros', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 app.post('/api/semilleros', async (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen } = req.body;
@@ -225,6 +278,7 @@ app.post('/api/semilleros', async (req, res) => {
     }
 });
 
+
 app.put('/api/semilleros/:id', async (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen } = req.body;
     try {
@@ -238,6 +292,7 @@ app.put('/api/semilleros/:id', async (req, res) => {
     }
 });
 
+
 app.delete('/api/semilleros/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM semilleros WHERE id=$1', [req.params.id]);
@@ -246,6 +301,7 @@ app.delete('/api/semilleros/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // ============ RUTAS PROYECTOS ============
 app.get('/api/proyectos/semillero/:semillero_id', async (req, res) => {
@@ -260,6 +316,7 @@ app.get('/api/proyectos/semillero/:semillero_id', async (req, res) => {
     }
 });
 
+
 app.get('/api/proyectos', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM proyectos ORDER BY id DESC');
@@ -268,6 +325,7 @@ app.get('/api/proyectos', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 app.post('/api/proyectos', async (req, res) => {
     const { semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia } = req.body;
@@ -282,6 +340,7 @@ app.post('/api/proyectos', async (req, res) => {
     }
 });
 
+
 app.put('/api/proyectos/:id', async (req, res) => {
     const { semillero_id, titulo, estado, aliados, objetivo, entregables, evidencia } = req.body;
     try {
@@ -295,6 +354,7 @@ app.put('/api/proyectos/:id', async (req, res) => {
     }
 });
 
+
 app.delete('/api/proyectos/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM proyectos WHERE id=$1', [req.params.id]);
@@ -303,6 +363,7 @@ app.delete('/api/proyectos/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // ============ RUTAS DOCUMENTOS ============
 app.get('/api/documentos', async (req, res) => {
@@ -314,13 +375,16 @@ app.get('/api/documentos', async (req, res) => {
     }
 });
 
+
 app.post('/api/documentos', upload.single('archivo'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No se subió ningún archivo' });
     }
 
+
     const { nombre, tipo, descripcion } = req.body;
     const rutaArchivo = `/uploads/${req.file.filename}`;
+
 
     try {
         const result = await pool.query(
@@ -334,12 +398,15 @@ app.post('/api/documentos', upload.single('archivo'), async (req, res) => {
     }
 });
 
+
 app.delete('/api/documentos/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT ruta_archivo FROM documentos WHERE id=$1', [req.params.id]);
         const row = result.rows[0];
 
+
         await pool.query('DELETE FROM documentos WHERE id=$1', [req.params.id]);
+
 
         if (row && row.ruta_archivo) {
             const filePath = path.join(__dirname, '..', row.ruta_archivo);
@@ -353,6 +420,7 @@ app.delete('/api/documentos/:id', async (req, res) => {
     }
 });
 
+
 // ============ RUTAS CONTACTOS ============
 app.get('/api/contactos', async (req, res) => {
     try {
@@ -363,11 +431,13 @@ app.get('/api/contactos', async (req, res) => {
     }
 });
 
+
 app.post('/api/contactos', async (req, res) => {
     const { nombre, email, asunto, mensaje } = req.body;
     if (!nombre || !email || !asunto || !mensaje) {
         return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }
+
 
     try {
         const result = await pool.query(
@@ -380,6 +450,7 @@ app.post('/api/contactos', async (req, res) => {
     }
 });
 
+
 app.delete('/api/contactos/:id', async (req, res) => {
     try {
         await pool.query('DELETE FROM contactos WHERE id=$1', [req.params.id]);
@@ -388,6 +459,7 @@ app.delete('/api/contactos/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -403,6 +475,7 @@ app.get('/', (req, res) => {
     });
 });
 
+
 // Manejo de errores en multer
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
@@ -416,7 +489,9 @@ app.use((err, req, res, next) => {
     next();
 });
 
+
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+    console.log('🚀 ===== SERVIDOR LISTO =====');
 });
