@@ -1,13 +1,12 @@
 const API = 'https://ceai-web-production.up.railway.app';
 
-
 // ==================== CAROUSEL NOTICIAS DESTACADAS ====================
 async function cargarNoticiasDestacadas() {
     const container = document.getElementById('carouselContent');
     if (!container) return;
 
     try {
-        const response = await fetch(`${API}/noticias`);
+        const response = await fetch(`${API}/api/noticias`);
         const noticias = await response.json();
 
         // Filtra solo las destacadas
@@ -78,7 +77,7 @@ async function cargarNoticias() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API}/noticias`);
+        const response = await fetch(`${API}/api/noticias`);
         const noticias = await response.json();
 
         if (!noticias.length) {
@@ -132,7 +131,7 @@ async function cargarSemillerosHome() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API}/semilleros`);
+        const response = await fetch(`${API}/api/semilleros`);
         const semilleros = await response.json();
 
         if (!semilleros.length) {
@@ -164,7 +163,7 @@ async function cargarSemillerosPagina() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API}/semilleros`);
+        const response = await fetch(`${API}/api/semilleros`);
         const semilleros = await response.json();
 
         if (!semilleros.length) {
@@ -206,11 +205,11 @@ async function cargarProyectosSemillero() {
     const semilleroId = parseInt(urlParams.get('id')) || 1;
     
     try {
-        const semillerosResponse = await fetch(`${API}/semilleros`);
+        const semillerosResponse = await fetch(`${API}/api/semilleros`);
         const semilleros = await semillerosResponse.json();
         const semillero = semilleros.find(s => s.id === semilleroId);
 
-        const proyectosResponse = await fetch(`${API}/proyectos/semillero/${semilleroId}`);
+        const proyectosResponse = await fetch(`${API}/api/proyectos/semillero/${semilleroId}`);
         const proyectos = await proyectosResponse.json();
         
         const container = document.getElementById('proyectosContainer');
@@ -256,7 +255,7 @@ async function cargarDocumentosServicios() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API}/documentos`);
+        const response = await fetch(`${API}/api/documentos`);
         const documentos = await response.json();
 
         if (!documentos.length) {
@@ -292,7 +291,7 @@ function setupContactForm() {
         const mensaje = document.getElementById('mensaje').value.trim();
 
         try {
-            const response = await fetch(`${API}/contactos`, {
+            const response = await fetch(`${API}/api/contactos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre, email, asunto, mensaje })
