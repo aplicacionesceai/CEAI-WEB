@@ -261,7 +261,7 @@ Abre la consola del navegador (F12 → Console) para ver errores.
 Asegúrate de que en js/main.js la constante de API coincida:
 
 js
-const API = 'http://localhost:5000/api';
+const API = 'https://ceai-web-production.up.railway.app';
 Base de datos vacía
 Normal la primera vez. Entra al panel admin:
 

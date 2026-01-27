@@ -1,4 +1,5 @@
-const API = 'http://localhost:5000/api';
+const API = 'https://ceai-web-production.up.railway.app';
+
 
 // ==================== CAROUSEL NOTICIAS DESTACADAS ====================
 async function cargarNoticiasDestacadas() {
