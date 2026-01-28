@@ -133,7 +133,7 @@
     <section class="py-5 carousel-section" id="seccionCarrusel" style="display: none;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌟 Noticias Destacadas</h2>
-            <div id="carouselNoticias" class="carousel slide" data-bs-ride="carousel">
+            <div id="carouselNoticias" class="carousel slide">
                 <div class="carousel-inner" id="carouselNoticiasInner"></div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselNoticias" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
@@ -148,18 +148,14 @@
     <section class="py-5 noticias-grid-section">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">📰 Últimas Noticias y Eventos</h2>
-            <div class="row" id="noticiasContainer">
-                <!-- Se cargan dinámicamente -->
-            </div>
+            <div class="row" id="noticiasContainer"></div>
         </div>
     </section>
 
     <section class="py-5" style="background-color: #f8f9fa;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌱 Nuestros Semilleros de Investigación</h2>
-            <div class="row" id="semillerosContainer">
-                <!-- Se cargan dinámicamente -->
-            </div>
+            <div class="row" id="semillerosContainer"></div>
             <div class="text-center mt-4">
                 <a href="semilleros.html" class="btn btn-outline-primary btn-lg">Ver todos los semilleros</a>
             </div>
@@ -201,57 +197,45 @@
 
         async function cargarNoticiasHome() {
             try {
-                console.log('🔍 Intentando cargar noticias desde:', API + '/api/noticias');
+                console.log('🔍 Cargando noticias...');
                 const res = await fetch(API + '/api/noticias');
-                
-                if (!res.ok) {
-                    throw new Error('Error en la respuesta: ' + res.status);
-                }
-                
                 const allNoticias = await res.json();
-                console.log('✅ Noticias cargadas:', allNoticias.length);
-
-                const destacadas = allNoticias.filter(function(n) {
-                    return n.destacada === 1 || n.destacada === '1' || n.destacada === true;
-                });
-
-                console.log('⭐ Noticias destacadas:', destacadas.length);
+                
+                const destacadas = allNoticias.filter(n => n.destacada == 1);
+                console.log('⭐ Destacadas:', destacadas.length);
 
                 if (destacadas.length > 0) {
                     document.getElementById('seccionCarrusel').style.display = 'block';
                     cargarCarrusel(destacadas);
-                } else {
-                    document.getElementById('seccionCarrusel').style.display = 'none';
                 }
 
                 cargarGrid(allNoticias);
             } catch (err) {
-                console.error('❌ Error cargando noticias:', err);
-                document.getElementById('noticiasContainer').innerHTML = 
-                    '<div class="col-12 text-center"><p class="text-danger">Error al cargar las noticias. Por favor, intenta más tarde.</p></div>';
+                console.error('❌ Error:', err);
             }
         }
 
         function cargarCarrusel(noticias) {
+            console.log('🎠 Creando carrusel con', noticias.length, 'items');
             var inner = document.getElementById('carouselNoticiasInner');
             var html = '';
 
             for (var i = 0; i < noticias.length; i++) {
                 var n = noticias[i];
                 var activa = i === 0 ? ' active' : '';
-                var imagen = (n.imagen && n.imagen.trim() !== '') ? n.imagen : 'img/placeholder-noticia.jpg';
-                var tipo = n.tipo ? n.tipo : 'Noticia';
-                var desc = n.descripcion ? n.descripcion.substring(0, 120) : '';
+                var imagen = n.imagen || 'img/placeholder-noticia.jpg';
+                var tipo = n.tipo || 'Noticia';
+                var desc = (n.descripcion || '').substring(0, 120);
 
                 html += '<div class="carousel-item' + activa + '">'
                     + '  <div class="card border-0">'
-                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (n.titulo || '') + '" onerror="this.src=\'img/placeholder-noticia.jpg\'">'
+                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + n.titulo + '">'
                     + '    <div class="card-body">'
                     + '      <div class="d-flex justify-content-between align-items-center mb-2">'
                     + '        <span class="badge bg-success">' + tipo + '</span>'
                     + '        <small class="text-muted">' + (n.fecha || '') + '</small>'
                     + '      </div>'
-                    + '      <h5 class="card-title">' + (n.titulo || '') + '</h5>'
+                    + '      <h5 class="card-title">' + n.titulo + '</h5>'
                     + '      <p class="card-text text-muted">' + desc + '...</p>'
                     + '    </div>'
                     + '  </div>'
@@ -260,153 +244,79 @@
 
             inner.innerHTML = html;
 
-            // ✅ CORRECCIÓN CRÍTICA: Inicializar el carrusel correctamente
             setTimeout(function() {
-                var carouselElement = document.getElementById('carouselNoticias');
-                
-                // Destruir instancia anterior si existe
-                var existingCarousel = bootstrap.Carousel.getInstance(carouselElement);
-                if (existingCarousel) {
-                    existingCarousel.dispose();
-                }
+                var el = document.getElementById('carouselNoticias');
+                var existing = bootstrap.Carousel.getInstance(el);
+                if (existing) existing.dispose();
 
-                // Crear nueva instancia con configuración correcta
-                var carousel = new bootstrap.Carousel(carouselElement, {
-                    interval: 4000,      // Cambia cada 4 segundos
-                    ride: 'carousel',    // ✅ CLAVE: Auto-play activado
-                    wrap: true,          // ✅ Vuelve al inicio
-                    pause: 'hover',      // Pausa al pasar el mouse
-                    keyboard: true,      // Navegación con teclado
-                    touch: true          // Swipe en móviles
+                var carousel = new bootstrap.Carousel(el, {
+                    interval: 3000,
+                    ride: 'carousel',
+                    wrap: true
                 });
-
-                // ✅ Forzar inicio del carrusel
                 carousel.cycle();
-
-                console.log('✅ Carrusel inicializado con', noticias.length, 'noticias destacadas');
-            }, 150);
+                console.log('✅ Carrusel iniciado');
+            }, 200);
         }
 
         function cargarGrid(noticias) {
             var container = document.getElementById('noticiasContainer');
-            
-            if (!noticias || noticias.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay noticias disponibles.</p></div>';
-                return;
-            }
-
             var html = '';
 
-            for (var i = 0; i < noticias.length; i++) {
+            for (var i = 0; i < Math.min(6, noticias.length); i++) {
                 var n = noticias[i];
-                var imagen = (n.imagen && n.imagen.trim() !== '') ? n.imagen : 'img/placeholder-noticia.jpg';
-                var tipo = n.tipo ? n.tipo : 'Noticia';
-                var badge = '';
-
-                if (tipo === 'Evento') badge = 'bg-info';
-                else if (tipo === 'Convocatoria') badge = 'bg-warning text-dark';
-                else if (tipo === 'Resultado') badge = 'bg-success';
-                else badge = 'bg-secondary';
+                var imagen = n.imagen || 'img/placeholder-noticia.jpg';
+                var tipo = n.tipo || 'Noticia';
+                var badge = tipo === 'Evento' ? 'bg-info' : 'bg-secondary';
 
                 html += '<div class="col-md-4 mb-4">'
-                    + '  <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform=\'translateY(-5px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
-                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (n.titulo || '') + '" style="height: 200px; object-fit: cover;" onerror="this.src=\'img/placeholder-noticia.jpg\'">'
+                    + '  <div class="card h-100">'
+                    + '    <img src="' + imagen + '" class="card-img-top" style="height:200px;object-fit:cover;">'
                     + '    <div class="card-body">'
-                    + '      <div class="mb-2">'
-                    + '        <span class="badge ' + badge + '">' + tipo + '</span>'
-                    + '        <small class="text-muted ms-2">' + (n.fecha || '') + '</small>'
-                    + '      </div>'
-                    + '      <h5 class="card-title" style="font-size: 1rem; font-weight: 600;">' + (n.titulo || '') + '</h5>'
-                    + '      <p class="card-text text-muted" style="font-size: 0.9rem; line-height: 1.4;">' + (n.descripcion || '').substring(0, 100) + '...</p>'
-                    + '    </div>'
-                    + '    <div class="card-footer bg-white border-top-0">'
-                    + '      <a href="#" class="btn btn-sm btn-ceai w-100">Leer más</a>'
+                    + '      <span class="badge ' + badge + '">' + tipo + '</span>'
+                    + '      <h5 class="card-title mt-2">' + n.titulo + '</h5>'
+                    + '      <p class="card-text">' + (n.descripcion || '').substring(0, 100) + '...</p>'
                     + '    </div>'
                     + '  </div>'
                     + '</div>';
             }
 
             container.innerHTML = html;
-            console.log('✅ Grid cargado con', noticias.length, 'noticias');
         }
 
         async function cargarSemillerosInicio() {
             try {
-                console.log('🔍 Intentando cargar semilleros desde:', API + '/api/semilleros');
-                const response = await fetch(API + '/api/semilleros');
-                
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta: ' + response.status);
+                const res = await fetch(API + '/api/semilleros');
+                const semilleros = await res.json();
+                var container = document.getElementById('semillerosContainer');
+                var html = '';
+
+                for (var i = 0; i < Math.min(3, semilleros.length); i++) {
+                    var s = semilleros[i];
+                    html += '<div class="col-md-4 mb-4">'
+                        + '  <div class="card h-100">'
+                        + '    <img src="' + (s.imagen || 'img/placeholder.jpg') + '" class="card-img-top" style="height:200px;object-fit:cover;">'
+                        + '    <div class="card-body">'
+                        + '      <h5>' + s.nombre + '</h5>'
+                        + '      <p class="small">' + (s.linea || '') + '</p>'
+                        + '    </div>'
+                        + '  </div>'
+                        + '</div>';
                 }
-                
-                const semilleros = await response.json();
-                console.log('✅ Semilleros cargados:', semilleros.length);
-                
-                const categorias = {};
-                semilleros.forEach(s => {
-                    const cat = s.categoria || 'Sin categoría';
-                    if (!categorias[cat]) {
-                        categorias[cat] = [];
-                    }
-                    categorias[cat].push(s);
-                });
-                
-                const destacados = [];
-                for (let cat in categorias) {
-                    if (destacados.length < 3 && categorias[cat].length > 0) {
-                        destacados.push(categorias[cat][0]);
-                    }
-                }
-                
-                cargarSemillerosHTML(destacados);
+
+                container.innerHTML = html;
             } catch (err) {
-                console.error('❌ Error cargando semilleros:', err);
-                document.getElementById('semillerosContainer').innerHTML = 
-                    '<div class="col-12 text-center"><p class="text-danger">Error al cargar los semilleros. Por favor, intenta más tarde.</p></div>';
+                console.error('Error semilleros:', err);
             }
-        }
-
-        function cargarSemillerosHTML(semilleros) {
-            var container = document.getElementById('semillerosContainer');
-            
-            if (!semilleros || semilleros.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay semilleros disponibles.</p></div>';
-                return;
-            }
-
-            var html = '';
-
-            for (var i = 0; i < semilleros.length; i++) {
-                var s = semilleros[i];
-                var imagen = (s.imagen && s.imagen.trim() !== '') ? s.imagen : 'img/placeholder-semillero.jpg';
-                
-                html += '<div class="col-md-4 mb-4">'
-                    + '  <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform=\'translateY(-5px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
-                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (s.nombre || '') + '" style="height: 200px; object-fit: cover;" onerror="this.src=\'img/placeholder-semillero.jpg\'">'
-                    + '    <div class="card-body">'
-                    + '      <span class="badge bg-info mb-2">' + (s.categoria || 'Sin categoría') + '</span>'
-                    + '      <h5 class="card-title" style="font-size: 1.1rem; font-weight: 600;">' + (s.nombre || '') + '</h5>'
-                    + '      <p class="card-text text-muted small">' + (s.linea || '') + '</p>'
-                    + '    </div>'
-                    + '    <div class="card-footer bg-white border-top-0">'
-                    + '      <a href="semillero-detalle.html?id=' + s.id + '" class="btn btn-sm btn-ceai w-100">Ver semillero</a>'
-                    + '    </div>'
-                    + '  </div>'
-                    + '</div>';
-            }
-
-            container.innerHTML = html;
-            console.log('✅ Semilleros mostrados:', semilleros.length);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Página cargada, iniciando carga de datos...');
             cargarNoticiasHome();
             cargarSemillerosInicio();
         });
     </script>
 
-    <script src="js/main.js"></script>
+    <!-- ❌ NO CARGAR main.js para evitar conflictos -->
     <script src="js/navbar.js"></script>
 </body>
 </html>
