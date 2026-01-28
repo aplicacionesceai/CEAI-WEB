@@ -4,61 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CEAI - Área de Innovación y Competitividad</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-
     <style>
         #carouselNoticias {
             max-width: 700px;
             margin: 0 auto;
         }
-
         #carouselNoticias .carousel-inner {
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
         }
-
         #carouselNoticias .carousel-item {
             min-height: 350px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
         #carouselNoticias img {
             max-height: 240px;
             object-fit: cover;
             width: 100%;
         }
-
         #carouselNoticias .card {
             height: 100%;
             border: none;
         }
-
         #carouselNoticias .card-body {
             padding: 1.2rem;
         }
-
         #carouselNoticias .card-title {
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-
         #carouselNoticias .card-text {
             font-size: 0.9rem;
             line-height: 1.4;
         }
-
         #carouselNoticias .badge {
             font-size: 0.8rem;
             padding: 0.4rem 0.7rem;
         }
-
         .carousel-control-prev,
         .carousel-control-next {
             width: 40px;
@@ -70,23 +59,19 @@
             opacity: 0.8;
             transition: all 0.3s;
         }
-
         .carousel-control-prev:hover,
         .carousel-control-next:hover {
             opacity: 1;
             background-color: rgba(57, 169, 0, 0.9);
         }
-
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
             width: 20px;
             height: 20px;
         }
-
         .carousel-section {
             margin-bottom: 2rem;
         }
-
         .noticias-grid-section {
             margin-top: 3rem;
             padding-top: 2rem;
@@ -114,11 +99,11 @@
                             <li><a class="dropdown-item" href="semilleros.html">📚 Ver todos los semilleros</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Por categoría:</h6></li>
-                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones Digitales">💻 Soluciones Digitales</a></li>
-                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatización e Instrumentación">🤖 Automatización e Instrumentación</a></li>
-                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Fábrica Digital Interactiva">🏭 Fábrica Digital Interactiva</a></li>
-                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gestión Energética">⚡ Gestión Energética</a></li>
-                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA Aplicada al Entorno">🧠 IA Aplicada al Entorno</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones%20Digitales">💻 Soluciones Digitales</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatizaci%C3%B3n%20e%20Instrumentaci%C3%B3n">🤖 Automatización e Instrumentación</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
                         </ul>   
                     </li>
                     <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
@@ -145,16 +130,11 @@
         </div>
     </section>
 
-    <!-- CARRUSEL SOLO CON DESTACADAS (destacada=1) -->
     <section class="py-5 carousel-section" id="seccionCarrusel" style="display: none;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌟 Noticias Destacadas</h2>
-
             <div id="carouselNoticias" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner" id="carouselNoticiasInner">
-                    <!-- Se rellena con JS - solo destacada=1 -->
-                </div>
-
+                <div class="carousel-inner" id="carouselNoticiasInner"></div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselNoticias" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
                 </button>
@@ -165,17 +145,13 @@
         </div>
     </section>
 
-    <!-- GRID DE TODAS LAS NOTICIAS -->
     <section class="py-5 noticias-grid-section">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">📰 Últimas Noticias y Eventos</h2>
-            <div class="row" id="noticiasContainer">
-                <!-- Se rellena con JS - TODAS las noticias -->
-            </div>
+            <div class="row" id="noticiasContainer"></div>
         </div>
     </section>
 
-    <!-- Semilleros Destacados -->
     <section class="py-5" style="background-color: #f8f9fa;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌱 Nuestros Semilleros de Investigación</h2>
@@ -216,7 +192,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Carrusel + Grid de noticias -->
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
 
@@ -225,16 +200,10 @@
                 const res = await fetch(API + '/api/noticias');
                 const allNoticias = await res.json();
 
-                // SEPARAR: destacadas vs no destacadas
                 const destacadas = allNoticias.filter(function(n) {
                     return n.destacada === 1 || n.destacada === '1';
                 });
 
-                const noDestacadas = allNoticias.filter(function(n) {
-                    return n.destacada !== 1 && n.destacada !== '1';
-                });
-
-                // CARGAR CARRUSEL (solo si hay destacadas)
                 if (destacadas.length > 0) {
                     document.getElementById('seccionCarrusel').style.display = 'block';
                     cargarCarrusel(destacadas);
@@ -242,7 +211,6 @@
                     document.getElementById('seccionCarrusel').style.display = 'none';
                 }
 
-                // CARGAR GRID (todas las noticias)
                 cargarGrid(allNoticias);
             } catch (err) {
                 console.error('Error cargando noticias', err);
@@ -314,8 +282,62 @@
             container.innerHTML = html;
         }
 
+        async function cargarSemillerosInicio() {
+            try {
+                const response = await fetch(API + '/api/semilleros');
+                const semilleros = await response.json();
+                
+                const categorias = {};
+                semilleros.forEach(s => {
+                    const cat = s.categoria || 'Sin categoría';
+                    if (!categorias[cat]) {
+                        categorias[cat] = [];
+                    }
+                    categorias[cat].push(s);
+                });
+                
+                const destacados = [];
+                for (let cat in categorias) {
+                    if (destacados.length < 3 && categorias[cat].length > 0) {
+                        destacados.push(categorias[cat][0]);
+                    }
+                }
+                
+                cargarSemillerosHTML(destacados);
+            } catch (err) {
+                console.error('Error cargando semilleros:', err);
+            }
+        }
+
+        function cargarSemillerosHTML(semilleros) {
+            var container = document.getElementById('semillerosContainer');
+            var html = '';
+
+            for (var i = 0; i < semilleros.length; i++) {
+                var s = semilleros[i];
+                var imagen = (s.imagen && s.imagen.trim() !== '') ? s.imagen : 'img/placeholder-semillero.jpg';
+                
+                html += '<div class="col-md-4 mb-4">'
+                    + '  <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform=\'translateY(-5px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
+                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (s.nombre || '') + '" style="height: 200px; object-fit: cover;">'
+                    + '    <div class="card-body">'
+                    + '      <span class="badge bg-info mb-2">' + (s.categoria || 'Sin categoría') + '</span>'
+                    + '      <h5 class="card-title" style="font-size: 1.1rem; font-weight: 600;">' + (s.nombre || '') + '</h5>'
+                    + '      <p class="card-text text-muted small">' + (s.linea || '') + '</p>'
+                    + '    </div>'
+                    + '    <div class="card-footer bg-white border-top-0">'
+                    + '      <a href="semillero-detalle.html?id=' + s.id + '" class="btn btn-sm btn-ceai w-100">Ver semillero</a>'
+                    + '    </div>'
+                    + '  </div>'
+                    + '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             cargarNoticiasHome();
+            cargarSemillerosInicio();
         });
     </script>
 
