@@ -296,6 +296,17 @@
                         <h5>Nuevo Semillero</h5>
                         <form id="formSemillero">
                             <div class="row">
+                                                <!-- 🆕 NUEVO: Campo Categoría -->
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Categoría / Servicio</label>
+                                    <select class="form-control" id="semilleroCategoria" required>
+                                        <option value="Soluciones Digitales">Soluciones Digitales</option>
+                                        <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
+                                        <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
+                                        <option value="Gestión Energética">Gestión Energética</option>
+                                        <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Nombre</label>
                                     <input type="text" class="form-control" id="semilleroNombre" required>
@@ -353,6 +364,24 @@
                                         <option value="En ejecución">En ejecución</option>
                                         <option value="Finalizado">Finalizado</option>
                                         <option value="En revisión">En revisión</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Categoría / Servicio</label>
+                                    <select class="form-control" id="proyectoCategoria" required>
+                                        <option value="">-- Seleccionar categoría --</option>
+                                        <option value="Soluciones Digitales">Soluciones Digitales</option>
+                                        <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
+                                        <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
+                                        <option value="Gestión Energética">Gestión Energética</option>
+                                        <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
+                                    </select>
+                                </div>
+                                <!-- Semillero ahora se filtra por categoría -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Semillero</label>
+                                    <select class="form-control" id="proyectoSemillero" required disabled>
+                                        <option value="">-- Selecciona categoría primero --</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -699,6 +728,79 @@
             const select = document.getElementById('proyectoSemillero');
             select.innerHTML = '<option value="">-- Seleccionar --</option>' +
                 semilleros.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+
+                        // 🆕 NUEVO: Filtrar semilleros por categoría
+            let todosLosSemilleros = [];
+
+            async function cargarSemilleros() {
+                const response = await fetch(`${API}/api/semilleros`);
+                const semilleros = await response.json();
+                todosLosSemilleros = semilleros;  // Guardar para filtrar después
+                
+                const select = document.getElementById('proyectoSemillero');
+                select.innerHTML = '<option value="">-- Seleccionar --</option>' +
+                    semilleros.map(s => `<option value="${s.id}">${s.nombre} (${s.categoria || 'Sin categoría'})</option>`).join('');
+                
+                // 🆕 Listener para filtrar por categoría
+                const categoriaSelect = document.getElementById('proyectoCategoria');
+                if (categoriaSelect) {
+                    categoriaSelect.addEventListener('change', function() {
+                        const categoriaSeleccionada = this.value;
+                        const select = document.getElementById('proyectoSemillero');
+                        
+                        if (!categoriaSeleccionada) {
+                            select.disabled = true;
+                            select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
+                            return;
+                        }
+                        
+                        select.disabled = false;
+                        const semillerosFiltrados = todosLosSemilleros.filter(s => s.categoria === categoriaSeleccionada);
+                        
+                        if (semillerosFiltrados.length === 0) {
+                            select.innerHTML = '<option value="">No hay semilleros en esta categoría</option>';
+                        } else {
+                            select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' +
+                                semillerosFiltrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+                        }
+                    });
+                }
+                
+                // Cargar tabla de semilleros
+                const lista = document.getElementById('listaSemilleros');
+                if (!semilleros.length) {
+                    lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
+                    return;
+                }
+                
+                lista.innerHTML = `
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Línea</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${semilleros.map(s => `
+                                <tr>
+                                    <td>${s.id}</td>
+                                    <td>${s.nombre}</td>
+                                    <td><span class="badge bg-info">${s.categoria || 'Sin categoría'}</span></td>
+                                    <td>${s.linea}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
             
             const lista = document.getElementById('listaSemilleros');
             if (!semilleros.length) {
@@ -732,7 +834,7 @@
             `;
         }
 
-        document.getElementById('formSemillero').addEventListener('submit', async (e) => {
+                document.getElementById('formSemillero').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const datos = {
@@ -740,8 +842,11 @@
                 linea: document.getElementById('semilleroLinea').value,
                 enfoque: document.getElementById('semilleroEnfoque').value,
                 descripcion: document.getElementById('semilleroDescripcion').value,
-                imagen: document.getElementById('semilleroImagen').value
+                imagen: document.getElementById('semilleroImagen').value,
+                categoria: document.getElementById('semilleroCategoria').value  // 🆕 AGREGAR ESTA LÍNEA
             };
+
+            
             
             const response = await fetch(`${API}/api/semilleros`, {
                 method: 'POST',
