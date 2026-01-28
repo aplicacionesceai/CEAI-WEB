@@ -25,7 +25,7 @@ if (process.env.DATABASE_URL) {
 console.log('🔍 ===== FIN VARIABLES =====\n');
 
 // Crear carpeta de uploads si no existe
-const uploadsDir = path.join(__dirname, '../uploads');
+const uploadsDir = path.join(__dirname, 'uploads'); // SIN ../
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
