@@ -124,7 +124,7 @@
                     <a href="contacto.html" class="btn btn-ceai btn-lg mt-3">Contáctanos</a>
                 </div>
                 <div class="col-lg-4 text-center d-none d-lg-block">
-                    <div style="font-size: 120px; color: var(--ceai-verde);"></div>
+                    <div style="font-size: 120px; color: var(--ceai-verde);">🚀</div>
                 </div>
             </div>
         </div>
@@ -133,7 +133,6 @@
     <section class="py-5 carousel-section" id="seccionCarrusel" style="display: none;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌟 Noticias Destacadas</h2>
-            <!-- CAMBIADO: agregado data-bs-interval="4000" para auto-slide cada 4 segundos -->
             <div id="carouselNoticias" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
                 <div class="carousel-inner" id="carouselNoticiasInner"></div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselNoticias" data-bs-slide="prev">
@@ -149,14 +148,18 @@
     <section class="py-5 noticias-grid-section">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">📰 Últimas Noticias y Eventos</h2>
-            <div class="row" id="noticiasContainer"></div>
+            <div class="row" id="noticiasContainer">
+                <!-- Se cargan dinámicamente -->
+            </div>
         </div>
     </section>
 
     <section class="py-5" style="background-color: #f8f9fa;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌱 Nuestros Semilleros de Investigación</h2>
-            <div class="row" id="semillerosContainer"></div>
+            <div class="row" id="semillerosContainer">
+                <!-- Se cargan dinámicamente -->
+            </div>
             <div class="text-center mt-4">
                 <a href="semilleros.html" class="btn btn-outline-primary btn-lg">Ver todos los semilleros</a>
             </div>
@@ -194,16 +197,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const API = 'https://ceai-web-production.up.railway.com';
+        // ✅ CORRECCIÓN: URL correcta de la API
+        const API = 'https://ceai-web-production.up.railway.app';
 
         async function cargarNoticiasHome() {
             try {
+                console.log('🔍 Intentando cargar noticias desde:', API + '/api/noticias');
                 const res = await fetch(API + '/api/noticias');
+                
+                if (!res.ok) {
+                    throw new Error('Error en la respuesta: ' + res.status);
+                }
+                
                 const allNoticias = await res.json();
+                console.log('✅ Noticias cargadas:', allNoticias.length);
 
                 const destacadas = allNoticias.filter(function(n) {
                     return n.destacada === 1 || n.destacada === '1';
                 });
+
+                console.log('⭐ Noticias destacadas:', destacadas.length);
 
                 if (destacadas.length > 0) {
                     document.getElementById('seccionCarrusel').style.display = 'block';
@@ -214,7 +227,9 @@
 
                 cargarGrid(allNoticias);
             } catch (err) {
-                console.error('Error cargando noticias', err);
+                console.error('❌ Error cargando noticias:', err);
+                document.getElementById('noticiasContainer').innerHTML = 
+                    '<div class="col-12 text-center"><p class="text-danger">Error al cargar las noticias. Por favor, intenta más tarde.</p></div>';
             }
         }
 
@@ -231,7 +246,7 @@
 
                 html += '<div class="carousel-item' + activa + '">'
                     + '  <div class="card border-0">'
-                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (n.titulo || '') + '">'
+                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (n.titulo || '') + '" onerror="this.src=\'img/placeholder-noticia.jpg\'">'
                     + '    <div class="card-body">'
                     + '      <div class="d-flex justify-content-between align-items-center mb-2">'
                     + '        <span class="badge bg-success">' + tipo + '</span>'
@@ -246,18 +261,26 @@
 
             inner.innerHTML = html;
 
-            // ✅ SOLUCIÓN: Inicializar el carrusel de Bootstrap después de agregar el HTML
+            // Inicializar el carrusel de Bootstrap
             var carouselElement = document.getElementById('carouselNoticias');
             var carousel = new bootstrap.Carousel(carouselElement, {
-                interval: 4000,  // Cambia cada 4 segundos
+                interval: 4000,
                 ride: 'carousel',
-                wrap: true,      // Vuelve al inicio después de la última
-                pause: 'hover'   // Pausa al pasar el mouse
+                wrap: true,
+                pause: 'hover'
             });
+
+            console.log('✅ Carrusel inicializado con', noticias.length, 'items');
         }
 
         function cargarGrid(noticias) {
             var container = document.getElementById('noticiasContainer');
+            
+            if (!noticias || noticias.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay noticias disponibles.</p></div>';
+                return;
+            }
+
             var html = '';
 
             for (var i = 0; i < noticias.length; i++) {
@@ -273,7 +296,7 @@
 
                 html += '<div class="col-md-4 mb-4">'
                     + '  <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform=\'translateY(-5px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
-                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (n.titulo || '') + '" style="height: 200px; object-fit: cover;">'
+                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (n.titulo || '') + '" style="height: 200px; object-fit: cover;" onerror="this.src=\'img/placeholder-noticia.jpg\'">'
                     + '    <div class="card-body">'
                     + '      <div class="mb-2">'
                     + '        <span class="badge ' + badge + '">' + tipo + '</span>'
@@ -290,12 +313,20 @@
             }
 
             container.innerHTML = html;
+            console.log('✅ Grid cargado con', noticias.length, 'noticias');
         }
 
         async function cargarSemillerosInicio() {
             try {
+                console.log('🔍 Intentando cargar semilleros desde:', API + '/api/semilleros');
                 const response = await fetch(API + '/api/semilleros');
+                
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta: ' + response.status);
+                }
+                
                 const semilleros = await response.json();
+                console.log('✅ Semilleros cargados:', semilleros.length);
                 
                 const categorias = {};
                 semilleros.forEach(s => {
@@ -315,12 +346,20 @@
                 
                 cargarSemillerosHTML(destacados);
             } catch (err) {
-                console.error('Error cargando semilleros:', err);
+                console.error('❌ Error cargando semilleros:', err);
+                document.getElementById('semillerosContainer').innerHTML = 
+                    '<div class="col-12 text-center"><p class="text-danger">Error al cargar los semilleros. Por favor, intenta más tarde.</p></div>';
             }
         }
 
         function cargarSemillerosHTML(semilleros) {
             var container = document.getElementById('semillerosContainer');
+            
+            if (!semilleros || semilleros.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay semilleros disponibles.</p></div>';
+                return;
+            }
+
             var html = '';
 
             for (var i = 0; i < semilleros.length; i++) {
@@ -329,7 +368,7 @@
                 
                 html += '<div class="col-md-4 mb-4">'
                     + '  <div class="card h-100 border-0 shadow-sm" style="transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform=\'translateY(-5px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
-                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (s.nombre || '') + '" style="height: 200px; object-fit: cover;">'
+                    + '    <img src="' + imagen + '" class="card-img-top" alt="' + (s.nombre || '') + '" style="height: 200px; object-fit: cover;" onerror="this.src=\'img/placeholder-semillero.jpg\'">'
                     + '    <div class="card-body">'
                     + '      <span class="badge bg-info mb-2">' + (s.categoria || 'Sin categoría') + '</span>'
                     + '      <h5 class="card-title" style="font-size: 1.1rem; font-weight: 600;">' + (s.nombre || '') + '</h5>'
@@ -343,9 +382,11 @@
             }
 
             container.innerHTML = html;
+            console.log('✅ Semilleros mostrados:', semilleros.length);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Página cargada, iniciando carga de datos...');
             cargarNoticiasHome();
             cargarSemillerosInicio();
         });
