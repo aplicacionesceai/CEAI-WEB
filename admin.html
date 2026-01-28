@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Fuentes -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Estilos CEAI -->
     <link rel="stylesheet" href="css/styles.css">
@@ -18,82 +18,485 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* ====================================
+           ADMIN PANEL FUTURISTA - CEAI 2.0
+           ==================================== */
+        
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
         }
 
+        /* ========== SIDEBAR FUTURISTA ========== */
         .sidebar {
-            background-color: var(--ceai-azul);
+            background: linear-gradient(180deg, var(--ceai-azul) 0%, var(--ceai-azul-dark) 100%);
             color: white;
             min-height: 100vh;
-            padding: 20px;
-            position: sticky;
+            padding: 25px 20px;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 280px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(57, 169, 0, 0.3);
+            margin-bottom: 25px;
+        }
+
+        .sidebar-header h4 {
+            color: white;
+            font-weight: 800;
+            font-size: 1.6rem;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar-header span {
+            color: var(--ceai-verde);
+            text-shadow: 0 0 15px rgba(57, 169, 0, 0.6);
+            animation: pulseGlow 2s ease infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 15px rgba(57, 169, 0, 0.6); }
+            50% { text-shadow: 0 0 25px rgba(57, 169, 0, 0.9); }
         }
 
         .sidebar h5 {
             color: var(--ceai-verde);
-            margin-bottom: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            margin-top: 20px;
+            font-weight: 700;
         }
 
         .sidebar-link {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 8px;
             cursor: pointer;
-            border-radius: 6px;
-            padding: 10px 15px;
-            transition: all 0.3s;
-            display: block;
+            border-radius: 12px;
+            padding: 14px 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             text-decoration: none;
             font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--ceai-verde);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
         }
 
         .sidebar-link:hover,
         .sidebar-link.active {
-            background-color: var(--ceai-verde);
+            background: linear-gradient(90deg, var(--ceai-verde) 0%, var(--ceai-verde-light) 100%);
             color: white;
+            transform: translateX(6px);
+            box-shadow: 0 4px 20px rgba(57, 169, 0, 0.5);
+        }
+
+        .sidebar-link:hover::before,
+        .sidebar-link.active::before {
+            transform: scaleY(1);
+        }
+
+        .sidebar-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ========== CONTENIDO PRINCIPAL ========== */
+        .content-wrapper {
+            margin-left: 280px;
+            padding: 35px;
+            min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         .content-section {
             display: none;
+            animation: fadeInContent 0.5s ease;
         }
 
         .content-section.active {
             display: block;
-            animation: fadeIn 0.3s;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .table-responsive {
+        /* ========== HEADERS DE SECCIÓN ========== */
+        .section-header {
+            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+            border-radius: 18px;
+            padding: 28px 35px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--ceai-verde);
+        }
+
+        .section-header h2 {
+            color: var(--ceai-azul);
+            font-weight: 800;
+            margin: 0;
+            font-size: 1.9rem;
+        }
+
+        .section-header p {
+            margin: 8px 0 0 0;
+            color: #6c757d;
+        }
+
+        /* ========== CARDS MODERNOS ========== */
+        .modern-card {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.09);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ceai-verde), var(--ceai-verde-light));
+        }
+
+        .modern-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.14);
+        }
+
+        /* ========== STATS CARDS ========== */
+        .stat-card {
+            background: linear-gradient(135deg, var(--ceai-verde) 0%, var(--ceai-verde-light) 100%);
+            color: white;
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: none;
+            box-shadow: 0 6px 20px rgba(57, 169, 0, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(57, 169, 0, 0.5);
+        }
+
+        .stat-card h5 {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card h3 {
+            color: white;
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .stat-card.variant-azul {
+            background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-azul-light) 100%);
+            box-shadow: 0 6px 20px rgba(0, 48, 77, 0.35);
+        }
+
+        .stat-card.variant-azul:hover {
+            box-shadow: 0 15px 40px rgba(0, 48, 77, 0.5);
+        }
+
+        /* ========== FORMULARIOS ========== */
         .form-section {
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 35px;
+            border-radius: 18px;
+            margin-bottom: 35px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.09);
+            border-top: 5px solid var(--ceai-verde);
         }
 
-        .card {
+        .form-section h5 {
+            color: var(--ceai-azul);
+            font-weight: 700;
+            margin-bottom: 28px;
+            font-size: 1.3rem;
+        }
+
+        /* ========== TABLAS ========== */
+        .table-responsive {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            margin-top: 28px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.09);
+        }
+
+        .table-responsive h5 {
+            color: var(--ceai-azul);
+            font-weight: 700;
+            margin-bottom: 22px;
+            font-size: 1.2rem;
+        }
+
+        .table thead th {
+            border-top: none;
+            border-bottom: 3px solid var(--ceai-verde);
+            color: var(--ceai-azul);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.8px;
+            padding: 15px;
+        }
+
+        .table tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(57, 169, 0, 0.06);
+            transform: scale(1.01);
+        }
+
+        /* ========== MODAL MEJORADO ========== */
+        .modal-content {
+            border-radius: 18px;
             border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, var(--ceai-verde) 0%, var(--ceai-verde-light) 100%);
+            color: white;
+            border-radius: 18px 18px 0 0;
+            border: none;
+            padding: 20px 30px;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
         }
 
         #detalleMensaje {
             white-space: pre-wrap;
             word-wrap: break-word;
             word-break: break-word;
-            max-height: 260px;
+            max-height: 280px;
             overflow-y: auto;
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* ========== ACCIONES RÁPIDAS ========== */
+        .quick-actions {
+            background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-azul-light) 100%);
+            color: white;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 6px 25px rgba(0, 48, 77, 0.35);
+        }
+
+        .quick-actions h5 {
+            color: var(--ceai-verde);
+            margin-bottom: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quick-actions .btn {
+            margin: 6px;
+        }
+
+        /* ========== HAMBURGER MENU ========== */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 22px;
+            left: 22px;
+            z-index: 1100;
+            background: var(--ceai-verde);
+            color: white;
+            border: none;
+            padding: 14px 17px;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            box-shadow: 0 6px 20px rgba(57, 169, 0, 0.45);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--ceai-verde-oscuro);
+            transform: scale(1.12);
+            box-shadow: 0 8px 25px rgba(57, 169, 0, 0.6);
+        }
+
+        /* ========== OVERLAY MOBILE ========== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* ========== SCROLLBAR PERSONALIZADO ========== */
+        .sidebar::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--ceai-verde);
+            border-radius: 10px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .content-wrapper {
+                margin-left: 0;
+                padding: 85px 22px 22px;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .stat-card h3 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 85px 15px 15px;
+            }
+
+            .section-header {
+                padding: 22px;
+            }
+
+            .section-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .stat-card {
+                padding: 22px;
+                margin-bottom: 18px;
+            }
+
+            .stat-card h3 {
+                font-size: 2rem;
+            }
+
+            .modern-card {
+                padding: 18px;
+                margin-bottom: 18px;
+            }
+
+            .form-section {
+                padding: 18px;
+            }
+
+            .table-responsive {
+                padding: 18px;
+                overflow-x: auto;
+            }
+
+            .quick-actions .btn {
+                width: 100%;
+                margin: 6px 0;
+            }
+
+            .table {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -104,422 +507,420 @@
         }
     </script>
 
-    <div class="container-fluid">
-        <div class="row g-0">
-            <!-- SIDEBAR -->
-            <div class="col-md-3 sidebar">
-                <h4 class="fw-bold mb-4">
-                    <span style="color: var(--ceai-verde);">CEAI</span> Admin
+    <!-- Overlay para mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Botón toggle mobile -->
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+    <div class="d-flex">
+        <!-- ========== SIDEBAR ========== -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h4 class="fw-bold">
+                    <span>CEAI</span> Admin
                 </h4>
-                
-                <h5>📋 Menú</h5>
-                <div class="sidebar-link active" data-section="dashboard">📊 Dashboard</div>
-                <div class="sidebar-link" data-section="noticias">📰 Noticias</div>
-                <div class="sidebar-link" data-section="semilleros">🌱 Semilleros</div>
-                <div class="sidebar-link" data-section="proyectos">🔬 Proyectos</div>
-                <div class="sidebar-link" data-section="documentos">📄 Documentos</div>
-                <div class="sidebar-link" data-section="contactos">📨 Contactos</div>
-                
-                <hr class="bg-white mt-5 mb-3">
+            </div>
+            
+            <h5>📋 Menú Principal</h5>
+            <div class="sidebar-link active" data-section="dashboard">
+                <span>📊</span> Dashboard
+            </div>
+            <div class="sidebar-link" data-section="noticias">
+                <span>📰</span> Noticias
+            </div>
+            <div class="sidebar-link" data-section="semilleros">
+                <span>🌱</span> Semilleros
+            </div>
+            <div class="sidebar-link" data-section="proyectos">
+                <span>🔬</span> Proyectos
+            </div>
+            <div class="sidebar-link" data-section="documentos">
+                <span>📄</span> Documentos
+            </div>
+            <div class="sidebar-link" data-section="contactos">
+                <span>📨</span> Contactos
+            </div>
+            
+            <div class="sidebar-footer">
                 <button class="btn btn-outline-light btn-sm w-100 mb-2"
                         onclick="localStorage.removeItem('ceai_admin_logged'); window.location.href='login.html';">
-                    Cerrar sesión
+                    🚪 Cerrar sesión
                 </button>
-                <a href="index.html" class="btn btn-outline-light btn-sm w-100">← Volver al sitio</a>
+                <a href="index.html" class="btn btn-outline-light btn-sm w-100">
+                    ← Volver al sitio
+                </a>
+            </div>
+        </div>
+
+        <!-- ========== CONTENIDO PRINCIPAL ========== -->
+        <div class="content-wrapper" id="contentWrapper">
+
+            <!-- ========== DASHBOARD ========== -->
+            <div id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h2>📊 Panel de Control</h2>
+                    <p class="mb-0">Vista general del sistema CEAI</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card">
+                            <h5>📰 Noticias</h5>
+                            <h3 id="countNoticias">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card variant-azul">
+                            <h5>🌱 Semilleros</h5>
+                            <h3 id="countSemilleros">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card">
+                            <h5>🔬 Proyectos</h5>
+                            <h3 id="countProyectos">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="stat-card variant-azul">
+                            <h5>📄 Documentos</h5>
+                            <h3 id="countDocumentos">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acciones Rápidas -->
+                <div class="quick-actions mb-4">
+                    <h5>⚡ Acciones Rápidas</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-ceai btn-sm" onclick="irSeccion('noticias')">+ Nueva noticia</button>
+                        <button class="btn btn-ceai btn-sm" onclick="irSeccion('semilleros')">+ Nuevo semillero</button>
+                        <button class="btn btn-ceai btn-sm" onclick="irSeccion('proyectos')">+ Nuevo proyecto</button>
+                        <button class="btn btn-ceai btn-sm" onclick="irSeccion('documentos')">+ Subir documento</button>
+                        <button class="btn btn-ceai btn-sm" onclick="irSeccion('contactos')">📨 Ver contactos</button>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="modern-card">
+                            <h5 class="mb-3">Distribución de Contenido</h5>
+                            <canvas id="chartContenido"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="modern-card">
+                            <h5 class="mb-3">Mensajes de Contacto</h5>
+                            <canvas id="chartContactos"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Últimos registros -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="modern-card">
+                            <h5 class="mb-3">Últimas Noticias</h5>
+                            <ul id="ultimasNoticias" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="modern-card">
+                            <h5 class="mb-3">Últimos Contactos</h5>
+                            <ul id="ultimosContactos" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- CONTENIDO -->
-            <div class="col-md-9 p-4">
-
-                <!-- DASHBOARD -->
-                <div id="dashboard" class="content-section active">
-                    <h2 class="mb-4">📊 Dashboard</h2>
-
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">📰 Noticias</h5>
-                                    <h3 id="countNoticias" class="text-ceai-verde">0</h3>
+            <!-- ========== NOTICIAS ========== -->
+            <div id="noticias" class="content-section">
+                <div class="section-header">
+                    <h2>📰 Gestionar Noticias</h2>
+                </div>
+                
+                <div class="form-section">
+                    <h5>Nueva Noticia</h5>
+                    <form id="formNoticia">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Título</label>
+                                <input type="text" class="form-control" id="noticiaTitulo" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="noticiaFecha" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Tipo</label>
+                                <select class="form-control" id="noticiaTipo" required>
+                                    <option value="Noticia">Noticia</option>
+                                    <option value="Evento">Evento</option>
+                                    <option value="Convocatoria">Convocatoria</option>
+                                    <option value="Resultado">Resultado</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" id="noticiaDescripcion" rows="3" required></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">URL Imagen</label>
+                                <input type="url" class="form-control" id="noticiaImagen" placeholder="https://...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check mt-4">
+                                    <input class="form-check-input" type="checkbox" id="noticiaDestacada">
+                                    <label class="form-check-label" for="noticiaDestacada">
+                                        ⭐ Destacar en carousel del home
+                                    </label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">🌱 Semilleros</h5>
-                                    <h3 id="countSemilleros" class="text-ceai-verde">0</h3>
-                                </div>
+                            <div class="col-12 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100">Crear Noticia</button>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">🔬 Proyectos</h5>
-                                    <h3 id="countProyectos" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">📄 Documentos</h5>
-                                    <h3 id="countDocumentos" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">📨 Contactos</h5>
-                                    <h3 id="countContactos" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-9 mb-3">
-                            <div class="card">
-                                <div class="card-body d-flex flex-wrap gap-2 align-items-center">
-                                    <h5 class="card-title mb-0 me-3">⚡ Acciones rápidas</h5>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('noticias')">Nueva noticia</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('semilleros')">Nuevo semillero</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('proyectos')">Nuevo proyecto</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('documentos')">Subir documento</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('contactos')">Contacto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gráficos -->
-                    <div class="row mt-4">
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Contenido por tipo</h5>
-                                    <canvas id="chartContenido"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Mensajes de contacto por día</h5>
-                                    <canvas id="chartContactos"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Últimos registros -->
-                    <div class="row mt-2">
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Últimas noticias</h5>
-                                    <ul id="ultimasNoticias" class="list-group list-group-flush small"></ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Últimos contactos</h5>
-                                    <ul id="ultimosContactos" class="list-group list-group-flush small"></ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
-                <!-- NOTICIAS -->
-                <div id="noticias" class="content-section">
-                    <h2 class="mb-4">📰 Gestionar Noticias</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nueva Noticia</h5>
-                        <form id="formNoticia">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Título</label>
-                                    <input type="text" class="form-control" id="noticiaTitulo" required>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Fecha</label>
-                                    <input type="date" class="form-control" id="noticiaFecha" required>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Tipo</label>
-                                    <select class="form-control" id="noticiaTipo" required>
-                                        <option value="Noticia">Noticia</option>
-                                        <option value="Evento">Evento</option>
-                                        <option value="Convocatoria">Convocatoria</option>
-                                        <option value="Resultado">Resultado</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="noticiaDescripcion" rows="3" required></textarea>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">URL Imagen</label>
-                                    <input type="url" class="form-control" id="noticiaImagen" placeholder="https://...">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check mt-4">
-                                        <input class="form-check-input" type="checkbox" id="noticiaDestacada">
-                                        <label class="form-check-label" for="noticiaDestacada">
-                                            ⭐ Destacar en carousel del home
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai w-100">Crear Noticia</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Noticias Existentes</h5>
-                        <div id="listaNoticias"></div>
-                    </div>
+                <div class="table-responsive">
+                    <h5 class="mb-3">Noticias Existentes</h5>
+                    <div id="listaNoticias"></div>
                 </div>
-
-                <!-- SEMILLEROS -->
-                <div id="semilleros" class="content-section">
-                    <h2 class="mb-4">🌱 Gestionar Semilleros</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nuevo Semillero</h5>
-                        <form id="formSemillero">
-                            <div class="row">
-                                                <!-- 🆕 NUEVO: Campo Categoría -->
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label">Categoría / Servicio</label>
-                                    <select class="form-control" id="semilleroCategoria" required>
-                                        <option value="Soluciones Digitales">Soluciones Digitales</option>
-                                        <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
-                                        <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
-                                        <option value="Gestión Energética">Gestión Energética</option>
-                                        <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="semilleroNombre" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Línea de Investigación</label>
-                                    <input type="text" class="form-control" id="semilleroLinea" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Enfoque</label>
-                                    <input type="text" class="form-control" id="semilleroEnfoque" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">URL Imagen</label>
-                                    <input type="url" class="form-control" id="semilleroImagen" placeholder="https://...">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="semilleroDescripcion" rows="3" required></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai">Crear Semillero</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Semilleros Existentes</h5>
-                        <div id="listaSemilleros"></div>
-                    </div>
-                </div>
-
-                <!-- PROYECTOS -->
-                <div id="proyectos" class="content-section">
-                    <h2 class="mb-4">🔬 Gestionar Proyectos</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nuevo Proyecto</h5>
-                        <form id="formProyecto">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Semillero</label>
-                                    <select class="form-control" id="proyectoSemillero" required>
-                                        <option value="">-- Seleccionar --</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Título</label>
-                                    <input type="text" class="form-control" id="proyectoTitulo" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Estado</label>
-                                    <select class="form-control" id="proyectoEstado" required>
-                                        <option value="En ejecución">En ejecución</option>
-                                        <option value="Finalizado">Finalizado</option>
-                                        <option value="En revisión">En revisión</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Categoría / Servicio</label>
-                                    <select class="form-control" id="proyectoCategoria" required>
-                                        <option value="">-- Seleccionar categoría --</option>
-                                        <option value="Soluciones Digitales">Soluciones Digitales</option>
-                                        <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
-                                        <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
-                                        <option value="Gestión Energética">Gestión Energética</option>
-                                        <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
-                                    </select>
-                                </div>
-                                <!-- Semillero ahora se filtra por categoría -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Semillero</label>
-                                    <select class="form-control" id="proyectoSemillero" required disabled>
-                                        <option value="">-- Selecciona categoría primero --</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Aliados</label>
-                                    <input type="text" class="form-control" id="proyectoAliados">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Objetivo</label>
-                                    <textarea class="form-control" id="proyectoObjetivo" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Entregables</label>
-                                    <textarea class="form-control" id="proyectoEntregables" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Evidencia</label>
-                                    <textarea class="form-control" id="proyectoEvidencia" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai">Crear Proyecto</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Proyectos Existentes</h5>
-                        <div id="listaProyectos"></div>
-                    </div>
-                </div>
-
-                <!-- DOCUMENTOS -->
-                <div id="documentos" class="content-section">
-                    <h2 class="mb-4">📄 Gestionar Documentos</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nuevo Documento</h5>
-                        <form id="formDocumento" enctype="multipart/form-data">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nombre del Documento</label>
-                                    <input type="text" class="form-control" id="docNombre" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Tipo</label>
-                                    <select class="form-control" id="docTipo" required>
-                                        <option value="">-- Seleccionar --</option>
-                                        <option value="Convocatoria">Convocatoria</option>
-                                        <option value="Portafolio">Portafolio de Servicios</option>
-                                        <option value="Informe">Informe</option>
-                                        <option value="Manual">Manual</option>
-                                        <option value="Otro">Otro</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="docDescripcion" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Archivo PDF</label>
-                                    <div id="dropZone" class="border-2 border-dashed rounded p-5 text-center" style="border: 2px dashed var(--ceai-verde); cursor: pointer; transition: all 0.3s;">
-                                        <input type="file" id="docArchivo" class="form-control d-none" accept=".pdf" required>
-                                        <div id="dropText">
-                                            <p style="margin: 0; color: var(--ceai-verde); font-weight: bold;">📁 Arrastra tu PDF aquí</p>
-                                            <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">o haz clic para seleccionar</p>
-                                        </div>
-                                        <div id="fileSelected" style="display: none; color: var(--ceai-verde);">
-                                            <p style="margin: 0; font-weight: bold;">✅ Archivo listo:</p>
-                                            <p id="fileName" style="margin: 5px 0 0 0;"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai">Agregar Documento</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Documentos Existentes</h5>
-                        <div id="listaDocumentos"></div>
-                    </div>
-                </div>
-
-                <!-- CONTACTOS -->
-                <div id="contactos" class="content-section">
-                    <h2 class="mb-4">📨 Mensajes de Contacto</h2>
-                    
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Mensajes Recibidos</h5>
-                        <div id="listaContactos"></div>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- ========== SEMILLEROS ========== -->
+            <div id="semilleros" class="content-section">
+                <div class="section-header">
+                    <h2>🌱 Gestionar Semilleros</h2>
+                </div>
+                
+                <div class="form-section">
+                    <h5>Nuevo Semillero</h5>
+                    <form id="formSemillero">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Categoría / Servicio</label>
+                                <select class="form-control" id="semilleroCategoria" required>
+                                    <option value="Soluciones Digitales">Soluciones Digitales</option>
+                                    <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
+                                    <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
+                                    <option value="Gestión Energética">Gestión Energética</option>
+                                    <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="semilleroNombre" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Línea de Investigación</label>
+                                <input type="text" class="form-control" id="semilleroLinea" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Enfoque</label>
+                                <input type="text" class="form-control" id="semilleroEnfoque" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">URL Imagen</label>
+                                <input type="url" class="form-control" id="semilleroImagen" placeholder="https://...">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" id="semilleroDescripcion" rows="3" required></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100">Crear Semillero</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <h5 class="mb-3">Semilleros Existentes</h5>
+                    <div id="listaSemilleros"></div>
+                </div>
+            </div>
+
+            <!-- ========== PROYECTOS ========== -->
+            <div id="proyectos" class="content-section">
+                <div class="section-header">
+                    <h2>🔬 Gestionar Proyectos</h2>
+                </div>
+                
+                <div class="form-section">
+                    <h5>Nuevo Proyecto</h5>
+                    <form id="formProyecto">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Categoría / Servicio</label>
+                                <select class="form-control" id="proyectoCategoria" required>
+                                    <option value="">-- Seleccionar categoría --</option>
+                                    <option value="Soluciones Digitales">Soluciones Digitales</option>
+                                    <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
+                                    <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
+                                    <option value="Gestión Energética">Gestión Energética</option>
+                                    <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Semillero</label>
+                                <select class="form-control" id="proyectoSemillero" required disabled>
+                                    <option value="">-- Selecciona categoría primero --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Título</label>
+                                <input type="text" class="form-control" id="proyectoTitulo" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-control" id="proyectoEstado" required>
+                                    <option value="En ejecución">En ejecución</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                    <option value="En revisión">En revisión</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Aliados</label>
+                                <input type="text" class="form-control" id="proyectoAliados">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Objetivo</label>
+                                <textarea class="form-control" id="proyectoObjetivo" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Entregables</label>
+                                <textarea class="form-control" id="proyectoEntregables" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Evidencia</label>
+                                <textarea class="form-control" id="proyectoEvidencia" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100">Crear Proyecto</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <h5 class="mb-3">Proyectos Existentes</h5>
+                    <div id="listaProyectos"></div>
+                </div>
+            </div>
+
+            <!-- ========== DOCUMENTOS ========== -->
+            <div id="documentos" class="content-section">
+                <div class="section-header">
+                    <h2>📄 Gestionar Documentos</h2>
+                </div>
+                
+                <div class="form-section">
+                    <h5>Nuevo Documento</h5>
+                    <form id="formDocumento" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre del Documento</label>
+                                <input type="text" class="form-control" id="docNombre" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo</label>
+                                <select class="form-control" id="docTipo" required>
+                                    <option value="">-- Seleccionar --</option>
+                                    <option value="Convocatoria">Convocatoria</option>
+                                    <option value="Portafolio">Portafolio de Servicios</option>
+                                    <option value="Informe">Informe</option>
+                                    <option value="Manual">Manual</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" id="docDescripcion" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Archivo PDF</label>
+                                <div id="dropZone" class="border-2 border-dashed rounded p-5 text-center" style="border: 2px dashed var(--ceai-verde); cursor: pointer; transition: all 0.3s;">
+                                    <input type="file" id="docArchivo" class="form-control d-none" accept=".pdf" required>
+                                    <div id="dropText">
+                                        <p style="margin: 0; color: var(--ceai-verde); font-weight: bold;">📁 Arrastra tu PDF aquí</p>
+                                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">o haz clic para seleccionar</p>
+                                    </div>
+                                    <div id="fileSelected" style="display: none; color: var(--ceai-verde);">
+                                        <p style="margin: 0; font-weight: bold;">✅ Archivo listo:</p>
+                                        <p id="fileName" style="margin: 5px 0 0 0;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100">Agregar Documento</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <h5 class="mb-3">Documentos Existentes</h5>
+                    <div id="listaDocumentos"></div>
+                </div>
+            </div>
+
+            <!-- ========== CONTACTOS ========== -->
+            <div id="contactos" class="content-section">
+                <div class="section-header">
+                    <h2>📨 Mensajes de Contacto</h2>
+                </div>
+                
+                <div class="table-responsive">
+                    <h5 class="mb-3">Mensajes Recibidos</h5>
+                    <div id="listaContactos"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <!-- Modal Detalle Contacto -->
-    <div class="modal fade" id="contactoModal" tabindex="-1" aria-labelledby="contactoModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="contactoModalLabel">Detalle del Contacto</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <dl class="row mb-0">
-              <dt class="col-sm-3">Nombre</dt>
-              <dd class="col-sm-9" id="detalleNombre"></dd>
+    <div class="modal fade" id="contactoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle del Contacto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">Nombre</dt>
+                        <dd class="col-sm-9" id="detalleNombre"></dd>
 
-              <dt class="col-sm-3">Email</dt>
-              <dd class="col-sm-9" id="detalleEmail"></dd>
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9" id="detalleEmail"></dd>
 
-              <dt class="col-sm-3">Asunto</dt>
-              <dd class="col-sm-9" id="detalleAsunto"></dd>
+                        <dt class="col-sm-3">Asunto</dt>
+                        <dd class="col-sm-9" id="detalleAsunto"></dd>
 
-              <dt class="col-sm-3">Fecha</dt>
-              <dd class="col-sm-9" id="detalleFecha"></dd>
+                        <dt class="col-sm-3">Fecha</dt>
+                        <dd class="col-sm-9" id="detalleFecha"></dd>
 
-              <dt class="col-sm-3">Mensaje</dt>
-              <dd class="col-sm-9">
-                <div id="detalleMensaje" class="border rounded p-2 bg-light"></div>
-              </dd>
-            </dl>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          </div>
+                        <dt class="col-sm-3">Mensaje</dt>
+                        <dd class="col-sm-9">
+                            <div id="detalleMensaje"></div>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Toasts -->
     <script src="js/toasts.js"></script>
 
     <script>
@@ -527,7 +928,34 @@
         let chartContenidoRef = null;
         let chartContactosRef = null;
         let contactosCache = [];
+        let todosLosSemilleros = [];
 
+        // ========== TOGGLE SIDEBAR MOBILE ==========
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            sidebarOverlay.classList.toggle('show');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('show');
+        });
+
+        // Cerrar sidebar en mobile al hacer clic en un link
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                }
+            });
+        });
+
+        // ========== NAVEGACIÓN ==========
         function irSeccion(id) {
             document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -546,7 +974,7 @@
             link.addEventListener('click', () => irSeccion(link.dataset.section));
         });
 
-        // ============ DASHBOARD ============
+        // ========== DASHBOARD ==========
         async function cargarDashboard() {
             const noticias   = await fetch(`${API}/api/noticias`).then(r => r.json());
             const semilleros = await fetch(`${API}/api/semilleros`).then(r => r.json());
@@ -558,8 +986,8 @@
             document.getElementById('countSemilleros').textContent = semilleros.length;
             document.getElementById('countProyectos').textContent  = proyectos.length;
             document.getElementById('countDocumentos').textContent = documentos.length;
-            document.getElementById('countContactos').textContent  = contactos.length;
 
+            // Gráfico de contenido
             const ctx1 = document.getElementById('chartContenido').getContext('2d');
             if (chartContenidoRef) chartContenidoRef.destroy();
 
@@ -579,6 +1007,7 @@
                 }
             });
 
+            // Gráfico de contactos
             const porDia = {};
             contactos.forEach(c => {
                 if (!c.created_at) return;
@@ -613,6 +1042,7 @@
                 }
             });
 
+            // Últimas noticias
             const ulNoticias = document.getElementById('ultimasNoticias');
             ulNoticias.innerHTML = noticias
                 .slice(-5)
@@ -624,6 +1054,7 @@
                     </li>
                 `).join('');
 
+            // Últimos contactos
             const ulContactos = document.getElementById('ultimosContactos');
             ulContactos.innerHTML = contactos
                 .slice(-5)
@@ -638,7 +1069,7 @@
                 `).join('');
         }
 
-        // ============ NOTICIAS ============
+        // ========== NOTICIAS ==========
         async function cargarNoticias() {
             const response = await fetch(`${API}/api/noticias`);
             const noticias = await response.json();
@@ -720,87 +1151,36 @@
             }
         }
 
-        // ============ SEMILLEROS ============
+        // ========== SEMILLEROS ==========
         async function cargarSemilleros() {
             const response = await fetch(`${API}/api/semilleros`);
             const semilleros = await response.json();
+            todosLosSemilleros = semilleros;
             
-            const select = document.getElementById('proyectoSemillero');
-            select.innerHTML = '<option value="">-- Seleccionar --</option>' +
-                semilleros.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
-
-                        // 🆕 NUEVO: Filtrar semilleros por categoría
-            let todosLosSemilleros = [];
-
-            async function cargarSemilleros() {
-                const response = await fetch(`${API}/api/semilleros`);
-                const semilleros = await response.json();
-                todosLosSemilleros = semilleros;  // Guardar para filtrar después
-                
-                const select = document.getElementById('proyectoSemillero');
-                select.innerHTML = '<option value="">-- Seleccionar --</option>' +
-                    semilleros.map(s => `<option value="${s.id}">${s.nombre} (${s.categoria || 'Sin categoría'})</option>`).join('');
-                
-                // 🆕 Listener para filtrar por categoría
-                const categoriaSelect = document.getElementById('proyectoCategoria');
-                if (categoriaSelect) {
-                    categoriaSelect.addEventListener('change', function() {
-                        const categoriaSeleccionada = this.value;
-                        const select = document.getElementById('proyectoSemillero');
-                        
-                        if (!categoriaSeleccionada) {
-                            select.disabled = true;
-                            select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
-                            return;
-                        }
-                        
-                        select.disabled = false;
-                        const semillerosFiltrados = todosLosSemilleros.filter(s => s.categoria === categoriaSeleccionada);
-                        
-                        if (semillerosFiltrados.length === 0) {
-                            select.innerHTML = '<option value="">No hay semilleros en esta categoría</option>';
-                        } else {
-                            select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' +
-                                semillerosFiltrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
-                        }
-                    });
-                }
-                
-                // Cargar tabla de semilleros
-                const lista = document.getElementById('listaSemilleros');
-                if (!semilleros.length) {
-                    lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
-                    return;
-                }
-                
-                lista.innerHTML = `
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Categoría</th>
-                                <th>Línea</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${semilleros.map(s => `
-                                <tr>
-                                    <td>${s.id}</td>
-                                    <td>${s.nombre}</td>
-                                    <td><span class="badge bg-info">${s.categoria || 'Sin categoría'}</span></td>
-                                    <td>${s.linea}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
+            // Listener para filtrar por categoría
+            const categoriaSelect = document.getElementById('proyectoCategoria');
+            if (categoriaSelect) {
+                categoriaSelect.addEventListener('change', function() {
+                    const categoriaSeleccionada = this.value;
+                    const select = document.getElementById('proyectoSemillero');
+                    
+                    if (!categoriaSeleccionada) {
+                        select.disabled = true;
+                        select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
+                        return;
+                    }
+                    
+                    select.disabled = false;
+                    const semillerosFiltrados = todosLosSemilleros.filter(s => s.categoria === categoriaSeleccionada);
+                    
+                    if (semillerosFiltrados.length === 0) {
+                        select.innerHTML = '<option value="">No hay semilleros en esta categoría</option>';
+                    } else {
+                        select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' +
+                            semillerosFiltrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+                    }
+                });
             }
-
             
             const lista = document.getElementById('listaSemilleros');
             if (!semilleros.length) {
@@ -814,6 +1194,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
+                            <th>Categoría</th>
                             <th>Línea</th>
                             <th>Acciones</th>
                         </tr>
@@ -823,6 +1204,7 @@
                             <tr>
                                 <td>${s.id}</td>
                                 <td>${s.nombre}</td>
+                                <td><span class="badge bg-info">${s.categoria || 'Sin categoría'}</span></td>
                                 <td>${s.linea}</td>
                                 <td>
                                     <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
@@ -834,7 +1216,7 @@
             `;
         }
 
-                document.getElementById('formSemillero').addEventListener('submit', async (e) => {
+        document.getElementById('formSemillero').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const datos = {
@@ -843,10 +1225,8 @@
                 enfoque: document.getElementById('semilleroEnfoque').value,
                 descripcion: document.getElementById('semilleroDescripcion').value,
                 imagen: document.getElementById('semilleroImagen').value,
-                categoria: document.getElementById('semilleroCategoria').value  // 🆕 AGREGAR ESTA LÍNEA
+                categoria: document.getElementById('semilleroCategoria').value
             };
-
-            
             
             const response = await fetch(`${API}/api/semilleros`, {
                 method: 'POST',
@@ -876,7 +1256,7 @@
             }
         }
 
-        // ============ PROYECTOS ============
+        // ========== PROYECTOS ==========
         async function cargarProyectos() {
             const response = await fetch(`${API}/api/proyectos`);
             const proyectos = await response.json();
@@ -964,7 +1344,7 @@
             }
         }
 
-        // ============ DOCUMENTOS ============
+        // ========== DOCUMENTOS ==========
         const dropZone = document.getElementById('dropZone');
         const docArchivo = document.getElementById('docArchivo');
         const dropText = document.getElementById('dropText');
@@ -1100,7 +1480,7 @@
             }
         }
 
-        // ============ CONTACTOS ============
+        // ========== CONTACTOS ==========
         async function cargarContactos() {
             const response = await fetch(`${API}/api/contactos`);
             const contactos = await response.json();
@@ -1140,14 +1520,8 @@
                                 <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
                                 <td>
                                     <div class="d-flex gap-1 justify-content-end">
-                                        <button class="btn btn-sm btn-ceai"
-                                            onclick="verContacto(${c.id})">
-                                            Ver
-                                        </button>
-                                        <button class="btn btn-sm btn-danger"
-                                            onclick="eliminarContacto(${c.id})">
-                                            🗑️
-                                        </button>
+                                        <button class="btn btn-sm btn-ceai" onclick="verContacto(${c.id})">Ver</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button>
                                     </div>
                                 </td>
                             </tr>
@@ -1185,7 +1559,7 @@
             modal.show();
         }
 
-        // Iniciar
+        // ========== INICIALIZACIÓN ==========
         cargarDashboard();
     </script>
 </body>
