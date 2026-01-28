@@ -197,7 +197,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // ✅ CORRECCIÓN: URL correcta de la API
         const API = 'https://ceai-web-production.up.railway.app';
 
         async function cargarNoticiasHome() {
@@ -213,7 +212,7 @@
                 console.log('✅ Noticias cargadas:', allNoticias.length);
 
                 const destacadas = allNoticias.filter(function(n) {
-                    return n.destacada === 1 || n.destacada === '1';
+                    return n.destacada === 1 || n.destacada === '1' || n.destacada === true;
                 });
 
                 console.log('⭐ Noticias destacadas:', destacadas.length);
@@ -261,16 +260,26 @@
 
             inner.innerHTML = html;
 
-            // Inicializar el carrusel de Bootstrap
-            var carouselElement = document.getElementById('carouselNoticias');
-            var carousel = new bootstrap.Carousel(carouselElement, {
-                interval: 4000,
-                ride: 'carousel',
-                wrap: true,
-                pause: 'hover'
-            });
+            // ✅ CORRECCIÓN: Esperar a que el DOM se actualice
+            setTimeout(function() {
+                var carouselElement = document.getElementById('carouselNoticias');
+                
+                // Destruir instancia anterior si existe
+                var existingCarousel = bootstrap.Carousel.getInstance(carouselElement);
+                if (existingCarousel) {
+                    existingCarousel.dispose();
+                }
 
-            console.log('✅ Carrusel inicializado con', noticias.length, 'items');
+                // Crear nueva instancia del carrusel
+                new bootstrap.Carousel(carouselElement, {
+                    interval: 4000,
+                    ride: 'carousel',
+                    wrap: true,
+                    pause: 'hover'
+                });
+
+                console.log('✅ Carrusel inicializado con', noticias.length, 'items');
+            }, 100);
         }
 
         function cargarGrid(noticias) {
