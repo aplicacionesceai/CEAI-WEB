@@ -12,76 +12,357 @@
     
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* ========== SWIPER PERSONALIZADO ========== */
-        .swiper-destacadas {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px 0;
-        }
+        /* ========================================
+           DISEÑO PREMIUM CARRUSEL SWIPER
+           ======================================== */
         
-        .swiper-destacadas .swiper-slide {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .swiper-destacadas img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-        }
-        
-        .swiper-destacadas .card-body {
-            padding: 1.5rem;
-        }
-        
-        .swiper-destacadas .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-            color: var(--ceai-azul);
-        }
-        
-        .swiper-destacadas .badge {
-            font-size: 0.85rem;
-            padding: 0.4rem 0.8rem;
-        }
-
-        /* Botones de navegación */
-        .swiper-button-next,
-        .swiper-button-prev {
-            color: var(--ceai-verde) !important;
-            background: white;
-            width: 45px !important;
-            height: 45px !important;
-            border-radius: 50%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        .swiper-button-next:after,
-        .swiper-button-prev:after {
-            font-size: 20px !important;
-        }
-
-        /* Paginación */
-        .swiper-pagination-bullet {
-            background: var(--ceai-verde) !important;
-            opacity: 0.4;
-        }
-        
-        .swiper-pagination-bullet-active {
-            opacity: 1 !important;
-        }
-
+        /* ========== SECCIÓN CARRUSEL ========== */
         .carousel-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 4rem 0 !important;
+            position: relative;
+            overflow: hidden;
             margin-bottom: 2rem;
         }
-        
+
+        .carousel-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(57, 169, 0, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .carousel-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 48, 77, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* ========== TÍTULO MEJORADO ========== */
+        .carousel-section h2 {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            margin-bottom: 3rem !important;
+        }
+
+        .carousel-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #39A900, #5FBE00);
+            border-radius: 2px;
+        }
+
+        /* ========== SWIPER CONTAINER ========== */
+        .swiper-destacadas {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 60px 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== SLIDES ========== */
+        .swiper-destacadas .swiper-slide {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.95);
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .swiper-destacadas .swiper-slide-active {
+            transform: scale(1);
+            opacity: 1;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(57, 169, 0, 0.1);
+        }
+
+        /* ========== EFECTO HOVER EN SLIDE ========== */
+        .swiper-destacadas .swiper-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(57, 169, 0, 0) 0%, rgba(57, 169, 0, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .swiper-destacadas .swiper-slide:hover::before {
+            opacity: 1;
+        }
+
+        /* ========== IMAGEN ========== */
+        .swiper-destacadas img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .swiper-destacadas .swiper-slide:hover img {
+            transform: scale(1.08);
+        }
+
+        /* ========== CONTENIDO ========== */
+        .swiper-destacadas .card-body {
+            padding: 2rem;
+            background: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .swiper-destacadas .card-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                #39A900 0%, 
+                #5FBE00 50%, 
+                transparent 100%);
+        }
+
+        /* ========== BADGES ========== */
+        .swiper-destacadas .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(57, 169, 0, 0.25);
+            background: linear-gradient(135deg, #39A900 0%, #007832 100%);
+        }
+
+        /* ========== FECHA ========== */
+        .swiper-destacadas .text-muted {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #6c757d !important;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .swiper-destacadas .text-muted::before {
+            content: '📅';
+            font-size: 1rem;
+        }
+
+        /* ========== TÍTULO ========== */
+        .swiper-destacadas .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #00304D;
+            line-height: 1.4;
+            font-family: 'Montserrat', sans-serif;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ========== DESCRIPCIÓN ========== */
+        .swiper-destacadas .card-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #495057;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ========== BOTONES DE NAVEGACIÓN ========== */
+        .swiper-button-next,
+        .swiper-button-prev {
+            width: 50px !important;
+            height: 50px !important;
+            background: white !important;
+            border-radius: 50%;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 22px !important;
+            font-weight: 900;
+            color: #39A900;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: #39A900 !important;
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(57, 169, 0, 0.4);
+        }
+
+        .swiper-button-next:hover::after,
+        .swiper-button-prev:hover::after {
+            color: white;
+        }
+
+        /* ========== PAGINACIÓN ========== */
+        .swiper-pagination {
+            bottom: 15px !important;
+        }
+
+        .swiper-pagination-bullet {
+            width: 12px !important;
+            height: 12px !important;
+            background: #39A900 !important;
+            opacity: 0.3 !important;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-pagination-bullet-active {
+            opacity: 1 !important;
+            width: 30px !important;
+            border-radius: 6px !important;
+            background: linear-gradient(90deg, #39A900, #007832) !important;
+        }
+
+        /* ========== GRID NOTICIAS ========== */
         .noticias-grid-section {
             margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px solid var(--ceai-verde);
+            padding-top: 3rem;
+            position: relative;
+        }
+
+        .noticias-grid-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #39A900, transparent);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .carousel-section {
+                padding: 3rem 0 !important;
+            }
+
+            .carousel-section::before,
+            .carousel-section::after {
+                width: 300px;
+                height: 300px;
+            }
+
+            .swiper-destacadas {
+                padding: 20px 40px 40px;
+            }
+
+            .swiper-destacadas img {
+                height: 220px;
+            }
+
+            .swiper-destacadas .card-body {
+                padding: 1.5rem;
+            }
+
+            .swiper-destacadas .card-title {
+                font-size: 1.15rem;
+            }
+
+            .swiper-destacadas .card-text {
+                font-size: 0.9rem;
+            }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .swiper-button-next::after,
+            .swiper-button-prev::after {
+                font-size: 18px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .carousel-section {
+                padding: 2rem 0 !important;
+            }
+
+            .swiper-destacadas {
+                padding: 15px 30px 35px;
+            }
+
+            .swiper-destacadas img {
+                height: 180px;
+            }
+
+            .swiper-destacadas .card-body {
+                padding: 1.2rem;
+            }
+
+            .swiper-destacadas .card-title {
+                font-size: 1rem;
+            }
+
+            .swiper-destacadas .card-text {
+                font-size: 0.85rem;
+            }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 35px !important;
+                height: 35px !important;
+            }
+
+            .swiper-button-next::after,
+            .swiper-button-prev::after {
+                font-size: 16px !important;
+            }
         }
     </style>
 </head>
@@ -120,6 +401,7 @@
         </div>
     </nav>
 
+
     <section class="hero-section text-white py-5" style="background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-verde-oscuro) 100%);">
         <div class="container py-5">
             <div class="row align-items-center">
@@ -136,7 +418,8 @@
         </div>
     </section>
 
-    <!-- ✅ NUEVO CARRUSEL CON SWIPER -->
+
+    <!-- ✅ CARRUSEL CON DISEÑO PREMIUM -->
     <section class="py-5 carousel-section" id="seccionCarrusel" style="display: none;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌟 Noticias Destacadas</h2>
@@ -154,12 +437,14 @@
         </div>
     </section>
 
+
     <section class="py-5 noticias-grid-section">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">📰 Últimas Noticias y Eventos</h2>
             <div class="row" id="noticiasContainer"></div>
         </div>
     </section>
+
 
     <section class="py-5" style="background-color: #f8f9fa;">
         <div class="container">
@@ -170,6 +455,7 @@
             </div>
         </div>
     </section>
+
 
     <footer class="bg-ceai-dark text-white py-4 mt-5">
         <div class="container">
@@ -199,14 +485,17 @@
         </div>
     </footer>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- ✅ SWIPER JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
         let swiperInstance = null;
+
 
         async function cargarNoticiasHome() {
             try {
@@ -217,6 +506,7 @@
                 const destacadas = allNoticias.filter(n => n.destacada == 1);
                 console.log('⭐ Destacadas encontradas:', destacadas.length);
 
+
                 if (destacadas.length > 0) {
                     document.getElementById('seccionCarrusel').style.display = 'block';
                     cargarSwiperNoticias(destacadas);
@@ -224,11 +514,13 @@
                     console.log('⚠️ No hay noticias destacadas');
                 }
 
+
                 cargarGrid(allNoticias);
             } catch (err) {
                 console.error('❌ Error cargando noticias:', err);
             }
         }
+
 
         function cargarSwiperNoticias(noticias) {
             console.log('🎠 Inicializando Swiper con', noticias.length, 'slides');
@@ -236,11 +528,13 @@
             const wrapper = document.getElementById('swiperNoticiasWrapper');
             let html = '';
 
+
             noticias.forEach(function(n) {
                 const imagen = n.imagen || 'img/placeholder-noticia.jpg';
                 const tipo = n.tipo || 'Noticia';
                 const desc = (n.descripcion || '').substring(0, 150);
                 const fecha = n.fecha || '';
+
 
                 html += '<div class="swiper-slide">'
                     + '  <img src="' + imagen + '" alt="' + n.titulo + '">'
@@ -255,13 +549,16 @@
                     + '</div>';
             });
 
+
             wrapper.innerHTML = html;
+
 
             // ✅ Inicializar Swiper después de cargar el HTML
             setTimeout(function() {
                 if (swiperInstance) {
                     swiperInstance.destroy(true, true);
                 }
+
 
                 swiperInstance = new Swiper('.swiper-destacadas', {
                     slidesPerView: 1,
@@ -281,20 +578,25 @@
                     },
                 });
 
+
                 console.log('✅ Swiper inicializado correctamente');
             }, 100);
         }
+
 
         function cargarGrid(noticias) {
             const container = document.getElementById('noticiasContainer');
             let html = '';
 
+
             const mostrar = noticias.slice(0, 6);
+
 
             mostrar.forEach(function(n) {
                 const imagen = n.imagen || 'img/placeholder-noticia.jpg';
                 const tipo = n.tipo || 'Noticia';
                 const badgeClass = tipo === 'Evento' ? 'bg-info' : tipo === 'Convocatoria' ? 'bg-warning text-dark' : 'bg-secondary';
+
 
                 html += '<div class="col-md-4 mb-4">'
                     + '  <div class="card h-100 shadow-sm">'
@@ -308,8 +610,10 @@
                     + '</div>';
             });
 
+
             container.innerHTML = html;
         }
+
 
         async function cargarSemillerosInicio() {
             try {
@@ -318,7 +622,9 @@
                 const container = document.getElementById('semillerosContainer');
                 let html = '';
 
+
                 const mostrar = semilleros.slice(0, 3);
+
 
                 mostrar.forEach(function(s) {
                     html += '<div class="col-md-4 mb-4">'
@@ -333,11 +639,13 @@
                         + '</div>';
                 });
 
+
                 container.innerHTML = html;
             } catch (err) {
                 console.error('❌ Error cargando semilleros:', err);
             }
         }
+
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Página cargada');
@@ -345,6 +653,7 @@
             cargarSemillerosInicio();
         });
     </script>
+
 
     <script src="js/navbar.js"></script>
 </body>
