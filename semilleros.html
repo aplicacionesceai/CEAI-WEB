@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semilleros - CEAI SENA</title>
+    <title>Semillero - CEAI SENA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Navbar (igual que en index.html) -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="index.html">
@@ -35,11 +35,18 @@
     <!-- Contenido principal -->
     <main class="py-5">
         <div class="container">
-            <h1 class="mb-4">Semilleros de Investigación</h1>
-            <p class="lead mb-5">Conoce nuestros semilleros de investigación y los proyectos que están transformando la industria.</p>
-            
-            <div class="row" id="semillerosListContainer">
-                <!-- Se carga con JavaScript -->
+            <button class="btn btn-outline-secondary mb-4" onclick="window.history.back()">
+                ← Volver
+            </button>
+
+            <!-- Aquí se carga el contenido dinámicamente -->
+            <div id="semilleroContent">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Cargando semillero...</p>
+                </div>
             </div>
         </div>
     </main>
@@ -52,7 +59,187 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/datos.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+        const API = 'https://ceai-web-production.up.railway.app';
+
+        // 🔥 FUNCIÓN PRINCIPAL: Cargar semillero
+        async function cargarSemillero() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const categoria = urlParams.get('categoria');
+
+            if (!id && !categoria) {
+                mostrarError('No se especificó un semillero');
+                return;
+            }
+
+            try {
+                let semilleros = [];
+
+                if (id) {
+                    // 🔍 Buscar por ID
+                    const response = await fetch(`${API}/api/semilleros/${id}`);
+                    if (response.ok) {
+                        const semillero = await response.json();
+                        if (semillero) {
+                            semilleros = [semillero];
+                        }
+                    }
+                } else if (categoria) {
+                    // 🔍 Buscar por categoría
+                    const response = await fetch(`${API}/api/semilleros/categoria/${encodeURIComponent(categoria)}`);
+                    if (response.ok) {
+                        semilleros = await response.json();
+                    }
+                }
+
+                if (semilleros.length === 0) {
+                    mostrarError('Semillero no encontrado');
+                    return;
+                }
+
+                // Si hay varios, mostrar lista
+                if (semilleros.length > 1) {
+                    mostrarListaSemilleros(semilleros, categoria);
+                } else {
+                    // Si hay solo uno, mostrar detalle
+                    mostrarDetalleSemillero(semilleros[0]);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarError('Error al cargar el semillero');
+            }
+        }
+
+        // 🎨 Mostrar LISTA de semilleros (cuando hay varios en la categoría)
+        function mostrarListaSemilleros(semilleros, categoria) {
+            const container = document.getElementById('semilleroContent');
+            container.innerHTML = `
+                <h1 class="mb-4">${categoria || 'Semilleros'}</h1>
+                <p class="lead mb-5">Selecciona un semillero para ver más detalles</p>
+
+                <div class="row">
+                    ${semilleros.map(s => `
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                ${s.imagen ? `<img src="${s.imagen}" class="card-img-top" alt="${s.nombre}" style="height: 200px; object-fit: cover;">` : ''}
+                                <div class="card-body">
+                                    <h5 class="card-title text-ceai-verde">${s.nombre}</h5>
+                                    <p class="card-text">
+                                        <strong>Línea:</strong> ${s.linea}<br>
+                                        <strong>Enfoque:</strong> ${s.enfoque}
+                                    </p>
+                                    <p class="card-text small text-muted">${s.descripcion.substring(0, 100)}...</p>
+                                    <a href="semillero.html?id=${s.id}" class="btn btn-ceai w-100">Ver detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // 🎨 Mostrar DETALLE de un solo semillero
+        async function mostrarDetalleSemillero(semillero) {
+            const container = document.getElementById('semilleroContent');
+
+            // Cargar proyectos del semillero
+            const proyectos = await cargarProyectos(semillero.id);
+
+            container.innerHTML = `
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1 class="mb-3">${semillero.nombre}</h1>
+                        <p class="lead">${semillero.descripcion}</p>
+
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Información del Semillero</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <strong>📂 Categoría:</strong> 
+                                        <span class="badge bg-info">${semillero.categoria || 'Sin categoría'}</span>
+                                    </li>
+                                    <li class="mb-2"><strong>📚 Línea de Investigación:</strong> ${semillero.linea}</li>
+                                    <li class="mb-2"><strong>🎯 Enfoque:</strong> ${semillero.enfoque}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Proyectos -->
+                        <h3 class="mt-4 mb-3">Proyectos</h3>
+                        ${proyectos.length === 0 
+                            ? '<p class="text-muted">No hay proyectos registrados para este semillero.</p>'
+                            : `
+                                <div class="row">
+                                    ${proyectos.map(p => `
+                                        <div class="col-12 mb-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${p.titulo}</h5>
+                                                    <span class="badge ${
+                                                        p.estado === 'En ejecución' ? 'bg-primary' :
+                                                        p.estado === 'Finalizado' ? 'bg-success' : 'bg-warning'
+                                                    }">${p.estado}</span>
+                                                    ${p.aliados ? `<p class="mt-2 mb-1"><strong>Aliados:</strong> ${p.aliados}</p>` : ''}
+                                                    ${p.objetivo ? `<p class="mb-1"><strong>Objetivo:</strong> ${p.objetivo}</p>` : ''}
+                                                    ${p.entregables ? `<p class="mb-1"><strong>Entregables:</strong> ${p.entregables}</p>` : ''}
+                                                    ${p.evidencia ? `<p class="mb-0"><strong>Evidencia:</strong> ${p.evidencia}</p>` : ''}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `
+                        }
+                    </div>
+
+                    <div class="col-md-4">
+                        ${semillero.imagen ? `
+                            <img src="${semillero.imagen}" class="img-fluid rounded shadow mb-4" alt="${semillero.nombre}">
+                        ` : ''}
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">¿Te interesa participar?</h5>
+                                <p class="card-text small">Si estás interesado en formar parte de este semillero, contáctanos.</p>
+                                <a href="contacto.html" class="btn btn-ceai w-100">Contactar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 📦 Cargar proyectos de un semillero
+        async function cargarProyectos(semilleroId) {
+            try {
+                const response = await fetch(`${API}/api/proyectos/semillero/${semilleroId}`);
+                if (response.ok) {
+                    return await response.json();
+                }
+                return [];
+            } catch (error) {
+                console.error('Error cargando proyectos:', error);
+                return [];
+            }
+        }
+
+        // ❌ Mostrar mensaje de error
+        function mostrarError(mensaje) {
+            const container = document.getElementById('semilleroContent');
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <h2>Semillero no encontrado</h2>
+                    <p class="text-muted">${mensaje}</p>
+                    <a href="semilleros.html" class="btn btn-ceai mt-3">← Ver todos los semilleros</a>
+                </div>
+            `;
+        }
+
+        // ▶️ Iniciar cuando cargue la página
+        document.addEventListener('DOMContentLoaded', cargarSemillero);
+    </script>
 </body>
 </html>

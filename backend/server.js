@@ -243,25 +243,9 @@ app.delete('/api/noticias/:id', async (req, res) => {
 });
 
 // ============ RUTAS SEMILLEROS ============
-app.get('/api/semilleros', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM semilleros ORDER BY categoria, nombre');
-        res.json(result.rows || []);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// 🔥 IMPORTANTE: Rutas específicas PRIMERO, rutas con parámetros DESPUÉS
 
-app.get('/api/semilleros/:id', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM semilleros WHERE id = $1', [req.params.id]);
-        res.json(result.rows[0] || null);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 🆕 NUEVO: Obtener semilleros por categoría
+// 🆕 Obtener semilleros por categoría (DEBE IR PRIMERO)
 app.get('/api/semilleros/categoria/:categoria', async (req, res) => {
     try {
         const result = await pool.query(
@@ -274,7 +258,27 @@ app.get('/api/semilleros/categoria/:categoria', async (req, res) => {
     }
 });
 
-// 🔧 ACTUALIZADO: Crear semillero con categoría
+// Obtener todos los semilleros
+app.get('/api/semilleros', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM semilleros ORDER BY categoria, nombre');
+        res.json(result.rows || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Obtener semillero por ID (DEBE IR DESPUÉS de /categoria)
+app.get('/api/semilleros/:id', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM semilleros WHERE id = $1', [req.params.id]);
+        res.json(result.rows[0] || null);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 🔧 Crear semillero con categoría
 app.post('/api/semilleros', async (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen, categoria } = req.body;
     try {
@@ -288,7 +292,7 @@ app.post('/api/semilleros', async (req, res) => {
     }
 });
 
-// 🔧 ACTUALIZADO: Actualizar semillero con categoría
+// 🔧 Actualizar semillero con categoría
 app.put('/api/semilleros/:id', async (req, res) => {
     const { nombre, linea, enfoque, descripcion, imagen, categoria } = req.body;
     try {
