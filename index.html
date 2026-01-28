@@ -133,7 +133,7 @@
     <section class="py-5 carousel-section" id="seccionCarrusel" style="display: none;">
         <div class="container">
             <h2 class="mb-4 text-center" style="color: var(--ceai-azul); font-weight: 700;">🌟 Noticias Destacadas</h2>
-            <div id="carouselNoticias" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+            <div id="carouselNoticias" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner" id="carouselNoticiasInner"></div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselNoticias" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
@@ -260,7 +260,7 @@
 
             inner.innerHTML = html;
 
-            // ✅ CORRECCIÓN: Esperar a que el DOM se actualice
+            // ✅ CORRECCIÓN CRÍTICA: Inicializar el carrusel correctamente
             setTimeout(function() {
                 var carouselElement = document.getElementById('carouselNoticias');
                 
@@ -270,16 +270,21 @@
                     existingCarousel.dispose();
                 }
 
-                // Crear nueva instancia del carrusel
-                new bootstrap.Carousel(carouselElement, {
-                    interval: 4000,
-                    ride: 'carousel',
-                    wrap: true,
-                    pause: 'hover'
+                // Crear nueva instancia con configuración correcta
+                var carousel = new bootstrap.Carousel(carouselElement, {
+                    interval: 4000,      // Cambia cada 4 segundos
+                    ride: 'carousel',    // ✅ CLAVE: Auto-play activado
+                    wrap: true,          // ✅ Vuelve al inicio
+                    pause: 'hover',      // Pausa al pasar el mouse
+                    keyboard: true,      // Navegación con teclado
+                    touch: true          // Swipe en móviles
                 });
 
-                console.log('✅ Carrusel inicializado con', noticias.length, 'items');
-            }, 100);
+                // ✅ Forzar inicio del carrusel
+                carousel.cycle();
+
+                console.log('✅ Carrusel inicializado con', noticias.length, 'noticias destacadas');
+            }, 150);
         }
 
         function cargarGrid(noticias) {
