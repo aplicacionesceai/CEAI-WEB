@@ -22,8 +22,20 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="innovacion.html">Área de Innovación</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="grupo-investigacion.html">Grupo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="semilleros.html">Semilleros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grupo-investigacion.html">Grupo de Investigación</a></li>
+                    
+                    <!-- ✅ DROPDOWN CORRECTO -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="semillerosDropdown" role="button" data-bs-toggle="dropdown">Semilleros</a>
+                        <ul class="dropdown-menu" aria-labelledby="semillerosDropdown">
+                            <li><a class="dropdown-item" href="semilleros.html#semillero-1">Soluciones Digitales</a></li>
+                            <li><a class="dropdown-item" href="semilleros.html#semillero-2">Automatización e Instrumentación</a></li>
+                            <li><a class="dropdown-item" href="semilleros.html#semillero-3">Fábrica Digital Interactiva</a></li>
+                            <li><a class="dropdown-item" href="semilleros.html#semillero-4">Gestión Energética</a></li>
+                            <li><a class="dropdown-item" href="semilleros.html#semillero-5">IA Aplicada al Entorno</a></li>
+                        </ul>
+                    </li>
+
                     <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
                     <li class="nav-item"><a class="nav-link" href="aliados.html">Aliados</a></li>
                     <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
@@ -32,6 +44,7 @@
         </div>
     </nav>
 
+
     <!-- Hero Section -->
     <section style="background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-verde-oscuro) 100%);" class="text-white py-5">
         <div class="container py-5">
@@ -39,6 +52,7 @@
             <p class="lead">El equipo multidisciplinario que impulsa la innovación en el CEAI</p>
         </div>
     </section>
+
 
     <!-- Contenido Principal -->
     <main class="py-5">
@@ -54,6 +68,7 @@
                 </div>
             </div>
 
+
             <!-- Roles y Estructura -->
             <div class="row mb-5">
                 <div class="col-md-6 col-lg-4 mb-4">
@@ -66,6 +81,7 @@
                     </div>
                 </div>
 
+
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 text-center border-top-ceai">
                         <div class="card-body">
@@ -75,6 +91,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 text-center border-top-ceai">
@@ -86,6 +103,7 @@
                     </div>
                 </div>
 
+
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 text-center border-top-ceai">
                         <div class="card-body">
@@ -95,6 +113,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 text-center border-top-ceai">
@@ -106,6 +125,7 @@
                     </div>
                 </div>
 
+
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 text-center border-top-ceai">
                         <div class="card-body">
@@ -116,6 +136,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- Competencias -->
             <section class="py-5" style="background-color: #f8f9fa;">
@@ -150,6 +171,7 @@
                     </div>
                 </div>
             </section>
+
 
             <!-- Formas de participación -->
             <section class="py-5">
@@ -206,6 +228,7 @@
         </div>
     </main>
 
+
     <!-- Footer -->
     <footer class="bg-ceai-dark text-white py-4 mt-5">
         <div class="container">
@@ -234,6 +257,9 @@
         </div>
     </footer>
 
+    <!-- ✅ SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
