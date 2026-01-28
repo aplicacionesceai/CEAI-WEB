@@ -3,1190 +3,418 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - CEAI SENA</title>
-
-    <!-- Bootstrap -->
+    <title>Admin Panel - CEAI SENA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Fuentes -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <!-- Estilos CEAI -->
-    <link rel="stylesheet" href="css/styles.css">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .sidebar {
-            background-color: var(--ceai-azul);
-            color: white;
-            min-height: 100vh;
-            padding: 20px;
-            position: sticky;
-            top: 0;
-        }
-
-        .sidebar h5 {
-            color: var(--ceai-verde);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-link {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 10px;
-            cursor: pointer;
-            border-radius: 6px;
-            padding: 10px 15px;
-            transition: all 0.3s;
-            display: block;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background-color: var(--ceai-verde);
-            color: white;
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .table-responsive {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .form-section {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-        }
-
-        #detalleMensaje {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            word-break: break-word;
-            max-height: 260px;
-            overflow-y: auto;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin-styles.css">
 </head>
 <body>
-    <script>
-        if (localStorage.getItem('ceai_admin_logged') !== 'true') {
-            window.location.href = 'login.html';
-        }
-    </script>
-
-    <div class="container-fluid">
-        <div class="row g-0">
-            <!-- SIDEBAR -->
-            <div class="col-md-3 sidebar">
-                <h4 class="fw-bold mb-4">
-                    <span style="color: var(--ceai-verde);">CEAI</span> Admin
-                </h4>
-                
-                <h5>📋 Menú</h5>
-                <div class="sidebar-link active" data-section="dashboard">📊 Dashboard</div>
-                <div class="sidebar-link" data-section="noticias">📰 Noticias</div>
-                <div class="sidebar-link" data-section="semilleros">🌱 Semilleros</div>
-                <div class="sidebar-link" data-section="proyectos">🔬 Proyectos</div>
-                <div class="sidebar-link" data-section="documentos">📄 Documentos</div>
-                <div class="sidebar-link" data-section="contactos">📨 Contactos</div>
-                
-                <hr class="bg-white mt-5 mb-3">
-                <button class="btn btn-outline-light btn-sm w-100 mb-2"
-                        onclick="localStorage.removeItem('ceai_admin_logged'); window.location.href='login.html';">
-                    Cerrar sesión
+    <div class="admin-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="mb-0">
+                    <span class="ceai-logo">CEAI</span>
+                    <span class="sena-logo">SENA</span>
+                </h3>
+                <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+                    <i class="fas fa-times"></i>
                 </button>
-                <a href="index.html" class="btn btn-outline-light btn-sm w-100">← Volver al sitio</a>
             </div>
 
-            <!-- CONTENIDO -->
-            <div class="col-md-9 p-4">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <p class="nav-label">Menu Principal</p>
+                    <a href="#" class="nav-item active" data-section="dashboard">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
 
+                <div class="nav-section">
+                    <p class="nav-label">Gestión de Contenidos</p>
+                    <a href="#" class="nav-item" data-section="noticias">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Noticias</span>
+                        <span class="badge bg-success">3</span>
+                    </a>
+                    <a href="#" class="nav-item" data-section="semilleros">
+                        <i class="fas fa-seedling"></i>
+                        <span>Semilleros</span>
+                        <span class="badge bg-info">2</span>
+                    </a>
+                    <a href="#" class="nav-item" data-section="proyectos">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Proyectos</span>
+                        <span class="badge bg-warning">2</span>
+                    </a>
+                    <a href="#" class="nav-item" data-section="documentos">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Documentos</span>
+                        <span class="badge bg-danger">1</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <p class="nav-label">Datos</p>
+                    <a href="#" class="nav-item" data-section="contactos">
+                        <i class="fas fa-address-book"></i>
+                        <span>Contactos</span>
+                        <span class="badge bg-secondary">4</span>
+                    </a>
+                    <a href="#" class="nav-item" data-section="usuarios">
+                        <i class="fas fa-users"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </div>
+
+                <div class="nav-section mt-auto">
+                    <a href="index.html" class="nav-item nav-item-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Volver al sitio</span>
+                    </a>
+                    <a href="#" class="nav-item nav-item-secondary" data-section="logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar sesión</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- SIDEBAR OVERLAY (Mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- TOP BAR -->
+            <header class="top-bar">
+                <button class="btn-menu-mobile d-lg-none" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="top-bar-center">
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="top-bar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar...">
+                    </div>
+                    <div class="user-menu">
+                        <img src="https://via.placeholder.com/40" alt="Admin" class="user-avatar">
+                        <span class="user-name">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <div class="content-area">
                 <!-- DASHBOARD -->
-                <div id="dashboard" class="content-section active">
-                    <h2 class="mb-4">📊 Dashboard</h2>
+                <section id="dashboard-section" class="section-content active">
+                    <div class="row mb-4">
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #39A900, #2d8a00);">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Noticias</p>
+                                    <h3 class="stat-number">3</h3>
+                                </div>
+                                <a href="#" class="stat-link" data-section="noticias">Ver más →</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #00304D, #004E7C);">
+                                    <i class="fas fa-seedling"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Semilleros</p>
+                                    <h3 class="stat-number">2</h3>
+                                </div>
+                                <a href="#" class="stat-link" data-section="semilleros">Ver más →</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #ff9800, #f57c00);">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Proyectos</p>
+                                    <h3 class="stat-number">2</h3>
+                                </div>
+                                <a href="#" class="stat-link" data-section="proyectos">Ver más →</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f44336, #e53935);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <p class="stat-label">Contactos</p>
+                                    <h3 class="stat-number">4</h3>
+                                </div>
+                                <a href="#" class="stat-link" data-section="contactos">Ver más →</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">📰 Noticias</h5>
-                                    <h3 id="countNoticias" class="text-ceai-verde">0</h3>
+                        <div class="col-lg-8">
+                            <div class="card-admin">
+                                <div class="card-header-admin">
+                                    <h5>Actividad Reciente</h5>
+                                    <button class="btn btn-sm btn-ceai">Actualizar</button>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">🌱 Semilleros</h5>
-                                    <h3 id="countSemilleros" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">🔬 Proyectos</h5>
-                                    <h3 id="countProyectos" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">📄 Documentos</h5>
-                                    <h3 id="countDocumentos" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <h5 class="card-title">📨 Contactos</h5>
-                                    <h3 id="countContactos" class="text-ceai-verde">0</h3>
-                                </div>
-                            </div>
-                        </div>
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon" style="background: #e3f2fd;">
+                                            <i class="fas fa-plus" style="color: #1976d2;"></i>
+                                        </div>
+                                        <div class="activity-info">
+                                            <p class="activity-title">Nueva noticia creada</p>
+                                            <p class="activity-time">Hace 2 horas</p>
+                                        </div>
+                                        <span class="activity-badge">Nuevo</span>
+                                    </div>
 
-                        <div class="col-md-9 mb-3">
-                            <div class="card">
-                                <div class="card-body d-flex flex-wrap gap-2 align-items-center">
-                                    <h5 class="card-title mb-0 me-3">⚡ Acciones rápidas</h5>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('noticias')">Nueva noticia</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('semilleros')">Nuevo semillero</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('proyectos')">Nuevo proyecto</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('documentos')">Subir documento</button>
-                                    <button class="btn btn-ceai btn-sm" onclick="irSeccion('contactos')">Contacto</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon" style="background: #f3e5f5;">
+                                            <i class="fas fa-edit" style="color: #7b1fa2;"></i>
+                                        </div>
+                                        <div class="activity-info">
+                                            <p class="activity-title">Semillero actualizado</p>
+                                            <p class="activity-time">Hace 5 horas</p>
+                                        </div>
+                                        <span class="activity-badge">Actualizado</span>
+                                    </div>
 
-                    <!-- Gráficos -->
-                    <div class="row mt-4">
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Contenido por tipo</h5>
-                                    <canvas id="chartContenido"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Mensajes de contacto por día</h5>
-                                    <canvas id="chartContactos"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Últimos registros -->
-                    <div class="row mt-2">
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Últimas noticias</h5>
-                                    <ul id="ultimasNoticias" class="list-group list-group-flush small"></ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">Últimos contactos</h5>
-                                    <ul id="ultimosContactos" class="list-group list-group-flush small"></ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NOTICIAS -->
-                <div id="noticias" class="content-section">
-                    <h2 class="mb-4">📰 Gestionar Noticias</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nueva Noticia</h5>
-                        <form id="formNoticia">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Título</label>
-                                    <input type="text" class="form-control" id="noticiaTitulo" required>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Fecha</label>
-                                    <input type="date" class="form-control" id="noticiaFecha" required>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">Tipo</label>
-                                    <select class="form-control" id="noticiaTipo" required>
-                                        <option value="Noticia">Noticia</option>
-                                        <option value="Evento">Evento</option>
-                                        <option value="Convocatoria">Convocatoria</option>
-                                        <option value="Resultado">Resultado</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="noticiaDescripcion" rows="3" required></textarea>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">URL Imagen</label>
-                                    <input type="url" class="form-control" id="noticiaImagen" placeholder="https://...">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check mt-4">
-                                        <input class="form-check-input" type="checkbox" id="noticiaDestacada">
-                                        <label class="form-check-label" for="noticiaDestacada">
-                                            ⭐ Destacar en carousel del home
-                                        </label>
+                                    <div class="activity-item">
+                                        <div class="activity-icon" style="background: #e8f5e9;">
+                                            <i class="fas fa-check" style="color: #388e3c;"></i>
+                                        </div>
+                                        <div class="activity-info">
+                                            <p class="activity-title">Documento publicado</p>
+                                            <p class="activity-time">Hace 1 día</p>
+                                        </div>
+                                        <span class="activity-badge">Publicado</span>
                                     </div>
                                 </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai w-100">Crear Noticia</button>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card-admin">
+                                <div class="card-header-admin">
+                                    <h5>Acciones Rápidas</h5>
+                                </div>
+                                <div class="quick-actions">
+                                    <a href="#" class="quick-action-btn" data-section="noticias">
+                                        <i class="fas fa-plus"></i>
+                                        <span>Nueva Noticia</span>
+                                    </a>
+                                    <a href="#" class="quick-action-btn" data-section="semilleros">
+                                        <i class="fas fa-plus"></i>
+                                        <span>Nuevo Semillero</span>
+                                    </a>
+                                    <a href="#" class="quick-action-btn" data-section="proyectos">
+                                        <i class="fas fa-plus"></i>
+                                        <span>Nuevo Proyecto</span>
+                                    </a>
+                                    <a href="#" class="quick-action-btn" data-section="documentos">
+                                        <i class="fas fa-upload"></i>
+                                        <span>Subir Documento</span>
+                                    </a>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
+                </section>
 
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Noticias Existentes</h5>
-                        <div id="listaNoticias"></div>
+                <!-- PLACEHOLDER SECTIONS -->
+                <section id="noticias-section" class="section-content">
+                    <div class="card-admin">
+                        <div class="card-header-admin">
+                            <h5>Gestión de Noticias</h5>
+                            <button class="btn btn-ceai btn-sm">+ Agregar Noticia</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-admin">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Título</th>
+                                        <th>Tipo</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#001</td>
+                                        <td>Primera Noticia</td>
+                                        <td><span class="badge bg-success">Noticia</span></td>
+                                        <td>28/01/2026</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">Editar</button>
+                                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#002</td>
+                                        <td>Segunda Noticia</td>
+                                        <td><span class="badge bg-info">Evento</span></td>
+                                        <td>27/01/2026</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary">Editar</button>
+                                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- SEMILLEROS -->
-                <div id="semilleros" class="content-section">
-                    <h2 class="mb-4">🌱 Gestionar Semilleros</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nuevo Semillero</h5>
-                        <form id="formSemillero">
-                            <div class="row">
-                                                <!-- 🆕 NUEVO: Campo Categoría -->
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-label">Categoría / Servicio</label>
-                                    <select class="form-control" id="semilleroCategoria" required>
-                                        <option value="Soluciones Digitales">Soluciones Digitales</option>
-                                        <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
-                                        <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
-                                        <option value="Gestión Energética">Gestión Energética</option>
-                                        <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="semilleroNombre" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Línea de Investigación</label>
-                                    <input type="text" class="form-control" id="semilleroLinea" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Enfoque</label>
-                                    <input type="text" class="form-control" id="semilleroEnfoque" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">URL Imagen</label>
-                                    <input type="url" class="form-control" id="semilleroImagen" placeholder="https://...">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="semilleroDescripcion" rows="3" required></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai">Crear Semillero</button>
-                                </div>
-                            </div>
-                        </form>
+                <!-- OTROS SECTIONS (Similares) -->
+                <section id="semilleros-section" class="section-content">
+                    <div class="card-admin">
+                        <div class="card-header-admin">
+                            <h5>Gestión de Semilleros</h5>
+                            <button class="btn btn-ceai btn-sm">+ Agregar Semillero</button>
+                        </div>
+                        <p class="text-muted p-3">Contenido de semilleros aquí...</p>
                     </div>
+                </section>
 
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Semilleros Existentes</h5>
-                        <div id="listaSemilleros"></div>
+                <section id="proyectos-section" class="section-content">
+                    <div class="card-admin">
+                        <div class="card-header-admin">
+                            <h5>Gestión de Proyectos</h5>
+                            <button class="btn btn-ceai btn-sm">+ Agregar Proyecto</button>
+                        </div>
+                        <p class="text-muted p-3">Contenido de proyectos aquí...</p>
                     </div>
-                </div>
+                </section>
 
-                <!-- PROYECTOS -->
-                <div id="proyectos" class="content-section">
-                    <h2 class="mb-4">🔬 Gestionar Proyectos</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nuevo Proyecto</h5>
-                        <form id="formProyecto">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Semillero</label>
-                                    <select class="form-control" id="proyectoSemillero" required>
-                                        <option value="">-- Seleccionar --</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Título</label>
-                                    <input type="text" class="form-control" id="proyectoTitulo" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Estado</label>
-                                    <select class="form-control" id="proyectoEstado" required>
-                                        <option value="En ejecución">En ejecución</option>
-                                        <option value="Finalizado">Finalizado</option>
-                                        <option value="En revisión">En revisión</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Categoría / Servicio</label>
-                                    <select class="form-control" id="proyectoCategoria" required>
-                                        <option value="">-- Seleccionar categoría --</option>
-                                        <option value="Soluciones Digitales">Soluciones Digitales</option>
-                                        <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
-                                        <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
-                                        <option value="Gestión Energética">Gestión Energética</option>
-                                        <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
-                                    </select>
-                                </div>
-                                <!-- Semillero ahora se filtra por categoría -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Semillero</label>
-                                    <select class="form-control" id="proyectoSemillero" required disabled>
-                                        <option value="">-- Selecciona categoría primero --</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Aliados</label>
-                                    <input type="text" class="form-control" id="proyectoAliados">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Objetivo</label>
-                                    <textarea class="form-control" id="proyectoObjetivo" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Entregables</label>
-                                    <textarea class="form-control" id="proyectoEntregables" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Evidencia</label>
-                                    <textarea class="form-control" id="proyectoEvidencia" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai">Crear Proyecto</button>
-                                </div>
-                            </div>
-                        </form>
+                <section id="documentos-section" class="section-content">
+                    <div class="card-admin">
+                        <div class="card-header-admin">
+                            <h5>Gestión de Documentos</h5>
+                            <button class="btn btn-ceai btn-sm">+ Subir Documento</button>
+                        </div>
+                        <p class="text-muted p-3">Contenido de documentos aquí...</p>
                     </div>
+                </section>
 
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Proyectos Existentes</h5>
-                        <div id="listaProyectos"></div>
+                <section id="contactos-section" class="section-content">
+                    <div class="card-admin">
+                        <div class="card-header-admin">
+                            <h5>Gestión de Contactos</h5>
+                        </div>
+                        <p class="text-muted p-3">Contenido de contactos aquí...</p>
                     </div>
-                </div>
+                </section>
 
-                <!-- DOCUMENTOS -->
-                <div id="documentos" class="content-section">
-                    <h2 class="mb-4">📄 Gestionar Documentos</h2>
-                    
-                    <div class="form-section">
-                        <h5>Nuevo Documento</h5>
-                        <form id="formDocumento" enctype="multipart/form-data">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nombre del Documento</label>
-                                    <input type="text" class="form-control" id="docNombre" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Tipo</label>
-                                    <select class="form-control" id="docTipo" required>
-                                        <option value="">-- Seleccionar --</option>
-                                        <option value="Convocatoria">Convocatoria</option>
-                                        <option value="Portafolio">Portafolio de Servicios</option>
-                                        <option value="Informe">Informe</option>
-                                        <option value="Manual">Manual</option>
-                                        <option value="Otro">Otro</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="docDescripcion" rows="2"></textarea>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label">Archivo PDF</label>
-                                    <div id="dropZone" class="border-2 border-dashed rounded p-5 text-center" style="border: 2px dashed var(--ceai-verde); cursor: pointer; transition: all 0.3s;">
-                                        <input type="file" id="docArchivo" class="form-control d-none" accept=".pdf" required>
-                                        <div id="dropText">
-                                            <p style="margin: 0; color: var(--ceai-verde); font-weight: bold;">📁 Arrastra tu PDF aquí</p>
-                                            <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">o haz clic para seleccionar</p>
-                                        </div>
-                                        <div id="fileSelected" style="display: none; color: var(--ceai-verde);">
-                                            <p style="margin: 0; font-weight: bold;">✅ Archivo listo:</p>
-                                            <p id="fileName" style="margin: 5px 0 0 0;"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <button type="submit" class="btn btn-ceai">Agregar Documento</button>
-                                </div>
-                            </div>
-                        </form>
+                <section id="usuarios-section" class="section-content">
+                    <div class="card-admin">
+                        <div class="card-header-admin">
+                            <h5>Gestión de Usuarios</h5>
+                            <button class="btn btn-ceai btn-sm">+ Agregar Usuario</button>
+                        </div>
+                        <p class="text-muted p-3">Contenido de usuarios aquí...</p>
                     </div>
-
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Documentos Existentes</h5>
-                        <div id="listaDocumentos"></div>
-                    </div>
-                </div>
-
-                <!-- CONTACTOS -->
-                <div id="contactos" class="content-section">
-                    <h2 class="mb-4">📨 Mensajes de Contacto</h2>
-                    
-                    <div class="table-responsive">
-                        <h5 class="mb-3">Mensajes Recibidos</h5>
-                        <div id="listaContactos"></div>
-                    </div>
-                </div>
-
+                </section>
             </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Modal Detalle Contacto -->
-    <div class="modal fade" id="contactoModal" tabindex="-1" aria-labelledby="contactoModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="contactoModalLabel">Detalle del Contacto</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <dl class="row mb-0">
-              <dt class="col-sm-3">Nombre</dt>
-              <dd class="col-sm-9" id="detalleNombre"></dd>
-
-              <dt class="col-sm-3">Email</dt>
-              <dd class="col-sm-9" id="detalleEmail"></dd>
-
-              <dt class="col-sm-3">Asunto</dt>
-              <dd class="col-sm-9" id="detalleAsunto"></dd>
-
-              <dt class="col-sm-3">Fecha</dt>
-              <dd class="col-sm-9" id="detalleFecha"></dd>
-
-              <dt class="col-sm-3">Mensaje</dt>
-              <dd class="col-sm-9">
-                <div id="detalleMensaje" class="border rounded p-2 bg-light"></div>
-              </dd>
-            </dl>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bootstrap -->
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Toasts -->
-    <script src="js/toasts.js"></script>
-
     <script>
-        const API = 'https://ceai-web-production.up.railway.app';
-        let chartContenidoRef = null;
-        let chartContactosRef = null;
-        let contactosCache = [];
+        // Sidebar Toggle Mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-        function irSeccion(id) {
-            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            document.querySelector(`.sidebar-link[data-section="${id}"]`).classList.add('active');
-
-            if (id === 'noticias') cargarNoticias();
-            if (id === 'semilleros') cargarSemilleros();
-            if (id === 'proyectos') cargarProyectos();
-            if (id === 'documentos') cargarDocumentos();
-            if (id === 'contactos') cargarContactos();
-            if (id === 'dashboard') cargarDashboard();
-        }
-
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', () => irSeccion(link.dataset.section));
+        menuToggle?.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            sidebarOverlay.classList.add('active');
         });
 
-        // ============ DASHBOARD ============
-        async function cargarDashboard() {
-            const noticias   = await fetch(`${API}/api/noticias`).then(r => r.json());
-            const semilleros = await fetch(`${API}/api/semilleros`).then(r => r.json());
-            const proyectos  = await fetch(`${API}/api/proyectos`).then(r => r.json());
-            const documentos = await fetch(`${API}/api/documentos`).then(r => r.json());
-            const contactos  = await fetch(`${API}/api/contactos`).then(r => r.json());
-            
-            document.getElementById('countNoticias').textContent   = noticias.length;
-            document.getElementById('countSemilleros').textContent = semilleros.length;
-            document.getElementById('countProyectos').textContent  = proyectos.length;
-            document.getElementById('countDocumentos').textContent = documentos.length;
-            document.getElementById('countContactos').textContent  = contactos.length;
-
-            const ctx1 = document.getElementById('chartContenido').getContext('2d');
-            if (chartContenidoRef) chartContenidoRef.destroy();
-
-            chartContenidoRef = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: ['Noticias', 'Semilleros', 'Proyectos', 'Documentos'],
-                    datasets: [{
-                        data: [noticias.length, semilleros.length, proyectos.length, documentos.length],
-                        backgroundColor: ['#39A900', '#2d8a00', '#00304D', '#76c043']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-                }
-            });
-
-            const porDia = {};
-            contactos.forEach(c => {
-                if (!c.created_at) return;
-                const d = new Date(c.created_at);
-                const key = d.toLocaleDateString('es-ES');
-                porDia[key] = (porDia[key] || 0) + 1;
-            });
-
-            const labels = Object.keys(porDia);
-            const valores = Object.values(porDia);
-
-            const ctx2 = document.getElementById('chartContactos').getContext('2d');
-            if (chartContactosRef) chartContactosRef.destroy();
-
-            chartContactosRef = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                        data: valores,
-                        borderColor: '#39A900',
-                        backgroundColor: 'rgba(57,169,0,0.2)',
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-                }
-            });
-
-            const ulNoticias = document.getElementById('ultimasNoticias');
-            ulNoticias.innerHTML = noticias
-                .slice(-5)
-                .reverse()
-                .map(n => `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>${n.titulo}</span>
-                        <span class="text-muted ms-2">${n.fecha}</span>
-                    </li>
-                `).join('');
-
-            const ulContactos = document.getElementById('ultimosContactos');
-            ulContactos.innerHTML = contactos
-                .slice(-5)
-                .reverse()
-                .map(c => `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>${c.nombre}</span>
-                        <span class="text-muted ms-2">
-                            ${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}
-                        </span>
-                    </li>
-                `).join('');
-        }
-
-        // ============ NOTICIAS ============
-        async function cargarNoticias() {
-            const response = await fetch(`${API}/api/noticias`);
-            const noticias = await response.json();
-            
-            const lista = document.getElementById('listaNoticias');
-            if (!noticias.length) {
-                lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>';
-                return;
-            }
-            
-            lista.innerHTML = `
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Fecha</th>
-                            <th>Tipo</th>
-                            <th>Destacada</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${noticias.map(n => `
-                            <tr>
-                                <td>${n.id}</td>
-                                <td>${n.titulo}</td>
-                                <td>${n.fecha}</td>
-                                <td>${n.tipo || 'Noticia'}</td>
-                                <td>${n.destacada === 1 ? '⭐' : ''}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        document.getElementById('formNoticia').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const datos = {
-                titulo: document.getElementById('noticiaTitulo').value,
-                descripcion: document.getElementById('noticiaDescripcion').value,
-                fecha: document.getElementById('noticiaFecha').value,
-                imagen: document.getElementById('noticiaImagen').value,
-                tipo: document.getElementById('noticiaTipo').value,
-                destacada: document.getElementById('noticiaDestacada').checked ? 1 : 0
-            };
-            
-            const response = await fetch(`${API}/api/noticias`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
-            
-            if (response.ok) {
-                toast.success('Noticia creada correctamente');
-                document.getElementById('formNoticia').reset();
-                cargarNoticias();
-                cargarDashboard();
-            } else {
-                const error = await response.json();
-                toast.error('Error al crear noticia: ' + (error.error || ''));
-            }
+        closeSidebar?.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
         });
 
-        async function eliminarNoticia(id) {
-            if (!confirm('¿Eliminar esta noticia?')) return;
-            const res = await fetch(`${API}/api/noticias/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Noticia eliminada');
-                cargarNoticias();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar noticia');
-            }
-        }
+        sidebarOverlay?.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        });
 
-        // ============ SEMILLEROS ============
-        async function cargarSemilleros() {
-            const response = await fetch(`${API}/api/semilleros`);
-            const semilleros = await response.json();
-            
-            const select = document.getElementById('proyectoSemillero');
-            select.innerHTML = '<option value="">-- Seleccionar --</option>' +
-                semilleros.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
-
-                        // 🆕 NUEVO: Filtrar semilleros por categoría
-            let todosLosSemilleros = [];
-
-            async function cargarSemilleros() {
-                const response = await fetch(`${API}/api/semilleros`);
-                const semilleros = await response.json();
-                todosLosSemilleros = semilleros;  // Guardar para filtrar después
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = item.getAttribute('data-section');
                 
-                const select = document.getElementById('proyectoSemillero');
-                select.innerHTML = '<option value="">-- Seleccionar --</option>' +
-                    semilleros.map(s => `<option value="${s.id}">${s.nombre} (${s.categoria || 'Sin categoría'})</option>`).join('');
-                
-                // 🆕 Listener para filtrar por categoría
-                const categoriaSelect = document.getElementById('proyectoCategoria');
-                if (categoriaSelect) {
-                    categoriaSelect.addEventListener('change', function() {
-                        const categoriaSeleccionada = this.value;
-                        const select = document.getElementById('proyectoSemillero');
-                        
-                        if (!categoriaSeleccionada) {
-                            select.disabled = true;
-                            select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
-                            return;
-                        }
-                        
-                        select.disabled = false;
-                        const semillerosFiltrados = todosLosSemilleros.filter(s => s.categoria === categoriaSeleccionada);
-                        
-                        if (semillerosFiltrados.length === 0) {
-                            select.innerHTML = '<option value="">No hay semilleros en esta categoría</option>';
-                        } else {
-                            select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' +
-                                semillerosFiltrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
-                        }
-                    });
-                }
-                
-                // Cargar tabla de semilleros
-                const lista = document.getElementById('listaSemilleros');
-                if (!semilleros.length) {
-                    lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
+                if (section === 'logout') {
+                    // Aquí puedes agregar lógica de logout
+                    window.location.href = 'index.html';
                     return;
                 }
-                
-                lista.innerHTML = `
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Categoría</th>
-                                <th>Línea</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${semilleros.map(s => `
-                                <tr>
-                                    <td>${s.id}</td>
-                                    <td>${s.nombre}</td>
-                                    <td><span class="badge bg-info">${s.categoria || 'Sin categoría'}</span></td>
-                                    <td>${s.linea}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-            }
 
-            
-            const lista = document.getElementById('listaSemilleros');
-            if (!semilleros.length) {
-                lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
-                return;
-            }
-            
-            lista.innerHTML = `
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Línea</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${semilleros.map(s => `
-                            <tr>
-                                <td>${s.id}</td>
-                                <td>${s.nombre}</td>
-                                <td>${s.linea}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-                document.getElementById('formSemillero').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const datos = {
-                nombre: document.getElementById('semilleroNombre').value,
-                linea: document.getElementById('semilleroLinea').value,
-                enfoque: document.getElementById('semilleroEnfoque').value,
-                descripcion: document.getElementById('semilleroDescripcion').value,
-                imagen: document.getElementById('semilleroImagen').value,
-                categoria: document.getElementById('semilleroCategoria').value  // 🆕 AGREGAR ESTA LÍNEA
-            };
-
-            
-            
-            const response = await fetch(`${API}/api/semilleros`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
-            
-            if (response.ok) {
-                toast.success('Semillero creado');
-                document.getElementById('formSemillero').reset();
-                cargarSemilleros();
-                cargarDashboard();
-            } else {
-                toast.error('Error al crear semillero');
-            }
-        });
-
-        async function eliminarSemillero(id) {
-            if (!confirm('¿Eliminar este semillero?')) return;
-            const res = await fetch(`${API}/api/semilleros/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Semillero eliminado');
-                cargarSemilleros();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar semillero');
-            }
-        }
-
-        // ============ PROYECTOS ============
-        async function cargarProyectos() {
-            const response = await fetch(`${API}/api/proyectos`);
-            const proyectos = await response.json();
-            
-            const lista = document.getElementById('listaProyectos');
-            if (!proyectos.length) {
-                lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>';
-                return;
-            }
-            
-            lista.innerHTML = `
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Semillero</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${proyectos.map(p => `
-                            <tr>
-                                <td>${p.id}</td>
-                                <td>${p.titulo}</td>
-                                <td>${p.semillero_id}</td>
-                                <td>
-                                    <span class="badge ${
-                                        p.estado === 'En ejecución'
-                                            ? 'bg-primary'
-                                            : p.estado === 'Finalizado'
-                                            ? 'bg-success'
-                                            : 'bg-warning'
-                                    }">${p.estado}</span>
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})">🗑️ Eliminar</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        document.getElementById('formProyecto').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const datos = {
-                semillero_id: document.getElementById('proyectoSemillero').value,
-                titulo: document.getElementById('proyectoTitulo').value,
-                estado: document.getElementById('proyectoEstado').value,
-                aliados: document.getElementById('proyectoAliados').value,
-                objetivo: document.getElementById('proyectoObjetivo').value,
-                entregables: document.getElementById('proyectoEntregables').value,
-                evidencia: document.getElementById('proyectoEvidencia').value
-            };
-            
-            const response = await fetch(`${API}/api/proyectos`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
-            
-            if (response.ok) {
-                toast.success('Proyecto creado');
-                document.getElementById('formProyecto').reset();
-                cargarProyectos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al crear proyecto');
-            }
-        });
-
-        async function eliminarProyecto(id) {
-            if (!confirm('¿Eliminar este proyecto?')) return;
-            const res = await fetch(`${API}/api/proyectos/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Proyecto eliminado');
-                cargarProyectos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar proyecto');
-            }
-        }
-
-        // ============ DOCUMENTOS ============
-        const dropZone = document.getElementById('dropZone');
-        const docArchivo = document.getElementById('docArchivo');
-        const dropText = document.getElementById('dropText');
-        const fileSelected = document.getElementById('fileSelected');
-        const fileName = document.getElementById('fileName');
-
-        dropZone.addEventListener('click', () => docArchivo.click());
-
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = 'rgba(57, 169, 0, 0.1)';
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.backgroundColor = 'transparent';
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = 'transparent';
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                docArchivo.files = files;
-                actualizarNombreArchivo(files[0]);
-            }
-        });
-
-        docArchivo.addEventListener('change', () => {
-            if (docArchivo.files.length > 0) {
-                actualizarNombreArchivo(docArchivo.files[0]);
-            }
-        });
-
-        function actualizarNombreArchivo(file) {
-            if (file.type !== 'application/pdf') {
-                toast.warning('Solo se permiten archivos PDF');
-                docArchivo.value = '';
-                dropText.style.display = 'block';
-                fileSelected.style.display = 'none';
-                return;
-            }
-            
-            fileName.textContent = file.name;
-            dropText.style.display = 'none';
-            fileSelected.style.display = 'block';
-        }
-
-        async function cargarDocumentos() {
-            const response = await fetch(`${API}/api/documentos`);
-            const documentos = await response.json();
-            
-            const lista = document.getElementById('listaDocumentos');
-            if (!documentos.length) {
-                lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>';
-                return;
-            }
-            
-            lista.innerHTML = `
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Archivo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${documentos.map(doc => `
-                            <tr>
-                                <td>${doc.id}</td>
-                                <td>${doc.nombre}</td>
-                                <td><span class="badge bg-info">${doc.tipo}</span></td>
-                                <td><a href="${doc.ruta_archivo}" target="_blank" class="text-decoration-none">📥 Descargar</a></td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})">🗑️ Eliminar</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        document.getElementById('formDocumento').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!docArchivo.files.length) {
-                toast.warning('Por favor selecciona un archivo PDF');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('nombre', document.getElementById('docNombre').value);
-            formData.append('tipo', document.getElementById('docTipo').value);
-            formData.append('descripcion', document.getElementById('docDescripcion').value);
-            formData.append('archivo', docArchivo.files[0]);
-            
-            try {
-                const response = await fetch(`${API}/api/documentos`, {
-                    method: 'POST',
-                    body: formData
+                // Remove active class from all sections
+                document.querySelectorAll('.section-content').forEach(el => {
+                    el.classList.remove('active');
                 });
-                
-                if (response.ok) {
-                    toast.success('Documento agregado');
-                    document.getElementById('formDocumento').reset();
-                    docArchivo.value = '';
-                    dropText.style.display = 'block';
-                    fileSelected.style.display = 'none';
-                    cargarDocumentos();
-                    cargarDashboard();
-                } else {
-                    const error = await response.json();
-                    toast.error('Error al subir documento: ' + (error.error || ''));
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                // Add active class to clicked item and corresponding section
+                item.classList.add('active');
+                const targetSection = document.getElementById(`${section}-section`);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    document.getElementById('pageTitle').textContent = 
+                        item.querySelector('span').textContent.trim();
                 }
-            } catch (error) {
-                toast.error('Error al subir archivo: ' + error.message);
-            }
+
+                // Close sidebar on mobile
+                if (window.innerWidth < 992) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                }
+            });
         });
 
-        async function eliminarDocumento(id) {
-            if (!confirm('¿Eliminar este documento?')) return;
-            const res = await fetch(`${API}/api/documentos/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Documento eliminado');
-                cargarDocumentos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar documento');
-            }
-        }
+        // Stat card click handling
+        document.querySelectorAll('.stat-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.getAttribute('data-section');
+                document.querySelector(`[data-section="${section}"]`).click();
+            });
+        });
 
-        // ============ CONTACTOS ============
-        async function cargarContactos() {
-            const response = await fetch(`${API}/api/contactos`);
-            const contactos = await response.json();
-            contactosCache = contactos;
-            
-            const lista = document.getElementById('listaContactos');
-            if (!contactos.length) {
-                lista.innerHTML = '<p class="text-muted">No hay mensajes aún</p>';
-                return;
-            }
-            
-            lista.innerHTML = `
-                <table class="table table-hover table-sm align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px;">ID</th>
-                            <th style="width: 160px;">Nombre</th>
-                            <th style="width: 220px;">Email</th>
-                            <th style="width: 160px;">Asunto</th>
-                            <th>Mensaje</th>
-                            <th style="width: 110px;">Fecha</th>
-                            <th style="width: 140px;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${contactos.map(c => `
-                            <tr>
-                                <td>${c.id}</td>
-                                <td>${c.nombre}</td>
-                                <td><small>${c.email}</small></td>
-                                <td><small>${c.asunto}</small></td>
-                                <td style="max-width: 260px;">
-                                    <small class="text-muted text-truncate d-inline-block w-100" style="white-space: nowrap;">
-                                        ${c.mensaje}
-                                    </small>
-                                </td>
-                                <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-end">
-                                        <button class="btn btn-sm btn-ceai"
-                                            onclick="verContacto(${c.id})">
-                                            Ver
-                                        </button>
-                                        <button class="btn btn-sm btn-danger"
-                                            onclick="eliminarContacto(${c.id})">
-                                            🗑️
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        async function eliminarContacto(id) {
-            if (!confirm('¿Eliminar este mensaje?')) return;
-            const res = await fetch(`${API}/api/contactos/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Mensaje eliminado');
-                cargarContactos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar mensaje');
-            }
-        }
-
-        function verContacto(id) {
-            const c = contactosCache.find(x => x.id === id);
-            if (!c) return;
-
-            document.getElementById('detalleNombre').textContent = c.nombre;
-            document.getElementById('detalleEmail').textContent = c.email;
-            document.getElementById('detalleAsunto').textContent = c.asunto;
-            document.getElementById('detalleFecha').textContent =
-                c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
-            document.getElementById('detalleMensaje').textContent = c.mensaje;
-
-            const modalEl = document.getElementById('contactoModal');
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        }
-
-        // Iniciar
-        cargarDashboard();
+        // Quick action buttons
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = btn.getAttribute('data-section');
+                document.querySelector(`[data-section="${section}"]`).click();
+            });
+        });
     </script>
 </body>
 </html>
