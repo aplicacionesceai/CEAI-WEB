@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- NAVBAR COMPLETA -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="index.html">
@@ -21,18 +21,37 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="innovacion.html">Área de Innovación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grupo-investigacion.html">Grupo de Investigación</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="semillerosDropdown" role="button" data-bs-toggle="dropdown">Semilleros</a>
+                        <ul class="dropdown-menu" aria-labelledby="semillerosDropdown">
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=1">Soluciones Digitales</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=2">Automatización e Instrumentación</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=3">Fábrica Digital Interactiva</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=4">Gestión Energética</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?id=5">IA Aplicada al Entorno</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="aliados.html">Aliados</a></li>
                     <li class="nav-item"><a class="nav-link active" href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
+    <!-- Hero Section -->
+    <section style="background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-verde-oscuro) 100%);" class="text-white py-5">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold mb-3">Contáctenos</h1>
+            <p class="lead">Estamos aquí para escucharte y ayudarte con tus consultas</p>
+        </div>
+    </section>
 
     <!-- Contenido principal -->
     <main class="py-5">
         <div class="container">
-            <h1 class="mb-5">Contáctenos</h1>
-
             <div class="row">
                 <div class="col-lg-6 mb-5">
                     <h3 class="mb-4">Formulario de Contacto</h3>
@@ -56,7 +75,6 @@
                         <button type="submit" class="btn btn-ceai w-100">Enviar Mensaje</button>
                     </form>
                 </div>
-
 
                 <div class="col-lg-6">
                     <h3 class="mb-4">Información de Contacto</h3>
@@ -84,19 +102,39 @@
         </div>
     </main>
 
-
-    <!-- Footer -->
+    <!-- FOOTER COMPLETO -->
     <footer class="bg-ceai-dark text-white py-4 mt-5">
         <div class="container">
-            <p class="text-center small mb-0">&copy; 2026 CEAI SENA. Todos los derechos reservados.</p>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <h5 style="color: var(--ceai-verde);">CEAI SENA</h5>
+                    <p class="small">Área de Innovación y Competitividad</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Enlaces Rápidos</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                        <li><a href="semilleros.html" class="text-white-50 text-decoration-none">Semilleros</a></li>
+                        <li><a href="servicios.html" class="text-white-50 text-decoration-none">Servicios</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Redes Sociales</h6>
+                    <a href="#" class="text-white-50 text-decoration-none me-3">Facebook</a>
+                    <a href="#" class="text-white-50 text-decoration-none me-3">LinkedIn</a>
+                    <a href="#" class="text-white-50 text-decoration-none">Twitter</a>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <p class="text-center small mb-0">&copy; 2026 CEAI SENA Regional Valle. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
-
 
         const form = document.getElementById('contactForm');
         if (form) {
@@ -108,14 +146,12 @@
                 const asunto = document.getElementById('asunto').value.trim();
                 const mensaje = document.getElementById('mensaje').value.trim();
 
-
                 try {
                     const response = await fetch(`${API}/api/contactos`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ nombre, email, asunto, mensaje })
                     });
-
 
                     if (response.ok) {
                         alert('✅ ¡Mensaje enviado! Nos contactaremos pronto.');
