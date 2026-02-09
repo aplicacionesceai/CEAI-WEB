@@ -507,239 +507,6 @@
         }
     </script>
 
-    <!-- ========== SISTEMA DE SESIÓN CON TEMPORIZADOR (COMPACTO) ========== -->
-    <style>
-        /* ========== CUADRO DE SESIÓN COMPACTO (Esquina superior derecha) ========== */
-        .session-box {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-azul-dark) 100%);
-            color: white;
-            padding: 12px 18px;
-            border-radius: 12px;
-            z-index: 1050;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            min-width: 160px;
-        }
-
-        .session-box.warning {
-            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
-            animation: pulseWarning 1s ease infinite;
-        }
-
-        @keyframes pulseWarning {
-            0%, 100% { 
-                box-shadow: 0 4px 20px rgba(255, 107, 107, 0.5);
-                transform: scale(1);
-            }
-            50% { 
-                box-shadow: 0 6px 30px rgba(255, 107, 107, 0.8);
-                transform: scale(1.02);
-            }
-        }
-
-        .session-timer-compact {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .timer-icon-compact {
-            font-size: 1.2rem;
-            animation: tickTock 1s ease-in-out infinite;
-        }
-
-        @keyframes tickTock {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(15deg); }
-        }
-
-        .timer-display-compact {
-            font-family: 'Courier New', monospace;
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-align: center;
-            color: white;
-        }
-
-        .btn-extend-compact {
-            background: var(--ceai-verde);
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .btn-extend-compact:hover {
-            background: var(--ceai-verde-oscuro);
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(57, 169, 0, 0.5);
-        }
-
-        .warning-text-compact {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-align: center;
-            color: white;
-            margin-top: 2px;
-        }
-
-        /* Responsive para mobile */
-        @media (max-width: 992px) {
-            .session-box {
-                top: 70px;
-                right: 15px;
-                left: auto;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .session-box {
-                top: 70px;
-                right: 10px;
-                min-width: 140px;
-                padding: 10px 14px;
-            }
-
-            .timer-display-compact {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
-
-    <!-- ✅ CUADRO DE SESIÓN COMPACTO (Esquina superior derecha) -->
-    <div class="session-box" id="sessionBox">
-        <div class="session-timer-compact">
-            <span class="timer-icon-compact">⏱️</span>
-        </div>
-        <div class="timer-display-compact" id="timerDisplay">05:00</div>
-        <div id="warningMessage" class="warning-text-compact" style="display: none;">
-            ⚠️ Expirando
-        </div>
-        <button class="btn-extend-compact" id="btnExtend" onclick="extenderSesion()">
-            🔄 Extender
-        </button>
-    </div>
-
-    <script>
-        // ========== CONFIGURACIÓN DE SESIÓN ==========
-        const SESSION_TIMEOUT = 5 * 60; // 5 minutos en segundos
-        const WARNING_TIME = 2 * 60; // Advertencia a los 2 minutos
-        let sessionTimer = SESSION_TIMEOUT;
-        let sessionInterval = null;
-        let lastActivity = Date.now();
-
-        // ========== INICIAR SESIÓN ==========
-        function iniciarSesion() {
-            sessionTimer = SESSION_TIMEOUT;
-            lastActivity = Date.now();
-            
-            if (sessionInterval) clearInterval(sessionInterval);
-            
-            sessionInterval = setInterval(() => {
-                sessionTimer--;
-                actualizarDisplay();
-                
-                if (sessionTimer <= 0) {
-                    expirarSesion();
-                } else if (sessionTimer <= WARNING_TIME) {
-                    mostrarAdvertencia();
-                } else {
-                    ocultarAdvertencia();
-                }
-            }, 1000);
-            
-            actualizarDisplay();
-            ocultarAdvertencia();
-        }
-
-        // ========== ACTUALIZAR DISPLAY ==========
-        function actualizarDisplay() {
-            const minutos = Math.floor(sessionTimer / 60);
-            const segundos = sessionTimer % 60;
-            const display = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-            document.getElementById('timerDisplay').textContent = display;
-        }
-
-        // ========== MOSTRAR/OCULTAR ADVERTENCIA ==========
-        function mostrarAdvertencia() {
-            const box = document.getElementById('sessionBox');
-            const warning = document.getElementById('warningMessage');
-            box.classList.add('warning');
-            warning.style.display = 'block';
-        }
-
-        function ocultarAdvertencia() {
-            const box = document.getElementById('sessionBox');
-            const warning = document.getElementById('warningMessage');
-            box.classList.remove('warning');
-            warning.style.display = 'none';
-        }
-
-        // ========== EXTENDER SESIÓN ==========
-        function extenderSesion() {
-            sessionTimer = SESSION_TIMEOUT;
-            lastActivity = Date.now();
-            ocultarAdvertencia();
-            
-            // Mostrar notificación
-            if (typeof toast !== 'undefined') {
-                toast.success('⏱️ Sesión extendida por 5 minutos más');
-            } else {
-                console.log('⏱️ Sesión extendida por 5 minutos más');
-            }
-        }
-
-        // ========== EXPIRAR SESIÓN ==========
-        function expirarSesion() {
-            clearInterval(sessionInterval);
-            localStorage.removeItem('ceai_admin_logged');
-            alert('⏰ Tu sesión ha expirado por inactividad.\n\nSerás redirigido al login.');
-            window.location.href = 'login.html';
-        }
-
-        // ========== DETECTAR ACTIVIDAD DEL USUARIO ==========
-        const actividades = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-        
-        actividades.forEach(evento => {
-            document.addEventListener(evento, () => {
-                const ahora = Date.now();
-                // Solo extender si ha pasado al menos 10 segundos desde última actividad
-                if (ahora - lastActivity > 10000) {
-                    lastActivity = ahora;
-                    // Extender automáticamente si quedan menos de 2 minutos
-                    if (sessionTimer < WARNING_TIME && sessionTimer > 0) {
-                        sessionTimer = SESSION_TIMEOUT;
-                        ocultarAdvertencia();
-                    }
-                }
-            }, true);
-        });
-
-        // ========== INICIAR AL CARGAR ==========
-        window.addEventListener('DOMContentLoaded', () => {
-            iniciarSesion();
-        });
-    </script>
-
     <!-- Overlay para mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -1236,16 +1003,11 @@
                 options: {
                     responsive: true,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0 }
-                        }
-                    }
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
                 }
             });
 
-            // Gráfico de contactos por día
+            // Gráfico de contactos
             const porDia = {};
             contactos.forEach(c => {
                 if (!c.created_at) return;
@@ -1253,6 +1015,7 @@
                 const key = d.toLocaleDateString('es-ES');
                 porDia[key] = (porDia[key] || 0) + 1;
             });
+
             const labels = Object.keys(porDia);
             const valores = Object.values(porDia);
 
@@ -1275,12 +1038,7 @@
                 options: {
                     responsive: true,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0 }
-                        }
-                    }
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
                 }
             });
 
@@ -1289,29 +1047,39 @@
             ulNoticias.innerHTML = noticias
                 .slice(-5)
                 .reverse()
-                .map(n => `<li class="list-group-item d-flex justify-content-between align-items-center"><span>${n.titulo}</span> <span class="text-muted ms-2">${n.fecha}</span></li>`)
-                .join('');
+                .map(n => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${n.titulo}</span>
+                        <span class="text-muted ms-2">${n.fecha}</span>
+                    </li>
+                `).join('');
 
             // Últimos contactos
             const ulContactos = document.getElementById('ultimosContactos');
             ulContactos.innerHTML = contactos
                 .slice(-5)
                 .reverse()
-                .map(c => `<li class="list-group-item d-flex justify-content-between align-items-center"><span>${c.nombre}</span> <span class="text-muted ms-2">${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</span></li>`)
-                .join('');
+                .map(c => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${c.nombre}</span>
+                        <span class="text-muted ms-2">
+                            ${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}
+                        </span>
+                    </li>
+                `).join('');
         }
 
         // ========== NOTICIAS ==========
         async function cargarNoticias() {
             const response = await fetch(`${API}/api/noticias`);
             const noticias = await response.json();
-
+            
             const lista = document.getElementById('listaNoticias');
             if (!noticias.length) {
                 lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>';
                 return;
             }
-
+            
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
@@ -1331,9 +1099,9 @@
                                 <td>${n.titulo}</td>
                                 <td>${n.fecha}</td>
                                 <td>${n.tipo || 'Noticia'}</td>
-                                <td>${n.destacada == 1 ? '⭐' : ''}</td>
+                                <td>${n.destacada === 1 ? '⭐' : ''}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">Eliminar</button>
+                                    <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -1353,13 +1121,13 @@
                 tipo: document.getElementById('noticiaTipo').value,
                 destacada: document.getElementById('noticiaDestacada').checked ? 1 : 0
             };
-
+            
             const response = await fetch(`${API}/api/noticias`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
             });
-
+            
             if (response.ok) {
                 toast.success('Noticia creada correctamente');
                 document.getElementById('formNoticia').reset();
@@ -1367,13 +1135,12 @@
                 cargarDashboard();
             } else {
                 const error = await response.json();
-                toast.error('Error al crear noticia: ' + error.error);
+                toast.error('Error al crear noticia: ' + (error.error || ''));
             }
         });
 
         async function eliminarNoticia(id) {
             if (!confirm('¿Eliminar esta noticia?')) return;
-            
             const res = await fetch(`${API}/api/noticias/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Noticia eliminada');
@@ -1389,8 +1156,8 @@
             const response = await fetch(`${API}/api/semilleros`);
             const semilleros = await response.json();
             todosLosSemilleros = semilleros;
-
-            // Listener para filtrar por categoría en proyectos
+            
+            // Listener para filtrar por categoría
             const categoriaSelect = document.getElementById('proyectoCategoria');
             if (categoriaSelect) {
                 categoriaSelect.addEventListener('change', function() {
@@ -1402,25 +1169,25 @@
                         select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
                         return;
                     }
-
+                    
                     select.disabled = false;
                     const semillerosFiltrados = todosLosSemilleros.filter(s => s.categoria === categoriaSeleccionada);
                     
                     if (semillerosFiltrados.length === 0) {
                         select.innerHTML = '<option value="">No hay semilleros en esta categoría</option>';
                     } else {
-                        select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' + 
+                        select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' +
                             semillerosFiltrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
                     }
                 });
             }
-
+            
             const lista = document.getElementById('listaSemilleros');
             if (!semilleros.length) {
                 lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
                 return;
             }
-
+            
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
@@ -1440,7 +1207,7 @@
                                 <td><span class="badge bg-info">${s.categoria || 'Sin categoría'}</span></td>
                                 <td>${s.linea}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">Eliminar</button>
+                                    <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -1460,13 +1227,13 @@
                 imagen: document.getElementById('semilleroImagen').value,
                 categoria: document.getElementById('semilleroCategoria').value
             };
-
+            
             const response = await fetch(`${API}/api/semilleros`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
             });
-
+            
             if (response.ok) {
                 toast.success('Semillero creado');
                 document.getElementById('formSemillero').reset();
@@ -1479,7 +1246,6 @@
 
         async function eliminarSemillero(id) {
             if (!confirm('¿Eliminar este semillero?')) return;
-            
             const res = await fetch(`${API}/api/semilleros/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Semillero eliminado');
@@ -1494,13 +1260,13 @@
         async function cargarProyectos() {
             const response = await fetch(`${API}/api/proyectos`);
             const proyectos = await response.json();
-
+            
             const lista = document.getElementById('listaProyectos');
             if (!proyectos.length) {
                 lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>';
                 return;
             }
-
+            
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
@@ -1519,10 +1285,16 @@
                                 <td>${p.titulo}</td>
                                 <td>${p.semillero_id}</td>
                                 <td>
-                                    <span class="badge ${p.estado === 'En ejecución' ? 'bg-primary' : p.estado === 'Finalizado' ? 'bg-success' : 'bg-warning'}">${p.estado}</span>
+                                    <span class="badge ${
+                                        p.estado === 'En ejecución'
+                                            ? 'bg-primary'
+                                            : p.estado === 'Finalizado'
+                                            ? 'bg-success'
+                                            : 'bg-warning'
+                                    }">${p.estado}</span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})">Eliminar</button>
+                                    <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})">🗑️ Eliminar</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -1543,13 +1315,13 @@
                 entregables: document.getElementById('proyectoEntregables').value,
                 evidencia: document.getElementById('proyectoEvidencia').value
             };
-
+            
             const response = await fetch(`${API}/api/proyectos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
             });
-
+            
             if (response.ok) {
                 toast.success('Proyecto creado');
                 document.getElementById('formProyecto').reset();
@@ -1562,7 +1334,6 @@
 
         async function eliminarProyecto(id) {
             if (!confirm('¿Eliminar este proyecto?')) return;
-            
             const res = await fetch(`${API}/api/proyectos/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Proyecto eliminado');
@@ -1594,6 +1365,7 @@
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.style.backgroundColor = 'transparent';
+            
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 docArchivo.files = files;
@@ -1615,6 +1387,7 @@
                 fileSelected.style.display = 'none';
                 return;
             }
+            
             fileName.textContent = file.name;
             dropText.style.display = 'none';
             fileSelected.style.display = 'block';
@@ -1623,13 +1396,13 @@
         async function cargarDocumentos() {
             const response = await fetch(`${API}/api/documentos`);
             const documentos = await response.json();
-
+            
             const lista = document.getElementById('listaDocumentos');
             if (!documentos.length) {
                 lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>';
                 return;
             }
-
+            
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
@@ -1647,9 +1420,9 @@
                                 <td>${doc.id}</td>
                                 <td>${doc.nombre}</td>
                                 <td><span class="badge bg-info">${doc.tipo}</span></td>
-                                <td><a href="${doc.ruta_archivo}" target="_blank" class="text-decoration-none">📄 Descargar</a></td>
+                                <td><a href="${doc.ruta_archivo}" target="_blank" class="text-decoration-none">📥 Descargar</a></td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})">Eliminar</button>
+                                    <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})">🗑️ Eliminar</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -1660,7 +1433,7 @@
 
         document.getElementById('formDocumento').addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
             if (!docArchivo.files.length) {
                 toast.warning('Por favor selecciona un archivo PDF');
                 return;
@@ -1671,13 +1444,13 @@
             formData.append('tipo', document.getElementById('docTipo').value);
             formData.append('descripcion', document.getElementById('docDescripcion').value);
             formData.append('archivo', docArchivo.files[0]);
-
+            
             try {
                 const response = await fetch(`${API}/api/documentos`, {
                     method: 'POST',
                     body: formData
                 });
-
+                
                 if (response.ok) {
                     toast.success('Documento agregado');
                     document.getElementById('formDocumento').reset();
@@ -1688,7 +1461,7 @@
                     cargarDashboard();
                 } else {
                     const error = await response.json();
-                    toast.error('Error al subir documento: ' + error.error);
+                    toast.error('Error al subir documento: ' + (error.error || ''));
                 }
             } catch (error) {
                 toast.error('Error al subir archivo: ' + error.message);
@@ -1697,7 +1470,6 @@
 
         async function eliminarDocumento(id) {
             if (!confirm('¿Eliminar este documento?')) return;
-            
             const res = await fetch(`${API}/api/documentos/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Documento eliminado');
@@ -1713,24 +1485,24 @@
             const response = await fetch(`${API}/api/contactos`);
             const contactos = await response.json();
             contactosCache = contactos;
-
+            
             const lista = document.getElementById('listaContactos');
             if (!contactos.length) {
                 lista.innerHTML = '<p class="text-muted">No hay mensajes aún</p>';
                 return;
             }
-
+            
             lista.innerHTML = `
                 <table class="table table-hover table-sm align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 50px">ID</th>
-                            <th style="width: 160px">Nombre</th>
-                            <th style="width: 220px">Email</th>
-                            <th style="width: 160px">Asunto</th>
+                            <th style="width: 50px;">ID</th>
+                            <th style="width: 160px;">Nombre</th>
+                            <th style="width: 220px;">Email</th>
+                            <th style="width: 160px;">Asunto</th>
                             <th>Mensaje</th>
-                            <th style="width: 110px">Fecha</th>
-                            <th style="width: 140px">Acciones</th>
+                            <th style="width: 110px;">Fecha</th>
+                            <th style="width: 140px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1740,8 +1512,10 @@
                                 <td>${c.nombre}</td>
                                 <td><small>${c.email}</small></td>
                                 <td><small>${c.asunto}</small></td>
-                                <td style="max-width: 260px">
-                                    <small class="text-muted text-truncate d-inline-block w-100" style="white-space: nowrap">${c.mensaje}</small>
+                                <td style="max-width: 260px;">
+                                    <small class="text-muted text-truncate d-inline-block w-100" style="white-space: nowrap;">
+                                        ${c.mensaje}
+                                    </small>
                                 </td>
                                 <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
                                 <td>
@@ -1759,7 +1533,6 @@
 
         async function eliminarContacto(id) {
             if (!confirm('¿Eliminar este mensaje?')) return;
-            
             const res = await fetch(`${API}/api/contactos/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.info('Mensaje eliminado');
@@ -1777,7 +1550,8 @@
             document.getElementById('detalleNombre').textContent = c.nombre;
             document.getElementById('detalleEmail').textContent = c.email;
             document.getElementById('detalleAsunto').textContent = c.asunto;
-            document.getElementById('detalleFecha').textContent = c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
+            document.getElementById('detalleFecha').textContent =
+                c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
             document.getElementById('detalleMensaje').textContent = c.mensaje;
 
             const modalEl = document.getElementById('contactoModal');
@@ -1785,7 +1559,7 @@
             modal.show();
         }
 
-        // Iniciar
+        // ========== INICIALIZACIÓN ==========
         cargarDashboard();
     </script>
 </body>
