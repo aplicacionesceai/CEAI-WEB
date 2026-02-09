@@ -57,7 +57,7 @@ const upload = multer({
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 // 🔧 CORRECCIÓN: Servir uploads correctamente
 app.use('/uploads', express.static(uploadsDir));
 
