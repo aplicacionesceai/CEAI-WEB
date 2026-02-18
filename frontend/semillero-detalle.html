@@ -8,18 +8,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Fix layout descuadrado */
+        /* ========== TIPOGRAFÍA GLOBAL AJUSTADA ========== */
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ========== LAYOUT DETALLE SEMILLERO ========== */
         #semilleroContent .row {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
         }
-        
         #semilleroContent .col-md-8 {
             flex: 0 0 66.666667%;
             max-width: 66.666667%;
         }
-        
         #semilleroContent .col-md-4 {
             flex: 0 0 33.333333%;
             max-width: 33.333333%;
@@ -27,25 +33,153 @@
             top: 100px;
             align-self: flex-start;
         }
-        
         #semilleroContent .col-md-4 img {
             width: 100%;
             height: auto;
-            max-height: 350px;
+            max-height: 320px;
             object-fit: cover;
         }
-        
+
+        /* ========== TÍTULOS ESCALADOS ========== */
+        #semilleroContent h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        #semilleroContent h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        #semilleroContent h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+        #semilleroContent .lead {
+            font-size: 0.97rem;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        /* ========== CARD INFORMACIÓN SEMILLERO ========== */
+        .info-semillero-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 1.2rem;
+        }
+        .info-semillero-card .card-body {
+            padding: 1.1rem 1.3rem;
+        }
+        .info-semillero-card li {
+            font-size: 0.88rem;
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== SECCIÓN PROYECTOS ========== */
+        .proyectos-toggle-btn {
+            background: linear-gradient(135deg, var(--ceai-verde, #39a900) 0%, #4dc800 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(57,169,0,0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        .proyectos-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(57,169,0,0.45);
+        }
+        .proyectos-toggle-btn .count-badge {
+            background: rgba(255,255,255,0.25);
+            border-radius: 20px;
+            padding: 1px 9px;
+            font-size: 0.8rem;
+        }
+        #proyectosListado {
+            display: none;
+            animation: fadeSlide 0.35s ease;
+        }
+        #proyectosListado.visible {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== TARJETAS DE PROYECTO ========== */
+        .proyecto-card {
+            background: #fff;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 0.9rem;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--ceai-verde, #39a900);
+        }
+        .proyecto-card h5 {
+            font-size: 0.93rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: var(--ceai-azul, #00304d);
+        }
+        .proyecto-card p {
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+            color: #444;
+        }
+        .estado-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        /* ========== SIDEBAR CARDS ========== */
+        .sidebar-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 1rem;
+        }
+        .sidebar-card .card-body {
+            padding: 1.1rem;
+        }
+        .sidebar-card h5 {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .sidebar-card .btn {
+            font-size: 0.85rem;
+        }
+        .sidebar-card a {
+            font-size: 0.85rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             #semilleroContent .col-md-8,
             #semilleroContent .col-md-4 {
                 flex: 0 0 100%;
                 max-width: 100%;
             }
-            
             #semilleroContent .col-md-4 {
                 position: static;
                 margin-top: 2rem;
             }
+            #semilleroContent h1 { font-size: 1.35rem; }
+            #semilleroContent h3 { font-size: 1.05rem; }
         }
     </style>
 </head>
@@ -74,19 +208,17 @@
     </nav>
 
     <!-- Contenido principal -->
-    <main class="py-5">
+    <main class="py-4">
         <div class="container">
-            <button class="btn btn-outline-secondary mb-4" onclick="window.history.back()">
+            <button class="btn btn-outline-secondary btn-sm mb-3" onclick="window.history.back()">
                 ← Volver
             </button>
-
-            <!-- Aquí se carga el contenido dinámicamente -->
             <div id="semilleroContent">
                 <div class="text-center py-5">
                     <div class="spinner-border text-success" role="status">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
-                    <p class="mt-3 text-muted">Cargando semillero...</p>
+                    <p class="mt-3 text-muted" style="font-size:0.9rem;">Cargando semillero...</p>
                 </div>
             </div>
         </div>
@@ -97,11 +229,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <h5 style="color: var(--ceai-verde);">CEAI SENA</h5>
+                    <h5 style="color: var(--ceai-verde); font-size:1rem;">CEAI SENA</h5>
                     <p class="small">Área de Innovación y Competitividad - Regional Valle</p>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <h6>Enlaces Rápidos</h6>
+                    <h6 style="font-size:0.9rem;">Enlaces Rápidos</h6>
                     <ul class="list-unstyled small">
                         <li><a href="index.html" class="text-white-50 text-decoration-none">Inicio</a></li>
                         <li><a href="contacto.html" class="text-white-50 text-decoration-none">Contacto</a></li>
@@ -109,7 +241,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <h6>Enlaces Externos</h6>
+                    <h6 style="font-size:0.9rem;">Enlaces Externos</h6>
                     <ul class="list-unstyled small">
                         <li><a href="https://www.sena.edu.co" target="_blank" class="text-white-50 text-decoration-none">SENA Colombia</a></li>
                         <li><a href="https://www.sena.edu.co/es-co/" target="_blank" class="text-white-50 text-decoration-none">Regional Valle</a></li>
@@ -125,78 +257,59 @@
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
 
-        // 🔥 FUNCIÓN PRINCIPAL: Cargar semillero
         async function cargarSemillero() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
             const categoria = urlParams.get('categoria');
 
-            if (!id && !categoria) {
-                mostrarError('No se especificó un semillero');
-                return;
-            }
+            if (!id && !categoria) { mostrarError('No se especificó un semillero'); return; }
 
             try {
                 let semilleros = [];
 
                 if (id) {
-                    // 🔍 Buscar por ID
                     const response = await fetch(`${API}/api/semilleros/${id}`);
                     if (response.ok) {
-                        const semillero = await response.json();
-                        if (semillero) {
-                            semilleros = [semillero];
-                        }
+                        const s = await response.json();
+                        if (s) semilleros = [s];
                     }
                 } else if (categoria) {
-                    // 🔍 Buscar por categoría
                     const response = await fetch(`${API}/api/semilleros/categoria/${encodeURIComponent(categoria)}`);
-                    if (response.ok) {
-                        semilleros = await response.json();
-                    }
+                    if (response.ok) semilleros = await response.json();
                 }
 
-                if (semilleros.length === 0) {
-                    mostrarError('Semillero no encontrado');
-                    return;
-                }
-
-                // Si hay varios, mostrar lista
+                if (semilleros.length === 0) { mostrarError('Semillero no encontrado'); return; }
                 if (semilleros.length > 1) {
                     mostrarListaSemilleros(semilleros, categoria);
                 } else {
-                    // Si hay solo uno, mostrar detalle
                     mostrarDetalleSemillero(semilleros[0]);
                 }
-
             } catch (error) {
                 console.error('Error:', error);
                 mostrarError('Error al cargar el semillero');
             }
         }
 
-        // 🎨 Mostrar LISTA de semilleros (cuando hay varios en la categoría)
         function mostrarListaSemilleros(semilleros, categoria) {
             const container = document.getElementById('semilleroContent');
             container.innerHTML = `
-                <h1 class="mb-4" style="color: var(--ceai-azul);">${categoria || 'Semilleros'}</h1>
-                <p class="lead mb-5">Selecciona un semillero para ver más detalles</p>
-
+                <h1 style="color: var(--ceai-azul);">${categoria || 'Semilleros'}</h1>
+                <p class="text-muted" style="font-size:0.9rem; margin-bottom:1.5rem;">Selecciona un semillero para ver más detalles</p>
                 <div class="row">
                     ${semilleros.map(s => `
                         <div class="col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm" style="transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                                ${s.imagen ? `<img src="${s.imagen}" class="card-img-top" alt="${s.nombre}" style="height: 200px; object-fit: cover;">` : ''}
-                                <div class="card-body">
-                                    <h5 class="card-title" style="color: var(--ceai-verde);">${s.nombre}</h5>
-                                    <p class="card-text">
+                            <div class="card h-100 shadow-sm" style="transition:transform .3s; border-radius:12px; border:none;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                                ${s.imagen ? `<img src="${s.imagen}" class="card-img-top" alt="${s.nombre}" style="height:190px;object-fit:cover;border-radius:12px 12px 0 0;">` : ''}
+                                <div class="card-body p-3">
+                                    <h5 class="card-title" style="color:var(--ceai-verde);font-size:0.95rem;">${s.nombre}</h5>
+                                    <p class="card-text" style="font-size:0.83rem;">
                                         <strong>📚 Línea:</strong> ${s.linea}<br>
                                         <strong>🎯 Enfoque:</strong> ${s.enfoque}
                                     </p>
-                                    <p class="card-text small text-muted">${s.descripcion.substring(0, 100)}...</p>
+                                    <p class="card-text text-muted" style="font-size:0.8rem;">${(s.descripcion||'').substring(0,100)}...</p>
                                 </div>
-                                <div class="card-footer bg-white border-top-0">
-                                    <a href="semillero-detalle.html?id=${s.id}" class="btn btn-ceai w-100">Ver detalles completos</a>
+                                <div class="card-footer bg-white border-top-0 px-3 pb-3">
+                                    <a href="semillero-detalle.html?id=${s.id}" class="btn btn-ceai btn-sm w-100" style="font-size:0.85rem;">Ver detalles</a>
                                 </div>
                             </div>
                         </div>
@@ -205,84 +318,83 @@
             `;
         }
 
-        // 🎨 Mostrar DETALLE de un solo semillero
         async function mostrarDetalleSemillero(semillero) {
             const container = document.getElementById('semilleroContent');
-
-            // Cargar proyectos del semillero
             const proyectos = await cargarProyectos(semillero.id);
+            const totalProyectos = proyectos.length;
+
+            // Renderizar la descripción: si viene con HTML (de Quill), mostrarlo; si no, como texto
+            const descHTML = semillero.descripcion && semillero.descripcion.trim().startsWith('<')
+                ? semillero.descripcion
+                : `<p>${semillero.descripcion || ''}</p>`;
 
             container.innerHTML = `
                 <div class="row">
                     <div class="col-md-8">
-                        <h1 class="mb-3" style="color: var(--ceai-azul);">${semillero.nombre}</h1>
-                        <p class="lead">${semillero.descripcion}</p>
+                        <h1 style="color: var(--ceai-azul);">${semillero.nombre}</h1>
+                        <div class="descripcion-content mb-3" style="font-size:0.95rem; line-height:1.7; color:#444;">${descHTML}</div>
 
-                        <div class="card mb-4 border-0 shadow-sm">
+                        <div class="info-semillero-card card">
                             <div class="card-body">
-                                <h5 class="card-title" style="color: var(--ceai-verde);">📋 Información del Semillero</h5>
-                                <ul class="list-unstyled mt-3">
-                                    <li class="mb-2">
-                                        <strong>📂 Categoría:</strong> 
-                                        <span class="badge bg-info">${semillero.categoria || 'Sin categoría'}</span>
-                                    </li>
-                                    <li class="mb-2"><strong>📚 Línea de Investigación:</strong> ${semillero.linea}</li>
-                                    <li class="mb-2"><strong>🎯 Enfoque:</strong> ${semillero.enfoque}</li>
+                                <h5 style="color:var(--ceai-verde);">📋 Información del Semillero</h5>
+                                <ul class="list-unstyled mt-2 mb-0">
+                                    <li class="mb-1"><strong>📂 Categoría:</strong> <span class="badge bg-info" style="font-size:0.78rem;">${semillero.categoria || 'Sin categoría'}</span></li>
+                                    <li class="mb-1"><strong>📚 Línea de Investigación:</strong> ${semillero.linea}</li>
+                                    <li><strong>🎯 Enfoque:</strong> ${semillero.enfoque}</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <!-- Proyectos -->
-                        <h3 class="mt-4 mb-3" style="color: var(--ceai-azul);">🚀 Proyectos</h3>
-                        ${proyectos.length === 0 
-                            ? '<div class="alert alert-info"><strong>ℹ️ Info:</strong> No hay proyectos registrados para este semillero.</div>'
-                            : `
-                                <div class="row">
-                                    ${proyectos.map(p => `
-                                        <div class="col-12 mb-3">
-                                            <div class="card border-0 shadow-sm">
-                                                <div class="card-body">
-                                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                                        <h5 class="card-title mb-0">${p.titulo}</h5>
-                                                        <span class="badge ${
-                                                            p.estado === 'En ejecución' ? 'bg-primary' :
-                                                            p.estado === 'Finalizado' ? 'bg-success' : 
-                                                            p.estado === 'Planeación' ? 'bg-warning text-dark' : 'bg-secondary'
-                                                        }">${p.estado}</span>
-                                                    </div>
-                                                    ${p.aliados ? `<p class="mt-2 mb-1"><strong>🤝 Aliados:</strong> ${p.aliados}</p>` : ''}
-                                                    ${p.objetivo ? `<p class="mb-1"><strong>🎯 Objetivo:</strong> ${p.objetivo}</p>` : ''}
-                                                    ${p.entregables ? `<p class="mb-1"><strong>📦 Entregables:</strong> ${p.entregables}</p>` : ''}
-                                                    ${p.evidencia ? `<p class="mb-0"><strong>🔗 Evidencia:</strong> <a href="${p.evidencia}" target="_blank" class="text-decoration-none">Ver evidencia</a></p>` : ''}
-                                                </div>
+                        <!-- Sección Proyectos con toggle -->
+                        <div class="mt-3">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <h3 style="color:var(--ceai-azul); margin:0;">🚀 Proyectos</h3>
+                                ${totalProyectos > 0 ? `
+                                <button class="proyectos-toggle-btn" id="btnVerProyectos" onclick="toggleProyectos()">
+                                    📂 Ver proyectos <span class="count-badge">${totalProyectos}</span>
+                                </button>` : ''}
+                            </div>
+
+                            ${totalProyectos === 0
+                                ? '<div class="alert alert-info py-2" style="font-size:0.88rem;"><strong>ℹ️</strong> No hay proyectos registrados para este semillero.</div>'
+                                : `<div id="proyectosListado">
+                                    ${proyectos.map(p => {
+                                        const badgeColor = p.estado === 'En ejecución' ? '#0d6efd' : p.estado === 'Finalizado' ? '#198754' : '#ffc107';
+                                        const badgeText = p.estado === 'Planeación' ? '#333' : '#fff';
+                                        return `<div class="proyecto-card">
+                                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                                <h5>${p.titulo}</h5>
+                                                <span class="estado-badge" style="background:${badgeColor}; color:${badgeText};">${p.estado}</span>
                                             </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `
-                        }
+                                            ${p.aliados ? `<p>🤝 <strong>Aliados:</strong> ${p.aliados}</p>` : ''}
+                                            ${p.objetivo ? `<p>🎯 <strong>Objetivo:</strong> ${p.objetivo}</p>` : ''}
+                                            ${p.entregables ? `<p>📦 <strong>Entregables:</strong> ${p.entregables}</p>` : ''}
+                                            ${p.evidencia ? `<p>🔗 <strong>Evidencia:</strong> <a href="${p.evidencia}" target="_blank" style="font-size:0.85rem;">Ver</a></p>` : ''}
+                                        </div>`;
+                                    }).join('')}
+                                </div>`
+                            }
+                        </div>
                     </div>
 
                     <div class="col-md-4">
-                        ${semillero.imagen ? `
-                            <img src="${semillero.imagen}" class="img-fluid rounded shadow mb-4" alt="${semillero.nombre}">
-                        ` : ''}
+                        ${semillero.imagen ? `<img src="${semillero.imagen}" class="img-fluid rounded shadow-sm mb-3" alt="${semillero.nombre}" style="border-radius:12px;">` : ''}
 
-                        <div class="card border-0 shadow-sm mb-3">
+                        <div class="sidebar-card card">
                             <div class="card-body text-center">
-                                <h5 class="card-title" style="color: var(--ceai-verde);">💡 ¿Te interesa participar?</h5>
-                                <p class="card-text small text-muted">Si estás interesado en formar parte de este semillero, contáctanos para más información.</p>
-                                <a href="contacto.html" class="btn btn-ceai w-100 mt-2">Contactar</a>
+                                <h5 style="color:var(--ceai-verde);">💡 ¿Te interesa participar?</h5>
+                                <p class="text-muted" style="font-size:0.83rem;">Si estás interesado en formar parte de este semillero, contáctanos para más información.</p>
+                                <a href="contacto.html" class="btn btn-ceai w-100 mt-1" style="font-size:0.85rem;">Contactar</a>
                             </div>
                         </div>
 
-                        <div class="card border-0 shadow-sm">
+                        <div class="sidebar-card card">
                             <div class="card-body">
-                                <h6 class="card-title" style="color: var(--ceai-azul);">🔗 Enlaces útiles</h6>
-                                <ul class="list-unstyled small mb-0">
-                                    <li class="mb-2"><a href="semilleros.html" class="text-decoration-none">📚 Ver todos los semilleros</a></li>
-                                    <li class="mb-2"><a href="grupo-investigacion.html" class="text-decoration-none">👥 Grupo de Investigación</a></li>
-                                    <li><a href="innovacion.html" class="text-decoration-none">💡 Área de Innovación</a></li>
+                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">🔗 Enlaces útiles</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-1"><a href="semilleros.html" class="text-decoration-none" style="font-size:0.83rem;">📚 Ver todos los semilleros</a></li>
+                                    <li class="mb-1"><a href="grupo-investigacion.html" class="text-decoration-none" style="font-size:0.83rem;">👥 Grupo de Investigación</a></li>
+                                    <li><a href="innovacion.html" class="text-decoration-none" style="font-size:0.83rem;">💡 Área de Innovación</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -291,13 +403,20 @@
             `;
         }
 
-        // 📦 Cargar proyectos de un semillero
+        function toggleProyectos() {
+            const listado = document.getElementById('proyectosListado');
+            const btn = document.getElementById('btnVerProyectos');
+            if (!listado) return;
+            const abierto = listado.classList.toggle('visible');
+            btn.innerHTML = abierto
+                ? `📂 Ocultar proyectos <span class="count-badge">${listado.querySelectorAll('.proyecto-card').length}</span>`
+                : `📂 Ver proyectos <span class="count-badge">${listado.querySelectorAll('.proyecto-card').length}</span>`;
+        }
+
         async function cargarProyectos(semilleroId) {
             try {
                 const response = await fetch(`${API}/api/proyectos/semillero/${semilleroId}`);
-                if (response.ok) {
-                    return await response.json();
-                }
+                if (response.ok) return await response.json();
                 return [];
             } catch (error) {
                 console.error('Error cargando proyectos:', error);
@@ -305,20 +424,18 @@
             }
         }
 
-        // ❌ Mostrar mensaje de error
         function mostrarError(mensaje) {
             const container = document.getElementById('semilleroContent');
             container.innerHTML = `
                 <div class="text-center py-5">
-                    <div style="font-size: 4rem; color: var(--ceai-verde);">🔍</div>
-                    <h2 class="mt-3" style="color: var(--ceai-azul);">Semillero no encontrado</h2>
-                    <p class="text-muted">${mensaje}</p>
-                    <a href="semilleros.html" class="btn btn-ceai btn-lg mt-3">← Ver todos los semilleros</a>
+                    <div style="font-size:3rem; color:var(--ceai-verde);">🔍</div>
+                    <h2 class="mt-3" style="color:var(--ceai-azul); font-size:1.3rem;">Semillero no encontrado</h2>
+                    <p class="text-muted" style="font-size:0.9rem;">${mensaje}</p>
+                    <a href="semilleros.html" class="btn btn-ceai mt-3" style="font-size:0.9rem;">← Ver todos los semilleros</a>
                 </div>
             `;
         }
 
-        // ▶️ Iniciar cuando cargue la página
         document.addEventListener('DOMContentLoaded', cargarSemillero);
     </script>
 </body>
