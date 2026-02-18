@@ -4,499 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrativo - CEAI SENA</title>
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <!-- Estilos CEAI -->
     <link rel="stylesheet" href="css/styles.css">
-
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        /* ====================================
-           ADMIN PANEL FUTURISTA - CEAI 2.0
-           ==================================== */
-        
-        body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            font-family: 'Roboto', sans-serif;
-            overflow-x: hidden;
+        body { background: linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); font-family:'Roboto',sans-serif; overflow-x:hidden; }
+        .sidebar { background:linear-gradient(180deg,var(--ceai-azul) 0%,var(--ceai-azul-dark) 100%); color:white; min-height:100vh; padding:25px 20px; position:fixed; top:0; left:0; width:280px; box-shadow:4px 0 20px rgba(0,0,0,.15); z-index:1000; transition:all .3s ease; overflow-y:auto; }
+        .sidebar-header { padding-bottom:20px; border-bottom:2px solid rgba(57,169,0,.3); margin-bottom:25px; }
+        .sidebar-header h4 { color:white; font-weight:800; font-size:1.6rem; margin:0; letter-spacing:-.5px; }
+        .sidebar-header span { color:var(--ceai-verde); text-shadow:0 0 15px rgba(57,169,0,.6); animation:pulseGlow 2s ease infinite; }
+        @keyframes pulseGlow { 0%,100%{text-shadow:0 0 15px rgba(57,169,0,.6)} 50%{text-shadow:0 0 25px rgba(57,169,0,.9)} }
+        .sidebar h5 { color:var(--ceai-verde); font-size:.85rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:15px; margin-top:20px; font-weight:700; }
+        .sidebar-link { color:rgba(255,255,255,.75); margin-bottom:8px; cursor:pointer; border-radius:12px; padding:14px 18px; transition:all .3s ease; display:flex; align-items:center; gap:12px; text-decoration:none; font-weight:500; font-size:.95rem; position:relative; overflow:hidden; }
+        .sidebar-link::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--ceai-verde); transform:scaleY(0); transition:transform .3s ease; }
+        .sidebar-link:hover,.sidebar-link.active { background:linear-gradient(90deg,var(--ceai-verde) 0%,var(--ceai-verde-light) 100%); color:white; transform:translateX(6px); box-shadow:0 4px 20px rgba(57,169,0,.5); }
+        .sidebar-link:hover::before,.sidebar-link.active::before { transform:scaleY(1); }
+        .sidebar-footer { margin-top:30px; padding-top:20px; border-top:1px solid rgba(255,255,255,.1); }
+        .content-wrapper { margin-left:280px; padding:35px; min-height:100vh; transition:all .3s ease; }
+        .content-section { display:none; animation:fadeInContent .5s ease; }
+        .content-section.active { display:block; }
+        @keyframes fadeInContent { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .section-header { background:linear-gradient(135deg,white 0%,#f8f9fa 100%); border-radius:18px; padding:28px 35px; margin-bottom:35px; box-shadow:0 4px 25px rgba(0,0,0,.1); border-left:6px solid var(--ceai-verde); }
+        .section-header h2 { color:var(--ceai-azul); font-weight:800; margin:0; font-size:1.9rem; }
+        .section-header p { margin:8px 0 0 0; color:#6c757d; }
+        .modern-card { background:white; border-radius:18px; padding:28px; margin-bottom:28px; box-shadow:0 6px 25px rgba(0,0,0,.09); border:1px solid rgba(0,0,0,.04); transition:all .3s ease; position:relative; overflow:hidden; }
+        .modern-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--ceai-verde),var(--ceai-verde-light)); }
+        .modern-card:hover { transform:translateY(-6px); box-shadow:0 12px 35px rgba(0,0,0,.14); }
+        .stat-card { background:linear-gradient(135deg,var(--ceai-verde) 0%,var(--ceai-verde-light) 100%); color:white; border-radius:18px; padding:28px; text-align:center; transition:all .4s ease; border:none; box-shadow:0 6px 20px rgba(57,169,0,.35); position:relative; overflow:hidden; }
+        .stat-card::after { content:''; position:absolute; top:-50%; right:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%); pointer-events:none; }
+        .stat-card:hover { transform:translateY(-10px) scale(1.03); box-shadow:0 15px 40px rgba(57,169,0,.5); }
+        .stat-card h5 { color:rgba(255,255,255,.95); font-size:.95rem; margin-bottom:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+        .stat-card h3 { color:white; font-size:2.8rem; font-weight:900; margin:0; text-shadow:0 3px 15px rgba(0,0,0,.25); }
+        .stat-card.variant-azul { background:linear-gradient(135deg,var(--ceai-azul) 0%,var(--ceai-azul-light) 100%); box-shadow:0 6px 20px rgba(0,48,77,.35); }
+        .stat-card.variant-azul:hover { box-shadow:0 15px 40px rgba(0,48,77,.5); }
+        .form-section { background:white; padding:35px; border-radius:18px; margin-bottom:35px; box-shadow:0 6px 25px rgba(0,0,0,.09); border-top:5px solid var(--ceai-verde); }
+        .form-section h5 { color:var(--ceai-azul); font-weight:700; margin-bottom:28px; font-size:1.3rem; }
+        .table-section { background:white; border-radius:18px; padding:28px; margin-top:28px; box-shadow:0 6px 25px rgba(0,0,0,.09); }
+        .table-section h5 { color:var(--ceai-azul); font-weight:700; margin-bottom:22px; font-size:1.2rem; }
+        .table thead th { border-top:none; border-bottom:3px solid var(--ceai-verde); color:var(--ceai-azul); font-weight:700; text-transform:uppercase; font-size:.85rem; letter-spacing:.8px; padding:15px; }
+        .table tbody tr { transition:all .25s ease; }
+        .table tbody tr:hover { background-color:rgba(57,169,0,.06); }
+        .modal-content { border-radius:18px; border:none; box-shadow:0 15px 60px rgba(0,0,0,.25); }
+        .modal-header { background:linear-gradient(90deg,var(--ceai-verde) 0%,var(--ceai-verde-light) 100%); color:white; border-radius:18px 18px 0 0; border:none; padding:20px 30px; }
+        .modal-header .modal-title { color:white; font-weight:700; }
+        .modal-header .btn-close { filter:brightness(0) invert(1); }
+        .quick-actions { background:linear-gradient(135deg,var(--ceai-azul) 0%,var(--ceai-azul-light) 100%); color:white; border-radius:18px; padding:28px; box-shadow:0 6px 25px rgba(0,48,77,.35); }
+        .quick-actions h5 { color:var(--ceai-verde); margin-bottom:18px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+        .quick-actions .btn { margin:6px; }
+        .sidebar-toggle { display:none; position:fixed; top:22px; left:22px; z-index:1100; background:var(--ceai-verde); color:white; border:none; padding:14px 17px; border-radius:12px; font-size:1.3rem; box-shadow:0 6px 20px rgba(57,169,0,.45); cursor:pointer; transition:all .3s ease; }
+        .sidebar-toggle:hover { background:var(--ceai-verde-oscuro); transform:scale(1.12); }
+        .sidebar-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); z-index:999; opacity:0; transition:opacity .3s ease; backdrop-filter:blur(4px); }
+        .sidebar-overlay.show { display:block; opacity:1; }
+        .sidebar::-webkit-scrollbar { width:7px; }
+        .sidebar::-webkit-scrollbar-track { background:rgba(0,0,0,.1); }
+        .sidebar::-webkit-scrollbar-thumb { background:var(--ceai-verde); border-radius:10px; }
+        .detail-box { white-space:pre-wrap; word-wrap:break-word; background:#f8f9fa; padding:15px; border-radius:10px; border:1px solid #e0e0e0; max-height:200px; overflow-y:auto; }
+        @media(max-width:992px){
+            .sidebar{transform:translateX(-100%);width:280px}
+            .sidebar.show{transform:translateX(0)}
+            .content-wrapper{margin-left:0;padding:85px 22px 22px}
+            .sidebar-toggle{display:block}
+            .section-header h2{font-size:1.5rem}
+            .stat-card h3{font-size:2.2rem}
         }
-
-        /* ========== SIDEBAR FUTURISTA ========== */
-        .sidebar {
-            background: linear-gradient(180deg, var(--ceai-azul) 0%, var(--ceai-azul-dark) 100%);
-            color: white;
-            min-height: 100vh;
-            padding: 25px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(57, 169, 0, 0.3);
-            margin-bottom: 25px;
-        }
-
-        .sidebar-header h4 {
-            color: white;
-            font-weight: 800;
-            font-size: 1.6rem;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .sidebar-header span {
-            color: var(--ceai-verde);
-            text-shadow: 0 0 15px rgba(57, 169, 0, 0.6);
-            animation: pulseGlow 2s ease infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { text-shadow: 0 0 15px rgba(57, 169, 0, 0.6); }
-            50% { text-shadow: 0 0 25px rgba(57, 169, 0, 0.9); }
-        }
-
-        .sidebar h5 {
-            color: var(--ceai-verde);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
-            margin-top: 20px;
-            font-weight: 700;
-        }
-
-        .sidebar-link {
-            color: rgba(255, 255, 255, 0.75);
-            margin-bottom: 8px;
-            cursor: pointer;
-            border-radius: 12px;
-            padding: 14px 18px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sidebar-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--ceai-verde);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: linear-gradient(90deg, var(--ceai-verde) 0%, var(--ceai-verde-light) 100%);
-            color: white;
-            transform: translateX(6px);
-            box-shadow: 0 4px 20px rgba(57, 169, 0, 0.5);
-        }
-
-        .sidebar-link:hover::before,
-        .sidebar-link.active::before {
-            transform: scaleY(1);
-        }
-
-        .sidebar-footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* ========== CONTENIDO PRINCIPAL ========== */
-        .content-wrapper {
-            margin-left: 280px;
-            padding: 35px;
-            min-height: 100vh;
-            transition: all 0.3s ease;
-        }
-
-        .content-section {
-            display: none;
-            animation: fadeInContent 0.5s ease;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        @keyframes fadeInContent {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ========== HEADERS DE SECCIÓN ========== */
-        .section-header {
-            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
-            border-radius: 18px;
-            padding: 28px 35px;
-            margin-bottom: 35px;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
-            border-left: 6px solid var(--ceai-verde);
-        }
-
-        .section-header h2 {
-            color: var(--ceai-azul);
-            font-weight: 800;
-            margin: 0;
-            font-size: 1.9rem;
-        }
-
-        .section-header p {
-            margin: 8px 0 0 0;
-            color: #6c757d;
-        }
-
-        /* ========== CARDS MODERNOS ========== */
-        .modern-card {
-            background: white;
-            border-radius: 18px;
-            padding: 28px;
-            margin-bottom: 28px;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.09);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modern-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--ceai-verde), var(--ceai-verde-light));
-        }
-
-        .modern-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.14);
-        }
-
-        /* ========== STATS CARDS ========== */
-        .stat-card {
-            background: linear-gradient(135deg, var(--ceai-verde) 0%, var(--ceai-verde-light) 100%);
-            color: white;
-            border-radius: 18px;
-            padding: 28px;
-            text-align: center;
-            transition: all 0.4s ease;
-            border: none;
-            box-shadow: 0 6px 20px rgba(57, 169, 0, 0.35);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 15px 40px rgba(57, 169, 0, 0.5);
-        }
-
-        .stat-card h5 {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-card h3 {
-            color: white;
-            font-size: 2.8rem;
-            font-weight: 900;
-            margin: 0;
-            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.25);
-        }
-
-        .stat-card.variant-azul {
-            background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-azul-light) 100%);
-            box-shadow: 0 6px 20px rgba(0, 48, 77, 0.35);
-        }
-
-        .stat-card.variant-azul:hover {
-            box-shadow: 0 15px 40px rgba(0, 48, 77, 0.5);
-        }
-
-        /* ========== FORMULARIOS ========== */
-        .form-section {
-            background: white;
-            padding: 35px;
-            border-radius: 18px;
-            margin-bottom: 35px;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.09);
-            border-top: 5px solid var(--ceai-verde);
-        }
-
-        .form-section h5 {
-            color: var(--ceai-azul);
-            font-weight: 700;
-            margin-bottom: 28px;
-            font-size: 1.3rem;
-        }
-
-        /* ========== TABLAS ========== */
-        .table-responsive {
-            background: white;
-            border-radius: 18px;
-            padding: 28px;
-            margin-top: 28px;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.09);
-        }
-
-        .table-responsive h5 {
-            color: var(--ceai-azul);
-            font-weight: 700;
-            margin-bottom: 22px;
-            font-size: 1.2rem;
-        }
-
-        .table thead th {
-            border-top: none;
-            border-bottom: 3px solid var(--ceai-verde);
-            color: var(--ceai-azul);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.8px;
-            padding: 15px;
-        }
-
-        .table tbody tr {
-            transition: all 0.25s ease;
-        }
-
-        .table tbody tr:hover {
-            background-color: rgba(57, 169, 0, 0.06);
-            transform: scale(1.01);
-        }
-
-        /* ========== MODAL MEJORADO ========== */
-        .modal-content {
-            border-radius: 18px;
-            border: none;
-            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.25);
-        }
-
-        .modal-header {
-            background: linear-gradient(90deg, var(--ceai-verde) 0%, var(--ceai-verde-light) 100%);
-            color: white;
-            border-radius: 18px 18px 0 0;
-            border: none;
-            padding: 20px 30px;
-        }
-
-        .modal-header .btn-close {
-            filter: brightness(0) invert(1);
-        }
-
-        #detalleMensaje {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            word-break: break-word;
-            max-height: 280px;
-            overflow-y: auto;
-            background: #f8f9fa;
-            padding: 18px;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-        }
-
-        /* ========== ACCIONES RÁPIDAS ========== */
-        .quick-actions {
-            background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-azul-light) 100%);
-            color: white;
-            border-radius: 18px;
-            padding: 28px;
-            box-shadow: 0 6px 25px rgba(0, 48, 77, 0.35);
-        }
-
-        .quick-actions h5 {
-            color: var(--ceai-verde);
-            margin-bottom: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .quick-actions .btn {
-            margin: 6px;
-        }
-
-        /* ========== HAMBURGER MENU ========== */
-        .sidebar-toggle {
-            display: none;
-            position: fixed;
-            top: 22px;
-            left: 22px;
-            z-index: 1100;
-            background: var(--ceai-verde);
-            color: white;
-            border: none;
-            padding: 14px 17px;
-            border-radius: 12px;
-            font-size: 1.3rem;
-            box-shadow: 0 6px 20px rgba(57, 169, 0, 0.45);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-toggle:hover {
-            background: var(--ceai-verde-oscuro);
-            transform: scale(1.12);
-            box-shadow: 0 8px 25px rgba(57, 169, 0, 0.6);
-        }
-
-        /* ========== OVERLAY MOBILE ========== */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-            opacity: 1;
-        }
-
-        /* ========== SCROLLBAR PERSONALIZADO ========== */
-        .sidebar::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--ceai-verde);
-            border-radius: 10px;
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .content-wrapper {
-                margin-left: 0;
-                padding: 85px 22px 22px;
-            }
-
-            .sidebar-toggle {
-                display: block;
-            }
-
-            .section-header h2 {
-                font-size: 1.5rem;
-            }
-
-            .stat-card h3 {
-                font-size: 2.2rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .content-wrapper {
-                padding: 85px 15px 15px;
-            }
-
-            .section-header {
-                padding: 22px;
-            }
-
-            .section-header h2 {
-                font-size: 1.3rem;
-            }
-
-            .stat-card {
-                padding: 22px;
-                margin-bottom: 18px;
-            }
-
-            .stat-card h3 {
-                font-size: 2rem;
-            }
-
-            .modern-card {
-                padding: 18px;
-                margin-bottom: 18px;
-            }
-
-            .form-section {
-                padding: 18px;
-            }
-
-            .table-responsive {
-                padding: 18px;
-                overflow-x: auto;
-            }
-
-            .quick-actions .btn {
-                width: 100%;
-                margin: 6px 0;
-            }
-
-            .table {
-                font-size: 0.85rem;
-            }
+        @media(max-width:576px){
+            .content-wrapper{padding:85px 15px 15px}
+            .section-header{padding:22px}
+            .section-header h2{font-size:1.3rem}
+            .stat-card{padding:22px;margin-bottom:18px}
+            .stat-card h3{font-size:2rem}
+            .modern-card{padding:18px;margin-bottom:18px}
+            .form-section{padding:18px}
+            .table-section{padding:18px;overflow-x:auto}
+            .quick-actions .btn{width:100%;margin:6px 0}
+            .table{font-size:.85rem}
         }
     </style>
 </head>
@@ -507,91 +89,54 @@
         }
     </script>
 
-    <!-- Overlay para mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Botón toggle mobile -->
     <button class="sidebar-toggle" id="sidebarToggle">☰</button>
 
     <div class="d-flex">
-        <!-- ========== SIDEBAR ========== -->
+        <!-- SIDEBAR -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h4 class="fw-bold">
-                    <span>CEAI</span> Admin
-                </h4>
+                <h4 class="fw-bold"><span>CEAI</span> Admin</h4>
             </div>
-            
             <h5>📋 Menú Principal</h5>
-            <div class="sidebar-link active" data-section="dashboard">
-                <span>📊</span> Dashboard
-            </div>
-            <div class="sidebar-link" data-section="noticias">
-                <span>📰</span> Noticias
-            </div>
-            <div class="sidebar-link" data-section="semilleros">
-                <span>🌱</span> Semilleros
-            </div>
-            <div class="sidebar-link" data-section="proyectos">
-                <span>🔬</span> Proyectos
-            </div>
-            <div class="sidebar-link" data-section="documentos">
-                <span>📄</span> Documentos
-            </div>
-            <div class="sidebar-link" data-section="contactos">
-                <span>📨</span> Contactos
-            </div>
-            
+            <div class="sidebar-link active" data-section="dashboard"><span>📊</span> Dashboard</div>
+            <div class="sidebar-link" data-section="noticias"><span>📰</span> Noticias</div>
+            <div class="sidebar-link" data-section="semilleros"><span>🌱</span> Semilleros</div>
+            <div class="sidebar-link" data-section="proyectos"><span>🔬</span> Proyectos</div>
+            <div class="sidebar-link" data-section="documentos"><span>📄</span> Documentos</div>
+            <div class="sidebar-link" data-section="contactos"><span>📨</span> Contactos</div>
             <div class="sidebar-footer">
                 <button class="btn btn-outline-light btn-sm w-100 mb-2"
-                        onclick="localStorage.removeItem('ceai_admin_logged'); window.location.href='login.html';">
+                    onclick="localStorage.removeItem('ceai_admin_logged'); window.location.href='login.html';">
                     🚪 Cerrar sesión
                 </button>
-                <a href="index.html" class="btn btn-outline-light btn-sm w-100">
-                    ← Volver al sitio
-                </a>
+                <a href="index.html" class="btn btn-outline-light btn-sm w-100">← Volver al sitio</a>
             </div>
         </div>
 
-        <!-- ========== CONTENIDO PRINCIPAL ========== -->
+        <!-- CONTENIDO PRINCIPAL -->
         <div class="content-wrapper" id="contentWrapper">
 
-            <!-- ========== DASHBOARD ========== -->
+            <!-- DASHBOARD -->
             <div id="dashboard" class="content-section active">
                 <div class="section-header">
                     <h2>📊 Panel de Control</h2>
                     <p class="mb-0">Vista general del sistema CEAI</p>
                 </div>
-
-                <!-- Stats Cards -->
                 <div class="row">
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="stat-card">
-                            <h5>📰 Noticias</h5>
-                            <h3 id="countNoticias">0</h3>
-                        </div>
+                        <div class="stat-card"><h5>📰 Noticias</h5><h3 id="countNoticias">0</h3></div>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="stat-card variant-azul">
-                            <h5>🌱 Semilleros</h5>
-                            <h3 id="countSemilleros">0</h3>
-                        </div>
+                        <div class="stat-card variant-azul"><h5>🌱 Semilleros</h5><h3 id="countSemilleros">0</h3></div>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="stat-card">
-                            <h5>🔬 Proyectos</h5>
-                            <h3 id="countProyectos">0</h3>
-                        </div>
+                        <div class="stat-card"><h5>🔬 Proyectos</h5><h3 id="countProyectos">0</h3></div>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="stat-card variant-azul">
-                            <h5>📄 Documentos</h5>
-                            <h3 id="countDocumentos">0</h3>
-                        </div>
+                        <div class="stat-card variant-azul"><h5>📄 Documentos</h5><h3 id="countDocumentos">0</h3></div>
                     </div>
                 </div>
-
-                <!-- Acciones Rápidas -->
                 <div class="quick-actions mb-4">
                     <h5>⚡ Acciones Rápidas</h5>
                     <div class="d-flex flex-wrap gap-2">
@@ -602,61 +147,46 @@
                         <button class="btn btn-ceai btn-sm" onclick="irSeccion('contactos')">📨 Ver contactos</button>
                     </div>
                 </div>
-
-                <!-- Gráficos -->
                 <div class="row">
                     <div class="col-lg-6 mb-4">
-                        <div class="modern-card">
-                            <h5 class="mb-3">Distribución de Contenido</h5>
-                            <canvas id="chartContenido"></canvas>
-                        </div>
+                        <div class="modern-card"><h5 class="mb-3">Distribución de Contenido</h5><canvas id="chartContenido"></canvas></div>
                     </div>
                     <div class="col-lg-6 mb-4">
-                        <div class="modern-card">
-                            <h5 class="mb-3">Mensajes de Contacto</h5>
-                            <canvas id="chartContactos"></canvas>
-                        </div>
+                        <div class="modern-card"><h5 class="mb-3">Mensajes de Contacto</h5><canvas id="chartContactos"></canvas></div>
                     </div>
                 </div>
-
-                <!-- Últimos registros -->
                 <div class="row">
                     <div class="col-lg-6 mb-4">
-                        <div class="modern-card">
-                            <h5 class="mb-3">Últimas Noticias</h5>
-                            <ul id="ultimasNoticias" class="list-group list-group-flush"></ul>
-                        </div>
+                        <div class="modern-card"><h5 class="mb-3">Últimas Noticias</h5><ul id="ultimasNoticias" class="list-group list-group-flush"></ul></div>
                     </div>
                     <div class="col-lg-6 mb-4">
-                        <div class="modern-card">
-                            <h5 class="mb-3">Últimos Contactos</h5>
-                            <ul id="ultimosContactos" class="list-group list-group-flush"></ul>
-                        </div>
+                        <div class="modern-card"><h5 class="mb-3">Últimos Contactos</h5><ul id="ultimosContactos" class="list-group list-group-flush"></ul></div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== NOTICIAS ========== -->
+            <!-- NOTICIAS -->
             <div id="noticias" class="content-section">
                 <div class="section-header">
                     <h2>📰 Gestionar Noticias</h2>
+                    <p class="mb-0">Crear, editar y eliminar noticias</p>
                 </div>
-                
                 <div class="form-section">
-                    <h5>Nueva Noticia</h5>
+                    <h5 id="tituloFormNoticia">➕ Nueva Noticia</h5>
                     <form id="formNoticia">
+                        <input type="hidden" id="noticiaEditId">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Título</label>
+                                <label class="form-label">Título <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="noticiaTitulo" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label class="form-label">Fecha</label>
+                                <label class="form-label">Fecha <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="noticiaFecha" required>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Tipo</label>
-                                <select class="form-control" id="noticiaTipo" required>
+                                <select class="form-control" id="noticiaTipo">
                                     <option value="Noticia">Noticia</option>
                                     <option value="Evento">Evento</option>
                                     <option value="Convocatoria">Convocatoria</option>
@@ -664,46 +194,47 @@
                                 </select>
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label">Descripción</label>
+                                <label class="form-label">Descripción <span class="text-danger">*</span></label>
                                 <textarea class="form-control" id="noticiaDescripcion" rows="3" required></textarea>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">URL Imagen</label>
                                 <input type="url" class="form-control" id="noticiaImagen" placeholder="https://...">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check mt-4">
+                            <div class="col-md-6 mb-3 d-flex align-items-end">
+                                <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="noticiaDestacada">
-                                    <label class="form-check-label" for="noticiaDestacada">
-                                        ⭐ Destacar en carousel del home
-                                    </label>
+                                    <label class="form-check-label" for="noticiaDestacada">⭐ Destacar en carousel del home</label>
                                 </div>
                             </div>
-                            <div class="col-12 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100">Crear Noticia</button>
+                            <div class="col-md-8 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100" id="btnSubmitNoticia">✅ Crear Noticia</button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button type="button" class="btn btn-outline-secondary w-100" id="btnCancelNoticia" style="display:none" onclick="cancelarEdicionNoticia()">✖ Cancelar</button>
                             </div>
                         </div>
                     </form>
                 </div>
-
-                <div class="table-responsive">
-                    <h5 class="mb-3">Noticias Existentes</h5>
-                    <div id="listaNoticias"></div>
+                <div class="table-section">
+                    <h5 class="mb-3">📋 Noticias Registradas</h5>
+                    <div class="table-responsive" id="listaNoticias"></div>
                 </div>
             </div>
 
-            <!-- ========== SEMILLEROS ========== -->
+            <!-- SEMILLEROS -->
             <div id="semilleros" class="content-section">
                 <div class="section-header">
                     <h2>🌱 Gestionar Semilleros</h2>
+                    <p class="mb-0">Crear, editar y eliminar semilleros</p>
                 </div>
-                
                 <div class="form-section">
-                    <h5>Nuevo Semillero</h5>
+                    <h5 id="tituloFormSemillero">➕ Nuevo Semillero</h5>
                     <form id="formSemillero">
+                        <input type="hidden" id="semilleroEditId">
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label class="form-label">Categoría / Servicio</label>
+                                <label class="form-label">Categoría / Servicio <span class="text-danger">*</span></label>
                                 <select class="form-control" id="semilleroCategoria" required>
                                     <option value="Soluciones Digitales">Soluciones Digitales</option>
                                     <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
@@ -713,15 +244,15 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Nombre</label>
+                                <label class="form-label">Nombre <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="semilleroNombre" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Línea de Investigación</label>
+                                <label class="form-label">Línea de Investigación <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="semilleroLinea" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Enfoque</label>
+                                <label class="form-label">Enfoque <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="semilleroEnfoque" required>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -729,35 +260,38 @@
                                 <input type="url" class="form-control" id="semilleroImagen" placeholder="https://...">
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label">Descripción</label>
+                                <label class="form-label">Descripción <span class="text-danger">*</span></label>
                                 <textarea class="form-control" id="semilleroDescripcion" rows="3" required></textarea>
                             </div>
-                            <div class="col-12 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100">Crear Semillero</button>
+                            <div class="col-md-8 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100" id="btnSubmitSemillero">✅ Crear Semillero</button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button type="button" class="btn btn-outline-secondary w-100" id="btnCancelSemillero" style="display:none" onclick="cancelarEdicionSemillero()">✖ Cancelar</button>
                             </div>
                         </div>
                     </form>
                 </div>
-
-                <div class="table-responsive">
-                    <h5 class="mb-3">Semilleros Existentes</h5>
-                    <div id="listaSemilleros"></div>
+                <div class="table-section">
+                    <h5 class="mb-3">📋 Semilleros Registrados</h5>
+                    <div class="table-responsive" id="listaSemilleros"></div>
                 </div>
             </div>
 
-            <!-- ========== PROYECTOS ========== -->
+            <!-- PROYECTOS -->
             <div id="proyectos" class="content-section">
                 <div class="section-header">
                     <h2>🔬 Gestionar Proyectos</h2>
+                    <p class="mb-0">Crear, editar y eliminar proyectos</p>
                 </div>
-                
                 <div class="form-section">
-                    <h5>Nuevo Proyecto</h5>
+                    <h5 id="tituloFormProyecto">➕ Nuevo Proyecto</h5>
                     <form id="formProyecto">
+                        <input type="hidden" id="proyectoEditId">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Categoría / Servicio</label>
-                                <select class="form-control" id="proyectoCategoria" required>
+                                <select class="form-control" id="proyectoCategoria">
                                     <option value="">-- Seleccionar categoría --</option>
                                     <option value="Soluciones Digitales">Soluciones Digitales</option>
                                     <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
@@ -767,17 +301,17 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Semillero</label>
+                                <label class="form-label">Semillero <span class="text-danger">*</span></label>
                                 <select class="form-control" id="proyectoSemillero" required disabled>
                                     <option value="">-- Selecciona categoría primero --</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Título</label>
+                                <label class="form-label">Título <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="proyectoTitulo" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Estado</label>
+                                <label class="form-label">Estado <span class="text-danger">*</span></label>
                                 <select class="form-control" id="proyectoEstado" required>
                                     <option value="En ejecución">En ejecución</option>
                                     <option value="Finalizado">Finalizado</option>
@@ -800,35 +334,37 @@
                                 <label class="form-label">Evidencia</label>
                                 <textarea class="form-control" id="proyectoEvidencia" rows="2"></textarea>
                             </div>
-                            <div class="col-12 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100">Crear Proyecto</button>
+                            <div class="col-md-8 mb-3">
+                                <button type="submit" class="btn btn-ceai w-100" id="btnSubmitProyecto">✅ Crear Proyecto</button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button type="button" class="btn btn-outline-secondary w-100" id="btnCancelProyecto" style="display:none" onclick="cancelarEdicionProyecto()">✖ Cancelar</button>
                             </div>
                         </div>
                     </form>
                 </div>
-
-                <div class="table-responsive">
-                    <h5 class="mb-3">Proyectos Existentes</h5>
-                    <div id="listaProyectos"></div>
+                <div class="table-section">
+                    <h5 class="mb-3">📋 Proyectos Registrados</h5>
+                    <div class="table-responsive" id="listaProyectos"></div>
                 </div>
             </div>
 
-            <!-- ========== DOCUMENTOS ========== -->
+            <!-- DOCUMENTOS -->
             <div id="documentos" class="content-section">
                 <div class="section-header">
                     <h2>📄 Gestionar Documentos</h2>
+                    <p class="mb-0">Subir, editar y eliminar documentos PDF</p>
                 </div>
-                
                 <div class="form-section">
-                    <h5>Nuevo Documento</h5>
+                    <h5>➕ Nuevo Documento</h5>
                     <form id="formDocumento" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Nombre del Documento</label>
+                                <label class="form-label">Nombre del Documento <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="docNombre" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Tipo</label>
+                                <label class="form-label">Tipo <span class="text-danger">*</span></label>
                                 <select class="form-control" id="docTipo" required>
                                     <option value="">-- Seleccionar --</option>
                                     <option value="Convocatoria">Convocatoria</option>
@@ -843,73 +379,379 @@
                                 <textarea class="form-control" id="docDescripcion" rows="2"></textarea>
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label">Archivo PDF</label>
-                                <div id="dropZone" class="border-2 border-dashed rounded p-5 text-center" style="border: 2px dashed var(--ceai-verde); cursor: pointer; transition: all 0.3s;">
+                                <label class="form-label">Archivo PDF <span class="text-danger">*</span></label>
+                                <div id="dropZone" class="rounded p-5 text-center" style="border:2px dashed var(--ceai-verde);cursor:pointer;transition:all .3s;">
                                     <input type="file" id="docArchivo" class="form-control d-none" accept=".pdf" required>
                                     <div id="dropText">
-                                        <p style="margin: 0; color: var(--ceai-verde); font-weight: bold;">📁 Arrastra tu PDF aquí</p>
-                                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">o haz clic para seleccionar</p>
+                                        <p style="margin:0;color:var(--ceai-verde);font-weight:bold;">📁 Arrastra tu PDF aquí</p>
+                                        <p style="margin:5px 0 0 0;color:#666;font-size:14px;">o haz clic para seleccionar</p>
                                     </div>
-                                    <div id="fileSelected" style="display: none; color: var(--ceai-verde);">
-                                        <p style="margin: 0; font-weight: bold;">✅ Archivo listo:</p>
-                                        <p id="fileName" style="margin: 5px 0 0 0;"></p>
+                                    <div id="fileSelected" style="display:none;color:var(--ceai-verde);">
+                                        <p style="margin:0;font-weight:bold;">✅ Archivo listo:</p>
+                                        <p id="fileName" style="margin:5px 0 0 0;"></p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100">Agregar Documento</button>
+                                <button type="submit" class="btn btn-ceai w-100">📤 Subir Documento</button>
                             </div>
                         </div>
                     </form>
                 </div>
-
-                <div class="table-responsive">
-                    <h5 class="mb-3">Documentos Existentes</h5>
-                    <div id="listaDocumentos"></div>
+                <div class="table-section">
+                    <h5 class="mb-3">📋 Documentos Registrados</h5>
+                    <div class="table-responsive" id="listaDocumentos"></div>
                 </div>
             </div>
 
-            <!-- ========== CONTACTOS ========== -->
+            <!-- CONTACTOS -->
             <div id="contactos" class="content-section">
                 <div class="section-header">
                     <h2>📨 Mensajes de Contacto</h2>
+                    <p class="mb-0">Ver y gestionar mensajes recibidos</p>
                 </div>
-                
-                <div class="table-responsive">
-                    <h5 class="mb-3">Mensajes Recibidos</h5>
-                    <div id="listaContactos"></div>
+                <div class="table-section">
+                    <h5 class="mb-3">📋 Mensajes Recibidos</h5>
+                    <div class="table-responsive" id="listaContactos"></div>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Modal Detalle Contacto -->
+    <!-- ===== MODALES ===== -->
+
+    <!-- Modal Ver Noticia -->
+    <div class="modal fade" id="verNoticiaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">👁️ Detalle de Noticia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <p><strong>Título:</strong> <span id="vn_titulo"></span></p>
+                            <p><strong>Fecha:</strong> <span id="vn_fecha"></span></p>
+                            <p><strong>Tipo:</strong> <span id="vn_tipo" class="badge bg-secondary"></span></p>
+                            <p><strong>Destacada:</strong> <span id="vn_destacada"></span></p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <img id="vn_imagen" src="" alt="Imagen" class="img-fluid rounded" style="max-height:150px;object-fit:cover;display:none;">
+                        </div>
+                    </div>
+                    <p><strong>Descripción:</strong></p>
+                    <div class="detail-box" id="vn_descripcion"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Noticia -->
+    <div class="modal fade" id="editarNoticiaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">✏️ Editar Noticia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarNoticia">
+                        <input type="hidden" id="edit_n_id">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Título</label>
+                                <input type="text" class="form-control" id="edit_n_titulo" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="edit_n_fecha" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Tipo</label>
+                                <select class="form-control" id="edit_n_tipo">
+                                    <option value="Noticia">Noticia</option>
+                                    <option value="Evento">Evento</option>
+                                    <option value="Convocatoria">Convocatoria</option>
+                                    <option value="Resultado">Resultado</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" id="edit_n_descripcion" rows="4" required></textarea>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">URL Imagen</label>
+                                <input type="url" class="form-control" id="edit_n_imagen" placeholder="https://...">
+                            </div>
+                            <div class="col-md-4 mb-3 d-flex align-items-end">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="edit_n_destacada">
+                                    <label class="form-check-label" for="edit_n_destacada">⭐ Destacada</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionNoticia()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Semillero -->
+    <div class="modal fade" id="verSemilleroModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">👁️ Detalle de Semillero</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <p><strong>Nombre:</strong> <span id="vs_nombre"></span></p>
+                            <p><strong>Categoría:</strong> <span id="vs_categoria" class="badge bg-info"></span></p>
+                            <p><strong>Línea:</strong> <span id="vs_linea"></span></p>
+                            <p><strong>Enfoque:</strong> <span id="vs_enfoque"></span></p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <img id="vs_imagen" src="" alt="Imagen" class="img-fluid rounded" style="max-height:150px;object-fit:cover;display:none;">
+                        </div>
+                    </div>
+                    <p><strong>Descripción:</strong></p>
+                    <div class="detail-box" id="vs_descripcion"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Semillero -->
+    <div class="modal fade" id="editarSemilleroModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">✏️ Editar Semillero</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarSemillero">
+                        <input type="hidden" id="edit_s_id">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Categoría</label>
+                                <select class="form-control" id="edit_s_categoria" required>
+                                    <option value="Soluciones Digitales">Soluciones Digitales</option>
+                                    <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
+                                    <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
+                                    <option value="Gestión Energética">Gestión Energética</option>
+                                    <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="edit_s_nombre" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Línea de Investigación</label>
+                                <input type="text" class="form-control" id="edit_s_linea" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Enfoque</label>
+                                <input type="text" class="form-control" id="edit_s_enfoque" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">URL Imagen</label>
+                                <input type="url" class="form-control" id="edit_s_imagen" placeholder="https://...">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" id="edit_s_descripcion" rows="4" required></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionSemillero()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Proyecto -->
+    <div class="modal fade" id="verProyectoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">👁️ Detalle de Proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Título:</strong> <span id="vp_titulo"></span></p>
+                    <p><strong>Semillero ID:</strong> <span id="vp_semillero"></span></p>
+                    <p><strong>Estado:</strong> <span id="vp_estado" class="badge"></span></p>
+                    <p><strong>Aliados:</strong> <span id="vp_aliados"></span></p>
+                    <hr>
+                    <p><strong>Objetivo:</strong></p>
+                    <div class="detail-box mb-3" id="vp_objetivo"></div>
+                    <p><strong>Entregables:</strong></p>
+                    <div class="detail-box mb-3" id="vp_entregables"></div>
+                    <p><strong>Evidencia:</strong></p>
+                    <div class="detail-box" id="vp_evidencia"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Proyecto -->
+    <div class="modal fade" id="editarProyectoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">✏️ Editar Proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarProyecto">
+                        <input type="hidden" id="edit_p_id">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Semillero ID <span class="text-danger">*</span></label>
+                                <select class="form-control" id="edit_p_semillero" required></select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Título <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="edit_p_titulo" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-control" id="edit_p_estado">
+                                    <option value="En ejecución">En ejecución</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                    <option value="En revisión">En revisión</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Aliados</label>
+                                <input type="text" class="form-control" id="edit_p_aliados">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Objetivo</label>
+                                <textarea class="form-control" id="edit_p_objetivo" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Entregables</label>
+                                <textarea class="form-control" id="edit_p_entregables" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Evidencia</label>
+                                <textarea class="form-control" id="edit_p_evidencia" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionProyecto()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Documento -->
+    <div class="modal fade" id="verDocumentoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">👁️ Detalle de Documento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Nombre:</strong> <span id="vd_nombre"></span></p>
+                    <p><strong>Tipo:</strong> <span id="vd_tipo" class="badge bg-info"></span></p>
+                    <p><strong>Descripción:</strong></p>
+                    <div class="detail-box" id="vd_descripcion"></div>
+                    <p class="mt-3"><strong>Archivo:</strong> <a id="vd_archivo" href="#" target="_blank" class="btn btn-sm btn-outline-primary">📥 Descargar PDF</a></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Documento -->
+    <div class="modal fade" id="editarDocumentoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">✏️ Editar Documento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarDocumento">
+                        <input type="hidden" id="edit_d_id">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Documento</label>
+                            <input type="text" class="form-control" id="edit_d_nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-control" id="edit_d_tipo" required>
+                                <option value="Convocatoria">Convocatoria</option>
+                                <option value="Portafolio">Portafolio de Servicios</option>
+                                <option value="Informe">Informe</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" id="edit_d_descripcion" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionDocumento()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Contacto -->
     <div class="modal fade" id="contactoModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detalle del Contacto</h5>
+                    <h5 class="modal-title">📨 Detalle del Mensaje</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <dl class="row mb-0">
                         <dt class="col-sm-3">Nombre</dt>
                         <dd class="col-sm-9" id="detalleNombre"></dd>
-
                         <dt class="col-sm-3">Email</dt>
-                        <dd class="col-sm-9" id="detalleEmail"></dd>
-
+                        <dd class="col-sm-9"><a id="detalleEmail" href="#"></a></dd>
                         <dt class="col-sm-3">Asunto</dt>
                         <dd class="col-sm-9" id="detalleAsunto"></dd>
-
                         <dt class="col-sm-3">Fecha</dt>
                         <dd class="col-sm-9" id="detalleFecha"></dd>
-
                         <dt class="col-sm-3">Mensaje</dt>
-                        <dd class="col-sm-9">
-                            <div id="detalleMensaje"></div>
-                        </dd>
+                        <dd class="col-sm-9"><div class="detail-box" id="detalleMensaje"></div></dd>
                     </dl>
                 </div>
                 <div class="modal-footer">
@@ -919,7 +761,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/toasts.js"></script>
 
@@ -928,9 +770,13 @@
         let chartContenidoRef = null;
         let chartContactosRef = null;
         let contactosCache = [];
+        let noticiasCache = [];
+        let semillerosCache = [];
+        let proyectosCache = [];
+        let documentosCache = [];
         let todosLosSemilleros = [];
 
-        // ========== TOGGLE SIDEBAR MOBILE ==========
+        // ===== SIDEBAR MOBILE =====
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -939,13 +785,10 @@
             sidebar.classList.toggle('show');
             sidebarOverlay.classList.toggle('show');
         });
-
         sidebarOverlay.addEventListener('click', () => {
             sidebar.classList.remove('show');
             sidebarOverlay.classList.remove('show');
         });
-
-        // Cerrar sidebar en mobile al hacer clic en un link
         document.querySelectorAll('.sidebar-link').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 992) {
@@ -955,13 +798,12 @@
             });
         });
 
-        // ========== NAVEGACIÓN ==========
+        // ===== NAVEGACIÓN =====
         function irSeccion(id) {
             document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
             document.querySelector(`.sidebar-link[data-section="${id}"]`).classList.add('active');
-
             if (id === 'noticias') cargarNoticias();
             if (id === 'semilleros') cargarSemilleros();
             if (id === 'proyectos') cargarProyectos();
@@ -969,150 +811,142 @@
             if (id === 'contactos') cargarContactos();
             if (id === 'dashboard') cargarDashboard();
         }
-
         document.querySelectorAll('.sidebar-link').forEach(link => {
             link.addEventListener('click', () => irSeccion(link.dataset.section));
         });
 
-        // ========== DASHBOARD ==========
+        // ===== DASHBOARD =====
         async function cargarDashboard() {
-            const noticias   = await fetch(`${API}/api/noticias`).then(r => r.json());
-            const semilleros = await fetch(`${API}/api/semilleros`).then(r => r.json());
-            const proyectos  = await fetch(`${API}/api/proyectos`).then(r => r.json());
-            const documentos = await fetch(`${API}/api/documentos`).then(r => r.json());
-            const contactos  = await fetch(`${API}/api/contactos`).then(r => r.json());
-            
+            const [noticias, semilleros, proyectos, documentos, contactos] = await Promise.all([
+                fetch(`${API}/api/noticias`).then(r => r.json()),
+                fetch(`${API}/api/semilleros`).then(r => r.json()),
+                fetch(`${API}/api/proyectos`).then(r => r.json()),
+                fetch(`${API}/api/documentos`).then(r => r.json()),
+                fetch(`${API}/api/contactos`).then(r => r.json())
+            ]);
+
             document.getElementById('countNoticias').textContent   = noticias.length;
             document.getElementById('countSemilleros').textContent = semilleros.length;
             document.getElementById('countProyectos').textContent  = proyectos.length;
             document.getElementById('countDocumentos').textContent = documentos.length;
 
-            // Gráfico de contenido
             const ctx1 = document.getElementById('chartContenido').getContext('2d');
             if (chartContenidoRef) chartContenidoRef.destroy();
-
             chartContenidoRef = new Chart(ctx1, {
                 type: 'bar',
                 data: {
                     labels: ['Noticias', 'Semilleros', 'Proyectos', 'Documentos'],
-                    datasets: [{
-                        data: [noticias.length, semilleros.length, proyectos.length, documentos.length],
-                        backgroundColor: ['#39A900', '#2d8a00', '#00304D', '#76c043']
-                    }]
+                    datasets: [{ data: [noticias.length, semilleros.length, proyectos.length, documentos.length], backgroundColor: ['#39A900','#2d8a00','#00304D','#76c043'] }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-                }
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
             });
 
-            // Gráfico de contactos
             const porDia = {};
             contactos.forEach(c => {
                 if (!c.created_at) return;
-                const d = new Date(c.created_at);
-                const key = d.toLocaleDateString('es-ES');
+                const key = new Date(c.created_at).toLocaleDateString('es-ES');
                 porDia[key] = (porDia[key] || 0) + 1;
             });
-
-            const labels = Object.keys(porDia);
-            const valores = Object.values(porDia);
-
             const ctx2 = document.getElementById('chartContactos').getContext('2d');
             if (chartContactosRef) chartContactosRef.destroy();
-
             chartContactosRef = new Chart(ctx2, {
                 type: 'line',
                 data: {
-                    labels,
-                    datasets: [{
-                        data: valores,
-                        borderColor: '#39A900',
-                        backgroundColor: 'rgba(57,169,0,0.2)',
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 4
-                    }]
+                    labels: Object.keys(porDia),
+                    datasets: [{ data: Object.values(porDia), borderColor: '#39A900', backgroundColor: 'rgba(57,169,0,0.2)', tension: 0.3, fill: true, pointRadius: 4 }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-                }
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
             });
 
-            // Últimas noticias
-            const ulNoticias = document.getElementById('ultimasNoticias');
-            ulNoticias.innerHTML = noticias
-                .slice(-5)
-                .reverse()
-                .map(n => `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>${n.titulo}</span>
-                        <span class="text-muted ms-2">${n.fecha}</span>
-                    </li>
-                `).join('');
+            document.getElementById('ultimasNoticias').innerHTML = noticias.slice(-5).reverse()
+                .map(n => `<li class="list-group-item d-flex justify-content-between"><span>${n.titulo}</span><small class="text-muted">${n.fecha}</small></li>`).join('');
 
-            // Últimos contactos
-            const ulContactos = document.getElementById('ultimosContactos');
-            ulContactos.innerHTML = contactos
-                .slice(-5)
-                .reverse()
-                .map(c => `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>${c.nombre}</span>
-                        <span class="text-muted ms-2">
-                            ${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}
-                        </span>
-                    </li>
-                `).join('');
+            document.getElementById('ultimosContactos').innerHTML = contactos.slice(-5).reverse()
+                .map(c => `<li class="list-group-item d-flex justify-content-between"><span>${c.nombre}</span><small class="text-muted">${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></li>`).join('');
         }
 
-        // ========== NOTICIAS ==========
+        // ===== NOTICIAS =====
         async function cargarNoticias() {
-            const response = await fetch(`${API}/api/noticias`);
-            const noticias = await response.json();
-            
+            const res = await fetch(`${API}/api/noticias`);
+            noticiasCache = await res.json();
             const lista = document.getElementById('listaNoticias');
-            if (!noticias.length) {
-                lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>';
-                return;
-            }
-            
+            if (!noticiasCache.length) { lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>'; return; }
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Fecha</th>
-                            <th>Tipo</th>
-                            <th>Destacada</th>
-                            <th>Acciones</th>
+                            <th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th>Destacada</th><th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${noticias.map(n => `
+                        ${noticiasCache.map(n => `
                             <tr>
                                 <td>${n.id}</td>
                                 <td>${n.titulo}</td>
                                 <td>${n.fecha}</td>
-                                <td>${n.tipo || 'Noticia'}</td>
-                                <td>${n.destacada === 1 ? '⭐' : ''}</td>
+                                <td><span class="badge bg-secondary">${n.tipo || 'Noticia'}</span></td>
+                                <td>${n.destacada == 1 ? '⭐' : '—'}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button>
+                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="verNoticia(${n.id})" title="Ver detalle">👁️ Ver</button>
+                                        <button class="btn btn-sm btn-warning" onclick="editarNoticia(${n.id})" title="Editar">✏️ Editar</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})" title="Eliminar">🗑️ Eliminar</button>
+                                    </div>
                                 </td>
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
-            `;
+                </table>`;
+        }
+
+        function verNoticia(id) {
+            const n = noticiasCache.find(x => x.id === id);
+            if (!n) return;
+            document.getElementById('vn_titulo').textContent = n.titulo;
+            document.getElementById('vn_fecha').textContent = n.fecha;
+            document.getElementById('vn_tipo').textContent = n.tipo || 'Noticia';
+            document.getElementById('vn_destacada').textContent = n.destacada == 1 ? '⭐ Sí' : 'No';
+            document.getElementById('vn_descripcion').textContent = n.descripcion;
+            const img = document.getElementById('vn_imagen');
+            if (n.imagen) { img.src = n.imagen; img.style.display = 'block'; } else { img.style.display = 'none'; }
+            new bootstrap.Modal(document.getElementById('verNoticiaModal')).show();
+        }
+
+        function editarNoticia(id) {
+            const n = noticiasCache.find(x => x.id === id);
+            if (!n) return;
+            document.getElementById('edit_n_id').value = n.id;
+            document.getElementById('edit_n_titulo').value = n.titulo;
+            document.getElementById('edit_n_fecha').value = n.fecha;
+            document.getElementById('edit_n_tipo').value = n.tipo || 'Noticia';
+            document.getElementById('edit_n_descripcion').value = n.descripcion;
+            document.getElementById('edit_n_imagen').value = n.imagen || '';
+            document.getElementById('edit_n_destacada').checked = n.destacada == 1;
+            new bootstrap.Modal(document.getElementById('editarNoticiaModal')).show();
+        }
+
+        async function guardarEdicionNoticia() {
+            const id = document.getElementById('edit_n_id').value;
+            const datos = {
+                titulo: document.getElementById('edit_n_titulo').value,
+                descripcion: document.getElementById('edit_n_descripcion').value,
+                fecha: document.getElementById('edit_n_fecha').value,
+                imagen: document.getElementById('edit_n_imagen').value,
+                tipo: document.getElementById('edit_n_tipo').value,
+                destacada: document.getElementById('edit_n_destacada').checked ? 1 : 0
+            };
+            const res = await fetch(`${API}/api/noticias/${id}`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('editarNoticiaModal')).hide();
+                toast.success('Noticia actualizada');
+                cargarNoticias(); cargarDashboard();
+            } else { toast.error('Error al actualizar noticia'); }
         }
 
         document.getElementById('formNoticia').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const datos = {
                 titulo: document.getElementById('noticiaTitulo').value,
                 descripcion: document.getElementById('noticiaDescripcion').value,
@@ -1121,104 +955,127 @@
                 tipo: document.getElementById('noticiaTipo').value,
                 destacada: document.getElementById('noticiaDestacada').checked ? 1 : 0
             };
-            
-            const response = await fetch(`${API}/api/noticias`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
+            const res = await fetch(`${API}/api/noticias`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
             });
-            
-            if (response.ok) {
-                toast.success('Noticia creada correctamente');
+            if (res.ok) {
+                toast.success('Noticia creada');
                 document.getElementById('formNoticia').reset();
-                cargarNoticias();
-                cargarDashboard();
-            } else {
-                const error = await response.json();
-                toast.error('Error al crear noticia: ' + (error.error || ''));
-            }
+                cargarNoticias(); cargarDashboard();
+            } else { toast.error('Error al crear noticia'); }
         });
 
         async function eliminarNoticia(id) {
             if (!confirm('¿Eliminar esta noticia?')) return;
             const res = await fetch(`${API}/api/noticias/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Noticia eliminada');
-                cargarNoticias();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar noticia');
-            }
+            if (res.ok) { toast.info('Noticia eliminada'); cargarNoticias(); cargarDashboard(); }
+            else { toast.error('Error al eliminar'); }
         }
 
-        // ========== SEMILLEROS ==========
+        // ===== SEMILLEROS =====
         async function cargarSemilleros() {
-            const response = await fetch(`${API}/api/semilleros`);
-            const semilleros = await response.json();
-            todosLosSemilleros = semilleros;
-            
-            // Listener para filtrar por categoría
+            const res = await fetch(`${API}/api/semilleros`);
+            semillerosCache = await res.json();
+            todosLosSemilleros = semillerosCache;
+
+            // Listener categoría proyectos
             const categoriaSelect = document.getElementById('proyectoCategoria');
-            if (categoriaSelect) {
-                categoriaSelect.addEventListener('change', function() {
-                    const categoriaSeleccionada = this.value;
-                    const select = document.getElementById('proyectoSemillero');
-                    
-                    if (!categoriaSeleccionada) {
-                        select.disabled = true;
-                        select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
-                        return;
-                    }
-                    
-                    select.disabled = false;
-                    const semillerosFiltrados = todosLosSemilleros.filter(s => s.categoria === categoriaSeleccionada);
-                    
-                    if (semillerosFiltrados.length === 0) {
-                        select.innerHTML = '<option value="">No hay semilleros en esta categoría</option>';
-                    } else {
-                        select.innerHTML = '<option value="">-- Seleccionar semillero --</option>' +
-                            semillerosFiltrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
-                    }
+            if (categoriaSelect && !categoriaSelect.dataset.listenerSet) {
+                categoriaSelect.dataset.listenerSet = 'true';
+                categoriaSelect.addEventListener('change', function () {
+                    filtrarSemillerosEnProyecto(this.value, 'proyectoSemillero');
                 });
             }
-            
+
             const lista = document.getElementById('listaSemilleros');
-            if (!semilleros.length) {
-                lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>';
-                return;
-            }
-            
+            if (!semillerosCache.length) { lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>'; return; }
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Línea</th>
-                            <th>Acciones</th>
-                        </tr>
+                        <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center">Acciones</th></tr>
                     </thead>
                     <tbody>
-                        ${semilleros.map(s => `
+                        ${semillerosCache.map(s => `
                             <tr>
                                 <td>${s.id}</td>
                                 <td>${s.nombre}</td>
-                                <td><span class="badge bg-info">${s.categoria || 'Sin categoría'}</span></td>
+                                <td><span class="badge bg-info text-dark">${s.categoria || 'Sin categoría'}</span></td>
                                 <td>${s.linea}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button>
+                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="verSemillero(${s.id})" title="Ver">👁️ Ver</button>
+                                        <button class="btn btn-sm btn-warning" onclick="editarSemillero(${s.id})" title="Editar">✏️ Editar</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})" title="Eliminar">🗑️ Eliminar</button>
+                                    </div>
                                 </td>
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
-            `;
+                </table>`;
+        }
+
+        function filtrarSemillerosEnProyecto(categoria, selectId) {
+            const select = document.getElementById(selectId);
+            if (!categoria) {
+                select.disabled = true;
+                select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
+                return;
+            }
+            select.disabled = false;
+            const filtrados = todosLosSemilleros.filter(s => s.categoria === categoria);
+            select.innerHTML = filtrados.length
+                ? '<option value="">-- Seleccionar semillero --</option>' + filtrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('')
+                : '<option value="">No hay semilleros en esta categoría</option>';
+        }
+
+        function verSemillero(id) {
+            const s = semillerosCache.find(x => x.id === id);
+            if (!s) return;
+            document.getElementById('vs_nombre').textContent = s.nombre;
+            document.getElementById('vs_categoria').textContent = s.categoria || 'Sin categoría';
+            document.getElementById('vs_linea').textContent = s.linea;
+            document.getElementById('vs_enfoque').textContent = s.enfoque;
+            document.getElementById('vs_descripcion').textContent = s.descripcion;
+            const img = document.getElementById('vs_imagen');
+            if (s.imagen) { img.src = s.imagen; img.style.display = 'block'; } else { img.style.display = 'none'; }
+            new bootstrap.Modal(document.getElementById('verSemilleroModal')).show();
+        }
+
+        function editarSemillero(id) {
+            const s = semillerosCache.find(x => x.id === id);
+            if (!s) return;
+            document.getElementById('edit_s_id').value = s.id;
+            document.getElementById('edit_s_categoria').value = s.categoria || 'Soluciones Digitales';
+            document.getElementById('edit_s_nombre').value = s.nombre;
+            document.getElementById('edit_s_linea').value = s.linea;
+            document.getElementById('edit_s_enfoque').value = s.enfoque;
+            document.getElementById('edit_s_imagen').value = s.imagen || '';
+            document.getElementById('edit_s_descripcion').value = s.descripcion;
+            new bootstrap.Modal(document.getElementById('editarSemilleroModal')).show();
+        }
+
+        async function guardarEdicionSemillero() {
+            const id = document.getElementById('edit_s_id').value;
+            const datos = {
+                nombre: document.getElementById('edit_s_nombre').value,
+                linea: document.getElementById('edit_s_linea').value,
+                enfoque: document.getElementById('edit_s_enfoque').value,
+                descripcion: document.getElementById('edit_s_descripcion').value,
+                imagen: document.getElementById('edit_s_imagen').value,
+                categoria: document.getElementById('edit_s_categoria').value
+            };
+            const res = await fetch(`${API}/api/semilleros/${id}`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('editarSemilleroModal')).hide();
+                toast.success('Semillero actualizado');
+                cargarSemilleros(); cargarDashboard();
+            } else { toast.error('Error al actualizar semillero'); }
         }
 
         document.getElementById('formSemillero').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const datos = {
                 nombre: document.getElementById('semilleroNombre').value,
                 linea: document.getElementById('semilleroLinea').value,
@@ -1227,85 +1084,121 @@
                 imagen: document.getElementById('semilleroImagen').value,
                 categoria: document.getElementById('semilleroCategoria').value
             };
-            
-            const response = await fetch(`${API}/api/semilleros`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
+            const res = await fetch(`${API}/api/semilleros`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
             });
-            
-            if (response.ok) {
+            if (res.ok) {
                 toast.success('Semillero creado');
                 document.getElementById('formSemillero').reset();
-                cargarSemilleros();
-                cargarDashboard();
-            } else {
-                toast.error('Error al crear semillero');
-            }
+                cargarSemilleros(); cargarDashboard();
+            } else { toast.error('Error al crear semillero'); }
         });
 
         async function eliminarSemillero(id) {
-            if (!confirm('¿Eliminar este semillero?')) return;
+            if (!confirm('¿Eliminar este semillero? También se eliminarán sus proyectos asociados.')) return;
             const res = await fetch(`${API}/api/semilleros/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Semillero eliminado');
-                cargarSemilleros();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar semillero');
-            }
+            if (res.ok) { toast.info('Semillero eliminado'); cargarSemilleros(); cargarDashboard(); }
+            else { toast.error('Error al eliminar'); }
         }
 
-        // ========== PROYECTOS ==========
+        // ===== PROYECTOS =====
         async function cargarProyectos() {
-            const response = await fetch(`${API}/api/proyectos`);
-            const proyectos = await response.json();
-            
-            const lista = document.getElementById('listaProyectos');
-            if (!proyectos.length) {
-                lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>';
-                return;
+            const res = await fetch(`${API}/api/proyectos`);
+            proyectosCache = await res.json();
+
+            // Cargar semilleros si no están cargados
+            if (!todosLosSemilleros.length) {
+                const resSem = await fetch(`${API}/api/semilleros`);
+                todosLosSemilleros = await resSem.json();
             }
-            
+
+            // Poblar select editar proyecto
+            const editSelect = document.getElementById('edit_p_semillero');
+            editSelect.innerHTML = todosLosSemilleros.map(s => `<option value="${s.id}">${s.nombre} (${s.categoria})</option>`).join('');
+
+            const lista = document.getElementById('listaProyectos');
+            if (!proyectosCache.length) { lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>'; return; }
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Título</th>
-                            <th>Semillero</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
+                        <tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center">Acciones</th></tr>
                     </thead>
                     <tbody>
-                        ${proyectos.map(p => `
+                        ${proyectosCache.map(p => {
+                            const semNombre = todosLosSemilleros.find(s => s.id === p.semillero_id);
+                            const badgeClass = p.estado === 'En ejecución' ? 'bg-primary' : p.estado === 'Finalizado' ? 'bg-success' : 'bg-warning text-dark';
+                            return `
                             <tr>
                                 <td>${p.id}</td>
                                 <td>${p.titulo}</td>
-                                <td>${p.semillero_id}</td>
+                                <td><small>${semNombre ? semNombre.nombre : 'ID: ' + p.semillero_id}</small></td>
+                                <td><span class="badge ${badgeClass}">${p.estado}</span></td>
                                 <td>
-                                    <span class="badge ${
-                                        p.estado === 'En ejecución'
-                                            ? 'bg-primary'
-                                            : p.estado === 'Finalizado'
-                                            ? 'bg-success'
-                                            : 'bg-warning'
-                                    }">${p.estado}</span>
+                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="verProyecto(${p.id})" title="Ver">👁️ Ver</button>
+                                        <button class="btn btn-sm btn-warning" onclick="editarProyecto(${p.id})" title="Editar">✏️ Editar</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})" title="Eliminar">🗑️ Eliminar</button>
+                                    </div>
                                 </td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})">🗑️ Eliminar</button>
-                                </td>
-                            </tr>
-                        `).join('')}
+                            </tr>`;
+                        }).join('')}
                     </tbody>
-                </table>
-            `;
+                </table>`;
+        }
+
+        function verProyecto(id) {
+            const p = proyectosCache.find(x => x.id === id);
+            if (!p) return;
+            const semNombre = todosLosSemilleros.find(s => s.id === p.semillero_id);
+            document.getElementById('vp_titulo').textContent = p.titulo;
+            document.getElementById('vp_semillero').textContent = semNombre ? `${semNombre.nombre} (ID: ${p.semillero_id})` : `ID: ${p.semillero_id}`;
+            const badge = document.getElementById('vp_estado');
+            badge.textContent = p.estado;
+            badge.className = 'badge ' + (p.estado === 'En ejecución' ? 'bg-primary' : p.estado === 'Finalizado' ? 'bg-success' : 'bg-warning text-dark');
+            document.getElementById('vp_aliados').textContent = p.aliados || '—';
+            document.getElementById('vp_objetivo').textContent = p.objetivo || '—';
+            document.getElementById('vp_entregables').textContent = p.entregables || '—';
+            document.getElementById('vp_evidencia').textContent = p.evidencia || '—';
+            new bootstrap.Modal(document.getElementById('verProyectoModal')).show();
+        }
+
+        function editarProyecto(id) {
+            const p = proyectosCache.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('edit_p_id').value = p.id;
+            document.getElementById('edit_p_semillero').value = p.semillero_id;
+            document.getElementById('edit_p_titulo').value = p.titulo;
+            document.getElementById('edit_p_estado').value = p.estado;
+            document.getElementById('edit_p_aliados').value = p.aliados || '';
+            document.getElementById('edit_p_objetivo').value = p.objetivo || '';
+            document.getElementById('edit_p_entregables').value = p.entregables || '';
+            document.getElementById('edit_p_evidencia').value = p.evidencia || '';
+            new bootstrap.Modal(document.getElementById('editarProyectoModal')).show();
+        }
+
+        async function guardarEdicionProyecto() {
+            const id = document.getElementById('edit_p_id').value;
+            const datos = {
+                semillero_id: document.getElementById('edit_p_semillero').value,
+                titulo: document.getElementById('edit_p_titulo').value,
+                estado: document.getElementById('edit_p_estado').value,
+                aliados: document.getElementById('edit_p_aliados').value,
+                objetivo: document.getElementById('edit_p_objetivo').value,
+                entregables: document.getElementById('edit_p_entregables').value,
+                evidencia: document.getElementById('edit_p_evidencia').value
+            };
+            const res = await fetch(`${API}/api/proyectos/${id}`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('editarProyectoModal')).hide();
+                toast.success('Proyecto actualizado');
+                cargarProyectos(); cargarDashboard();
+            } else { toast.error('Error al actualizar proyecto'); }
         }
 
         document.getElementById('formProyecto').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const datos = {
                 semillero_id: document.getElementById('proyectoSemillero').value,
                 titulo: document.getElementById('proyectoTitulo').value,
@@ -1315,36 +1208,25 @@
                 entregables: document.getElementById('proyectoEntregables').value,
                 evidencia: document.getElementById('proyectoEvidencia').value
             };
-            
-            const response = await fetch(`${API}/api/proyectos`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
+            const res = await fetch(`${API}/api/proyectos`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
             });
-            
-            if (response.ok) {
+            if (res.ok) {
                 toast.success('Proyecto creado');
                 document.getElementById('formProyecto').reset();
-                cargarProyectos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al crear proyecto');
-            }
+                document.getElementById('proyectoSemillero').disabled = true;
+                cargarProyectos(); cargarDashboard();
+            } else { toast.error('Error al crear proyecto'); }
         });
 
         async function eliminarProyecto(id) {
             if (!confirm('¿Eliminar este proyecto?')) return;
             const res = await fetch(`${API}/api/proyectos/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Proyecto eliminado');
-                cargarProyectos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar proyecto');
-            }
+            if (res.ok) { toast.info('Proyecto eliminado'); cargarProyectos(); cargarDashboard(); }
+            else { toast.error('Error al eliminar'); }
         }
 
-        // ========== DOCUMENTOS ==========
+        // ===== DOCUMENTOS =====
         const dropZone = document.getElementById('dropZone');
         const docArchivo = document.getElementById('docArchivo');
         const dropText = document.getElementById('dropText');
@@ -1352,214 +1234,178 @@
         const fileName = document.getElementById('fileName');
 
         dropZone.addEventListener('click', () => docArchivo.click());
-
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = 'rgba(57, 169, 0, 0.1)';
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.backgroundColor = 'transparent';
-        });
-
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'rgba(57,169,0,0.1)'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.backgroundColor = 'transparent'; });
         dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = 'transparent';
-            
+            e.preventDefault(); dropZone.style.backgroundColor = 'transparent';
             const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                docArchivo.files = files;
-                actualizarNombreArchivo(files[0]);
-            }
+            if (files.length > 0) { docArchivo.files = files; actualizarNombreArchivo(files[0]); }
         });
-
-        docArchivo.addEventListener('change', () => {
-            if (docArchivo.files.length > 0) {
-                actualizarNombreArchivo(docArchivo.files[0]);
-            }
-        });
+        docArchivo.addEventListener('change', () => { if (docArchivo.files.length > 0) actualizarNombreArchivo(docArchivo.files[0]); });
 
         function actualizarNombreArchivo(file) {
             if (file.type !== 'application/pdf') {
                 toast.warning('Solo se permiten archivos PDF');
-                docArchivo.value = '';
-                dropText.style.display = 'block';
-                fileSelected.style.display = 'none';
-                return;
+                docArchivo.value = ''; dropText.style.display = 'block'; fileSelected.style.display = 'none'; return;
             }
-            
             fileName.textContent = file.name;
-            dropText.style.display = 'none';
-            fileSelected.style.display = 'block';
+            dropText.style.display = 'none'; fileSelected.style.display = 'block';
         }
 
         async function cargarDocumentos() {
-            const response = await fetch(`${API}/api/documentos`);
-            const documentos = await response.json();
-            
+            const res = await fetch(`${API}/api/documentos`);
+            documentosCache = await res.json();
             const lista = document.getElementById('listaDocumentos');
-            if (!documentos.length) {
-                lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>';
-                return;
-            }
-            
+            if (!documentosCache.length) { lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>'; return; }
             lista.innerHTML = `
                 <table class="table table-hover">
                     <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Archivo</th>
-                            <th>Acciones</th>
-                        </tr>
+                        <tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Descripción</th><th class="text-center">Acciones</th></tr>
                     </thead>
                     <tbody>
-                        ${documentos.map(doc => `
+                        ${documentosCache.map(doc => `
                             <tr>
                                 <td>${doc.id}</td>
                                 <td>${doc.nombre}</td>
-                                <td><span class="badge bg-info">${doc.tipo}</span></td>
-                                <td><a href="${doc.ruta_archivo}" target="_blank" class="text-decoration-none">📥 Descargar</a></td>
+                                <td><span class="badge bg-info text-dark">${doc.tipo}</span></td>
+                                <td><small class="text-muted">${(doc.descripcion || '').substring(0,60)}${doc.descripcion && doc.descripcion.length > 60 ? '...' : ''}</small></td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})">🗑️ Eliminar</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        document.getElementById('formDocumento').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!docArchivo.files.length) {
-                toast.warning('Por favor selecciona un archivo PDF');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('nombre', document.getElementById('docNombre').value);
-            formData.append('tipo', document.getElementById('docTipo').value);
-            formData.append('descripcion', document.getElementById('docDescripcion').value);
-            formData.append('archivo', docArchivo.files[0]);
-            
-            try {
-                const response = await fetch(`${API}/api/documentos`, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    toast.success('Documento agregado');
-                    document.getElementById('formDocumento').reset();
-                    docArchivo.value = '';
-                    dropText.style.display = 'block';
-                    fileSelected.style.display = 'none';
-                    cargarDocumentos();
-                    cargarDashboard();
-                } else {
-                    const error = await response.json();
-                    toast.error('Error al subir documento: ' + (error.error || ''));
-                }
-            } catch (error) {
-                toast.error('Error al subir archivo: ' + error.message);
-            }
-        });
-
-        async function eliminarDocumento(id) {
-            if (!confirm('¿Eliminar este documento?')) return;
-            const res = await fetch(`${API}/api/documentos/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.info('Documento eliminado');
-                cargarDocumentos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar documento');
-            }
-        }
-
-        // ========== CONTACTOS ==========
-        async function cargarContactos() {
-            const response = await fetch(`${API}/api/contactos`);
-            const contactos = await response.json();
-            contactosCache = contactos;
-            
-            const lista = document.getElementById('listaContactos');
-            if (!contactos.length) {
-                lista.innerHTML = '<p class="text-muted">No hay mensajes aún</p>';
-                return;
-            }
-            
-            lista.innerHTML = `
-                <table class="table table-hover table-sm align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px;">ID</th>
-                            <th style="width: 160px;">Nombre</th>
-                            <th style="width: 220px;">Email</th>
-                            <th style="width: 160px;">Asunto</th>
-                            <th>Mensaje</th>
-                            <th style="width: 110px;">Fecha</th>
-                            <th style="width: 140px;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${contactos.map(c => `
-                            <tr>
-                                <td>${c.id}</td>
-                                <td>${c.nombre}</td>
-                                <td><small>${c.email}</small></td>
-                                <td><small>${c.asunto}</small></td>
-                                <td style="max-width: 260px;">
-                                    <small class="text-muted text-truncate d-inline-block w-100" style="white-space: nowrap;">
-                                        ${c.mensaje}
-                                    </small>
-                                </td>
-                                <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-end">
-                                        <button class="btn btn-sm btn-ceai" onclick="verContacto(${c.id})">Ver</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button>
+                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="verDocumento(${doc.id})" title="Ver">👁️ Ver</button>
+                                        <button class="btn btn-sm btn-warning" onclick="editarDocumento(${doc.id})" title="Editar">✏️ Editar</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})" title="Eliminar">🗑️ Eliminar</button>
                                     </div>
                                 </td>
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
-            `;
+                </table>`;
         }
 
-        async function eliminarContacto(id) {
-            if (!confirm('¿Eliminar este mensaje?')) return;
-            const res = await fetch(`${API}/api/contactos/${id}`, { method: 'DELETE' });
+        function verDocumento(id) {
+            const doc = documentosCache.find(x => x.id === id);
+            if (!doc) return;
+            document.getElementById('vd_nombre').textContent = doc.nombre;
+            document.getElementById('vd_tipo').textContent = doc.tipo;
+            document.getElementById('vd_descripcion').textContent = doc.descripcion || 'Sin descripción';
+            const link = document.getElementById('vd_archivo');
+            link.href = `${API}${doc.ruta_archivo}`;
+            new bootstrap.Modal(document.getElementById('verDocumentoModal')).show();
+        }
+
+        function editarDocumento(id) {
+            const doc = documentosCache.find(x => x.id === id);
+            if (!doc) return;
+            document.getElementById('edit_d_id').value = doc.id;
+            document.getElementById('edit_d_nombre').value = doc.nombre;
+            document.getElementById('edit_d_tipo').value = doc.tipo;
+            document.getElementById('edit_d_descripcion').value = doc.descripcion || '';
+            new bootstrap.Modal(document.getElementById('editarDocumentoModal')).show();
+        }
+
+        async function guardarEdicionDocumento() {
+            const id = document.getElementById('edit_d_id').value;
+            const datos = {
+                nombre: document.getElementById('edit_d_nombre').value,
+                tipo: document.getElementById('edit_d_tipo').value,
+                descripcion: document.getElementById('edit_d_descripcion').value
+            };
+            const res = await fetch(`${API}/api/documentos/${id}`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
+            });
             if (res.ok) {
-                toast.info('Mensaje eliminado');
-                cargarContactos();
-                cargarDashboard();
-            } else {
-                toast.error('Error al eliminar mensaje');
-            }
+                bootstrap.Modal.getInstance(document.getElementById('editarDocumentoModal')).hide();
+                toast.success('Documento actualizado');
+                cargarDocumentos();
+            } else { toast.error('Error al actualizar documento'); }
+        }
+
+        document.getElementById('formDocumento').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!docArchivo.files.length) { toast.warning('Por favor selecciona un archivo PDF'); return; }
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('docNombre').value);
+            formData.append('tipo', document.getElementById('docTipo').value);
+            formData.append('descripcion', document.getElementById('docDescripcion').value);
+            formData.append('archivo', docArchivo.files[0]);
+            try {
+                const res = await fetch(`${API}/api/documentos`, { method: 'POST', body: formData });
+                if (res.ok) {
+                    toast.success('Documento agregado');
+                    document.getElementById('formDocumento').reset();
+                    docArchivo.value = ''; dropText.style.display = 'block'; fileSelected.style.display = 'none';
+                    cargarDocumentos(); cargarDashboard();
+                } else { const err = await res.json(); toast.error('Error: ' + (err.error || '')); }
+            } catch (err) { toast.error('Error al subir: ' + err.message); }
+        });
+
+        async function eliminarDocumento(id) {
+            if (!confirm('¿Eliminar este documento?')) return;
+            const res = await fetch(`${API}/api/documentos/${id}`, { method: 'DELETE' });
+            if (res.ok) { toast.info('Documento eliminado'); cargarDocumentos(); cargarDashboard(); }
+            else { toast.error('Error al eliminar'); }
+        }
+
+        // ===== CONTACTOS =====
+        async function cargarContactos() {
+            const res = await fetch(`${API}/api/contactos`);
+            contactosCache = await res.json();
+            const lista = document.getElementById('listaContactos');
+            if (!contactosCache.length) { lista.innerHTML = '<p class="text-muted">No hay mensajes aún</p>'; return; }
+            lista.innerHTML = `
+                <table class="table table-hover table-sm align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Fecha</th><th style="min-width:120px" class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${contactosCache.map(c => `
+                            <tr class="${c.leido == 1 ? '' : 'fw-bold'}">
+                                <td>${c.id}</td>
+                                <td>${c.nombre}</td>
+                                <td><small>${c.email}</small></td>
+                                <td><small>${c.asunto}</small></td>
+                                <td style="max-width:200px;"><small class="text-muted text-truncate d-inline-block w-100">${c.mensaje}</small></td>
+                                <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
+                                <td>
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="verContacto(${c.id})" title="Ver mensaje">👁️ Ver</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})" title="Eliminar">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
         }
 
         function verContacto(id) {
             const c = contactosCache.find(x => x.id === id);
             if (!c) return;
-
             document.getElementById('detalleNombre').textContent = c.nombre;
-            document.getElementById('detalleEmail').textContent = c.email;
+            const emailEl = document.getElementById('detalleEmail');
+            emailEl.textContent = c.email; emailEl.href = `mailto:${c.email}`;
             document.getElementById('detalleAsunto').textContent = c.asunto;
-            document.getElementById('detalleFecha').textContent =
-                c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
+            document.getElementById('detalleFecha').textContent = c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
             document.getElementById('detalleMensaje').textContent = c.mensaje;
-
-            const modalEl = document.getElementById('contactoModal');
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            new bootstrap.Modal(document.getElementById('contactoModal')).show();
+            // Marcar como leído
+            if (c.leido != 1) {
+                fetch(`${API}/api/contactos/${id}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ leido: 1 })
+                }).then(() => { c.leido = 1; cargarContactos(); });
+            }
         }
 
-        // ========== INICIALIZACIÓN ==========
+        async function eliminarContacto(id) {
+            if (!confirm('¿Eliminar este mensaje?')) return;
+            const res = await fetch(`${API}/api/contactos/${id}`, { method: 'DELETE' });
+            if (res.ok) { toast.info('Mensaje eliminado'); cargarContactos(); cargarDashboard(); }
+            else { toast.error('Error al eliminar'); }
+        }
+
+        // ===== INIT =====
         cargarDashboard();
     </script>
 </body>
