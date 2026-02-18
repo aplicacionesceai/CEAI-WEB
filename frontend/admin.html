@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Quill Editor CSS -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ===== BASE ADMIN ===== */
@@ -113,11 +115,7 @@
         .sidebar-footer .btn { width: 100% !important; font-size: .85rem; padding: 8px 12px; }
 
         /* ===== LAYOUT PRINCIPAL ===== */
-        .admin-wrapper {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
+        .admin-wrapper { display: flex; min-height: 100vh; width: 100%; }
         .content-wrapper {
             margin-left: 240px;
             width: calc(100% - 240px);
@@ -248,6 +246,40 @@
         .modal-header .btn-close { filter:brightness(0) invert(1); }
         .modal-footer .btn { width:auto !important; }
 
+        /* ===== QUILL EDITOR STYLES ===== */
+        .quill-wrapper {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ced4da;
+        }
+        .quill-wrapper .ql-toolbar {
+            border: none;
+            border-bottom: 1px solid #ced4da;
+            background: #f8f9fa;
+            padding: 8px 10px;
+        }
+        .quill-wrapper .ql-container {
+            border: none;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+        }
+        .quill-wrapper .ql-editor {
+            min-height: 160px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .quill-wrapper .ql-editor:focus { outline: none; }
+        .quill-wrapper:focus-within {
+            border-color: var(--ceai-verde, #39a900);
+            box-shadow: 0 0 0 3px rgba(57,169,0,0.15);
+        }
+        .form-label.quill-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
         /* ===== MISC ===== */
         .sidebar-toggle { display:none; position:fixed; top:18px; left:16px; z-index:1100; background:var(--ceai-verde); color:white; border:none; padding:11px 14px; border-radius:10px; font-size:1.2rem; box-shadow:0 4px 16px rgba(57,169,0,.4); cursor:pointer; transition:all .3s ease; }
         .sidebar-toggle:hover { background:var(--ceai-verde-oscuro); transform:scale(1.1); }
@@ -263,22 +295,9 @@
         #listaContactos td:nth-child(5) { max-width: 160px; }
         #listaContactos td:nth-child(5) small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:160px; }
 
-        /* ========== RESPONSIVE DETALLADO ========== */
-
-        /* --- 1280px: sidebar un poco más estrecha --- */
-        @media (max-width:1280px) {
-            .sidebar { width: 220px; }
-            .content-wrapper { margin-left: 220px; width: calc(100% - 220px); padding: 26px 26px; }
-        }
-
-        /* --- 1100px: stats en 2 columnas, charts apiladas --- */
-        @media (max-width:1100px) {
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .charts-row { grid-template-columns: 1fr; }
-            .recent-row  { grid-template-columns: 1fr; }
-        }
-
-        /* --- 992px: sidebar oculta, toggle visible --- */
+        /* ========== RESPONSIVE ========== */
+        @media (max-width:1280px) { .sidebar { width: 220px; } .content-wrapper { margin-left: 220px; width: calc(100% - 220px); padding: 26px 26px; } }
+        @media (max-width:1100px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .charts-row { grid-template-columns: 1fr; } .recent-row { grid-template-columns: 1fr; } }
         @media (max-width:992px) {
             .sidebar { transform: translateX(-100%); width: 260px; }
             .sidebar.show { transform: translateX(0); }
@@ -290,8 +309,6 @@
             .form-section { padding: 22px 22px; }
             .table-section { padding: 18px 18px; }
         }
-
-        /* --- 768px: stack todo, ajustes de tabla --- */
         @media (max-width:768px) {
             .content-wrapper { padding: 76px 14px 20px; }
             .stats-row { grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 18px; }
@@ -310,8 +327,6 @@
             .table td { font-size: .85rem; padding: 9px 10px; }
             .table-actions .btn { padding: 3px 8px !important; font-size: 0.73rem !important; gap: 2px; }
         }
-
-        /* --- 576px: móvil chico, stats 1 columna --- */
         @media (max-width:576px) {
             .content-wrapper { padding: 72px 10px 16px; }
             .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
@@ -331,8 +346,6 @@
             .modal-body { padding: 14px; }
             .sidebar-footer .btn { font-size: .8rem; padding: 7px 10px; }
         }
-
-        /* --- 400px: pantallas muy pequeñas --- */
         @media (max-width:400px) {
             .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
             .stat-card h3 { font-size: 1.6rem; }
@@ -383,16 +396,12 @@
                     <h2>📊 Panel de Control</h2>
                     <p class="mb-0">Vista general del sistema CEAI</p>
                 </div>
-
-                <!-- Stats -->
                 <div class="stats-row">
                     <div class="stat-card"><h5>📰 Noticias</h5><h3 id="countNoticias">0</h3></div>
                     <div class="stat-card variant-azul"><h5>🌱 Semilleros</h5><h3 id="countSemilleros">0</h3></div>
                     <div class="stat-card"><h5>🔬 Proyectos</h5><h3 id="countProyectos">0</h3></div>
                     <div class="stat-card variant-azul"><h5>📄 Documentos</h5><h3 id="countDocumentos">0</h3></div>
                 </div>
-
-                <!-- Acciones rápidas -->
                 <div class="quick-actions">
                     <h5>⚡ Acciones Rápidas</h5>
                     <div class="d-flex flex-wrap gap-2">
@@ -403,14 +412,10 @@
                         <button class="btn btn-ceai btn-sm" onclick="irSeccion('contactos')">📨 Ver contactos</button>
                     </div>
                 </div>
-
-                <!-- Gráficas -->
                 <div class="charts-row">
                     <div class="modern-card"><h5 class="mb-3">Distribución de Contenido</h5><canvas id="chartContenido"></canvas></div>
                     <div class="modern-card"><h5 class="mb-3">Mensajes de Contacto</h5><canvas id="chartContactos"></canvas></div>
                 </div>
-
-                <!-- Listas recientes -->
                 <div class="recent-row">
                     <div class="modern-card"><h5 class="mb-3">Últimas Noticias</h5><ul id="ultimasNoticias" class="list-group list-group-flush"></ul></div>
                     <div class="modern-card"><h5 class="mb-3">Últimos Contactos</h5><ul id="ultimosContactos" class="list-group list-group-flush"></ul></div>
@@ -445,9 +450,13 @@
                                     <option value="Resultado">Resultado</option>
                                 </select>
                             </div>
+                            <!-- EDITOR QUILL PARA DESCRIPCIÓN NOTICIA -->
                             <div class="col-12 mb-3">
-                                <label class="form-label">Descripción <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="noticiaDescripcion" rows="3" required></textarea>
+                                <label class="form-label quill-label">Descripción <span class="text-danger">*</span></label>
+                                <div class="quill-wrapper">
+                                    <div id="editorNoticia"></div>
+                                </div>
+                                <input type="hidden" id="noticiaDescripcion">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">URL Imagen</label>
@@ -511,9 +520,13 @@
                                 <label class="form-label">URL Imagen</label>
                                 <input type="url" class="form-control" id="semilleroImagen" placeholder="https://...">
                             </div>
+                            <!-- EDITOR QUILL PARA DESCRIPCIÓN SEMILLERO -->
                             <div class="col-12 mb-3">
-                                <label class="form-label">Descripción <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="semilleroDescripcion" rows="3" required></textarea>
+                                <label class="form-label quill-label">Descripción <span class="text-danger">*</span></label>
+                                <div class="quill-wrapper">
+                                    <div id="editorSemillero"></div>
+                                </div>
+                                <input type="hidden" id="semilleroDescripcion">
                             </div>
                             <div class="col-md-8 mb-3">
                                 <button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitSemillero">✅ Crear Semillero</button>
@@ -626,9 +639,13 @@
                                     <option value="Otro">Otro</option>
                                 </select>
                             </div>
+                            <!-- EDITOR QUILL PARA DESCRIPCIÓN DOCUMENTO -->
                             <div class="col-12 mb-3">
-                                <label class="form-label">Descripción</label>
-                                <textarea class="form-control" id="docDescripcion" rows="2"></textarea>
+                                <label class="form-label quill-label">Descripción</label>
+                                <div class="quill-wrapper">
+                                    <div id="editorDocumento"></div>
+                                </div>
+                                <input type="hidden" id="docDescripcion">
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label">Archivo PDF <span class="text-danger">*</span></label>
@@ -672,198 +689,22 @@
     </div><!-- /admin-wrapper -->
 
     <!-- ===== MODALES ===== -->
-
-    <!-- Modal Ver Noticia -->
-    <div class="modal fade" id="verNoticiaModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">👁️ Detalle de Noticia</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            <p><strong>Título:</strong> <span id="vn_titulo"></span></p>
-                            <p><strong>Fecha:</strong> <span id="vn_fecha"></span></p>
-                            <p><strong>Tipo:</strong> <span id="vn_tipo" class="badge bg-secondary"></span></p>
-                            <p><strong>Destacada:</strong> <span id="vn_destacada"></span></p>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <img id="vn_imagen" src="" alt="Imagen" class="img-fluid rounded" style="max-height:150px;object-fit:cover;display:none;">
-                        </div>
-                    </div>
-                    <p><strong>Descripción:</strong></p>
-                    <div class="detail-box" id="vn_descripcion"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Editar Noticia -->
-    <div class="modal fade" id="editarNoticiaModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">✏️ Editar Noticia</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formEditarNoticia">
-                        <input type="hidden" id="edit_n_id">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Título</label>
-                                <input type="text" class="form-control" id="edit_n_titulo" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Fecha</label>
-                                <input type="date" class="form-control" id="edit_n_fecha" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Tipo</label>
-                                <select class="form-control" id="edit_n_tipo">
-                                    <option value="Noticia">Noticia</option>
-                                    <option value="Evento">Evento</option>
-                                    <option value="Convocatoria">Convocatoria</option>
-                                    <option value="Resultado">Resultado</option>
-                                </select>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Descripción</label>
-                                <textarea class="form-control" id="edit_n_descripcion" rows="4" required></textarea>
-                            </div>
-                            <div class="col-md-8 mb-3">
-                                <label class="form-label">URL Imagen</label>
-                                <input type="url" class="form-control" id="edit_n_imagen" placeholder="https://...">
-                            </div>
-                            <div class="col-md-4 mb-3 d-flex align-items-end">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="edit_n_destacada">
-                                    <label class="form-check-label" for="edit_n_destacada">⭐ Destacada</label>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionNoticia()">💾 Guardar Cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Ver Semillero -->
-    <div class="modal fade" id="verSemilleroModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">👁️ Detalle de Semillero</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            <p><strong>Nombre:</strong> <span id="vs_nombre"></span></p>
-                            <p><strong>Categoría:</strong> <span id="vs_categoria" class="badge bg-info"></span></p>
-                            <p><strong>Línea:</strong> <span id="vs_linea"></span></p>
-                            <p><strong>Enfoque:</strong> <span id="vs_enfoque"></span></p>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <img id="vs_imagen" src="" alt="Imagen" class="img-fluid rounded" style="max-height:150px;object-fit:cover;display:none;">
-                        </div>
-                    </div>
-                    <p><strong>Descripción:</strong></p>
-                    <div class="detail-box" id="vs_descripcion"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Editar Semillero -->
-    <div class="modal fade" id="editarSemilleroModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">✏️ Editar Semillero</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formEditarSemillero">
-                        <input type="hidden" id="edit_s_id">
-                        <div class="row">
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Categoría</label>
-                                <select class="form-control" id="edit_s_categoria" required>
-                                    <option value="Soluciones Digitales">Soluciones Digitales</option>
-                                    <option value="Automatización e Instrumentación">Automatización e Instrumentación</option>
-                                    <option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option>
-                                    <option value="Gestión Energética">Gestión Energética</option>
-                                    <option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="edit_s_nombre" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Línea de Investigación</label>
-                                <input type="text" class="form-control" id="edit_s_linea" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Enfoque</label>
-                                <input type="text" class="form-control" id="edit_s_enfoque" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">URL Imagen</label>
-                                <input type="url" class="form-control" id="edit_s_imagen" placeholder="https://...">
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Descripción</label>
-                                <textarea class="form-control" id="edit_s_descripcion" rows="4" required></textarea>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionSemillero()">💾 Guardar Cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Ver Proyecto -->
     <div class="modal fade" id="verProyectoModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">👁️ Detalle de Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header"><h5 class="modal-title">👁️ Detalle de Proyecto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <p><strong>Título:</strong> <span id="vp_titulo"></span></p>
                     <p><strong>Semillero:</strong> <span id="vp_semillero"></span></p>
                     <p><strong>Estado:</strong> <span id="vp_estado" class="badge"></span></p>
                     <p><strong>Aliados:</strong> <span id="vp_aliados"></span></p>
                     <hr>
-                    <p><strong>Objetivo:</strong></p>
-                    <div class="detail-box mb-3" id="vp_objetivo"></div>
-                    <p><strong>Entregables:</strong></p>
-                    <div class="detail-box mb-3" id="vp_entregables"></div>
-                    <p><strong>Evidencia:</strong></p>
-                    <div class="detail-box" id="vp_evidencia"></div>
+                    <p><strong>Objetivo:</strong></p><div class="detail-box mb-3" id="vp_objetivo"></div>
+                    <p><strong>Entregables:</strong></p><div class="detail-box mb-3" id="vp_entregables"></div>
+                    <p><strong>Evidencia:</strong></p><div class="detail-box" id="vp_evidencia"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
             </div>
         </div>
     </div>
@@ -872,10 +713,7 @@
     <div class="modal fade" id="editarProyectoModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">✏️ Editar Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header"><h5 class="modal-title">✏️ Editar Proyecto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <form id="formEditarProyecto">
                         <input type="hidden" id="edit_p_id">
@@ -900,18 +738,9 @@
                                 <label class="form-label">Aliados</label>
                                 <input type="text" class="form-control" id="edit_p_aliados">
                             </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Objetivo</label>
-                                <textarea class="form-control" id="edit_p_objetivo" rows="2"></textarea>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Entregables</label>
-                                <textarea class="form-control" id="edit_p_entregables" rows="2"></textarea>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Evidencia</label>
-                                <textarea class="form-control" id="edit_p_evidencia" rows="2"></textarea>
-                            </div>
+                            <div class="col-12 mb-3"><label class="form-label">Objetivo</label><textarea class="form-control" id="edit_p_objetivo" rows="2"></textarea></div>
+                            <div class="col-12 mb-3"><label class="form-label">Entregables</label><textarea class="form-control" id="edit_p_entregables" rows="2"></textarea></div>
+                            <div class="col-12 mb-3"><label class="form-label">Evidencia</label><textarea class="form-control" id="edit_p_evidencia" rows="2"></textarea></div>
                         </div>
                     </form>
                 </div>
@@ -927,10 +756,7 @@
     <div class="modal fade" id="verDocumentoModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">👁️ Detalle de Documento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header"><h5 class="modal-title">👁️ Detalle de Documento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <p><strong>Nombre:</strong> <span id="vd_nombre"></span></p>
                     <p><strong>Tipo:</strong> <span id="vd_tipo" class="badge bg-info"></span></p>
@@ -938,8 +764,66 @@
                     <div class="detail-box" id="vd_descripcion"></div>
                     <p class="mt-3"><strong>Archivo:</strong> <a id="vd_archivo" href="#" target="_blank" class="btn btn-sm btn-outline-primary">📥 Descargar PDF</a></p>
                 </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Noticia -->
+    <div class="modal fade" id="editarNoticiaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">✏️ Editar Noticia</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="formEditarNoticia">
+                        <input type="hidden" id="edit_n_id">
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><label class="form-label">Título</label><input type="text" class="form-control" id="edit_n_titulo"></div>
+                            <div class="col-md-3 mb-3"><label class="form-label">Fecha</label><input type="date" class="form-control" id="edit_n_fecha"></div>
+                            <div class="col-md-3 mb-3"><label class="form-label">Tipo</label><select class="form-control" id="edit_n_tipo"><option value="Noticia">Noticia</option><option value="Evento">Evento</option><option value="Convocatoria">Convocatoria</option><option value="Resultado">Resultado</option></select></div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label quill-label">Descripción</label>
+                                <div class="quill-wrapper"><div id="editorEditNoticia"></div></div>
+                                <input type="hidden" id="edit_n_descripcion">
+                            </div>
+                            <div class="col-md-6 mb-3"><label class="form-label">URL Imagen</label><input type="url" class="form-control" id="edit_n_imagen" placeholder="https://..."></div>
+                            <div class="col-md-6 mb-3 d-flex align-items-center"><div class="form-check"><input class="form-check-input" type="checkbox" id="edit_n_destacada"><label class="form-check-label" for="edit_n_destacada">⭐ Destacar en carousel</label></div></div>
+                        </div>
+                    </form>
+                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionNoticia()">💾 Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Semillero -->
+    <div class="modal fade" id="editarSemilleroModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">✏️ Editar Semillero</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="formEditarSemillero">
+                        <input type="hidden" id="edit_s_id">
+                        <div class="row">
+                            <div class="col-md-12 mb-3"><label class="form-label">Categoría</label><select class="form-control" id="edit_s_categoria"><option value="Soluciones Digitales">Soluciones Digitales</option><option value="Automatización e Instrumentación">Automatización e Instrumentación</option><option value="Fábrica Digital Interactiva">Fábrica Digital Interactiva</option><option value="Gestión Energética">Gestión Energética</option><option value="IA Aplicada al Entorno">IA Aplicada al Entorno</option></select></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Nombre</label><input type="text" class="form-control" id="edit_s_nombre"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Línea de Investigación</label><input type="text" class="form-control" id="edit_s_linea"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Enfoque</label><input type="text" class="form-control" id="edit_s_enfoque"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">URL Imagen</label><input type="url" class="form-control" id="edit_s_imagen" placeholder="https://..."></div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label quill-label">Descripción</label>
+                                <div class="quill-wrapper"><div id="editorEditSemillero"></div></div>
+                                <input type="hidden" id="edit_s_descripcion">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionSemillero()">💾 Guardar</button>
                 </div>
             </div>
         </div>
@@ -949,273 +833,223 @@
     <div class="modal fade" id="editarDocumentoModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">✏️ Editar Documento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header"><h5 class="modal-title">✏️ Editar Documento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <form id="formEditarDocumento">
                         <input type="hidden" id="edit_d_id">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre del Documento</label>
-                            <input type="text" class="form-control" id="edit_d_nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tipo</label>
-                            <select class="form-control" id="edit_d_tipo" required>
-                                <option value="Convocatoria">Convocatoria</option>
-                                <option value="Portafolio">Portafolio de Servicios</option>
-                                <option value="Informe">Informe</option>
-                                <option value="Manual">Manual</option>
-                                <option value="Otro">Otro</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción</label>
-                            <textarea class="form-control" id="edit_d_descripcion" rows="3"></textarea>
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><label class="form-label">Nombre</label><input type="text" class="form-control" id="edit_d_nombre"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Tipo</label><select class="form-control" id="edit_d_tipo"><option value="Convocatoria">Convocatoria</option><option value="Portafolio">Portafolio de Servicios</option><option value="Informe">Informe</option><option value="Manual">Manual</option><option value="Otro">Otro</option></select></div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label quill-label">Descripción</label>
+                                <div class="quill-wrapper"><div id="editorEditDocumento"></div></div>
+                                <input type="hidden" id="edit_d_descripcion">
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionDocumento()">💾 Guardar Cambios</button>
+                    <button type="button" class="btn btn-ceai" onclick="guardarEdicionDocumento()">💾 Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Ver Contacto -->
-    <div class="modal fade" id="contactoModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">📨 Detalle del Mensaje</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-3">Nombre</dt>
-                        <dd class="col-sm-9" id="detalleNombre"></dd>
-                        <dt class="col-sm-3">Email</dt>
-                        <dd class="col-sm-9"><a id="detalleEmail" href="#"></a></dd>
-                        <dt class="col-sm-3">Asunto</dt>
-                        <dd class="col-sm-9" id="detalleAsunto"></dd>
-                        <dt class="col-sm-3">Fecha</dt>
-                        <dd class="col-sm-9" id="detalleFecha"></dd>
-                        <dt class="col-sm-3">Mensaje</dt>
-                        <dd class="col-sm-9"><div class="detail-box" id="detalleMensaje"></div></dd>
-                    </dl>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Toast -->
+    <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:9999;"></div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/toasts.js"></script>
-
+    <!-- Quill Editor JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
-        let chartContenidoRef = null;
-        let chartContactosRef = null;
-        let contactosCache = [];
-        let noticiasCache = [];
-        let semillerosCache = [];
-        let proyectosCache = [];
-        let documentosCache = [];
+        let noticiasCache = [], semillerosCache = [], proyectosCache = [], documentosCache = [], contactosCache = [];
         let todosLosSemilleros = [];
 
-        // ===== SIDEBAR MOBILE =====
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        // ===================== QUILL EDITORS =====================
+        const quillOpts = {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Escribe la descripción aquí...'
+        };
 
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('show');
-            sidebarOverlay.classList.toggle('show');
-        });
-        sidebarOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('show');
-            sidebarOverlay.classList.remove('show');
-        });
+        // Instancias de Quill
+        const quillNoticia        = new Quill('#editorNoticia',        quillOpts);
+        const quillSemillero      = new Quill('#editorSemillero',      quillOpts);
+        const quillDocumento      = new Quill('#editorDocumento',      quillOpts);
+        const quillEditNoticia    = new Quill('#editorEditNoticia',    quillOpts);
+        const quillEditSemillero  = new Quill('#editorEditSemillero',  quillOpts);
+        const quillEditDocumento  = new Quill('#editorEditDocumento',  quillOpts);
+
+        // Helper: obtener HTML de un editor Quill
+        function getQuillHTML(quillInstance) {
+            const html = quillInstance.root.innerHTML;
+            return html === '<p><br></p>' ? '' : html;
+        }
+
+        // ===================== TOAST =====================
+        const toast = {
+            show: (msg, type='success') => {
+                const id = 'toast_' + Date.now();
+                const bg = type === 'success' ? '#198754' : type === 'error' ? '#dc3545' : '#0dcaf0';
+                const el = document.createElement('div');
+                el.id = id;
+                el.style.cssText = `background:${bg};color:white;padding:12px 18px;border-radius:10px;margin-bottom:8px;font-weight:600;font-size:.9rem;box-shadow:0 4px 14px rgba(0,0,0,.2);animation:fadeInContent .3s ease;max-width:320px;`;
+                el.textContent = msg;
+                document.getElementById('toastContainer').appendChild(el);
+                setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; setTimeout(() => el.remove(), 400); }, 3000);
+            },
+            success: msg => toast.show(msg, 'success'),
+            error:   msg => toast.show(msg, 'error'),
+            info:    msg => toast.show(msg, 'info')
+        };
+
+        // ===================== NAVEGACIÓN =====================
         document.querySelectorAll('.sidebar-link').forEach(link => {
             link.addEventListener('click', () => {
-                if (window.innerWidth <= 992) {
-                    sidebar.classList.remove('show');
-                    sidebarOverlay.classList.remove('show');
-                }
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                link.classList.add('active');
+                const sec = link.dataset.section;
+                document.getElementById(sec).classList.add('active');
+                if (sec === 'noticias') cargarNoticias();
+                else if (sec === 'semilleros') cargarSemilleros();
+                else if (sec === 'proyectos') cargarProyectos();
+                else if (sec === 'documentos') cargarDocumentos();
+                else if (sec === 'contactos') cargarContactos();
+                if (window.innerWidth <= 992) cerrarSidebar();
             });
         });
 
-        // ===== NAVEGACIÓN =====
-        function irSeccion(id) {
-            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            document.querySelector(`.sidebar-link[data-section="${id}"]`).classList.add('active');
-            if (id === 'noticias') cargarNoticias();
-            if (id === 'semilleros') cargarSemilleros();
-            if (id === 'proyectos') cargarProyectos();
-            if (id === 'documentos') cargarDocumentos();
-            if (id === 'contactos') cargarContactos();
-            if (id === 'dashboard') cargarDashboard();
+        function irSeccion(sec) {
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`[data-section="${sec}"]`).classList.add('active');
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sec).classList.add('active');
+            if (sec === 'noticias') cargarNoticias();
+            else if (sec === 'semilleros') cargarSemilleros();
+            else if (sec === 'proyectos') cargarProyectos();
+            else if (sec === 'documentos') cargarDocumentos();
+            else if (sec === 'contactos') cargarContactos();
         }
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', () => irSeccion(link.dataset.section));
-        });
 
-        // ===== DASHBOARD =====
+        // ===================== SIDEBAR TOGGLE =====================
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        function cerrarSidebar() { sidebar.classList.remove('show'); sidebarOverlay.classList.remove('show'); }
+        sidebarToggle.addEventListener('click', () => {
+            const open = sidebar.classList.toggle('show');
+            open ? sidebarOverlay.classList.add('show') : sidebarOverlay.classList.remove('show');
+        });
+        sidebarOverlay.addEventListener('click', cerrarSidebar);
+
+        // ===================== DASHBOARD =====================
         async function cargarDashboard() {
-            const [noticias, semilleros, proyectos, documentos, contactos] = await Promise.all([
-                fetch(`${API}/api/noticias`).then(r => r.json()),
-                fetch(`${API}/api/semilleros`).then(r => r.json()),
-                fetch(`${API}/api/proyectos`).then(r => r.json()),
-                fetch(`${API}/api/documentos`).then(r => r.json()),
-                fetch(`${API}/api/contactos`).then(r => r.json())
-            ]);
+            try {
+                const [rN, rS, rP, rD, rC] = await Promise.all([
+                    fetch(`${API}/api/noticias`), fetch(`${API}/api/semilleros`),
+                    fetch(`${API}/api/proyectos`), fetch(`${API}/api/documentos`),
+                    fetch(`${API}/api/contactos`)
+                ]);
+                const [n, s, p, d, c] = await Promise.all([rN.json(), rS.json(), rP.json(), rD.json(), rC.json()]);
+                document.getElementById('countNoticias').textContent = n.length || 0;
+                document.getElementById('countSemilleros').textContent = s.length || 0;
+                document.getElementById('countProyectos').textContent = p.length || 0;
+                document.getElementById('countDocumentos').textContent = d.length || 0;
 
-            document.getElementById('countNoticias').textContent   = noticias.length;
-            document.getElementById('countSemilleros').textContent = semilleros.length;
-            document.getElementById('countProyectos').textContent  = proyectos.length;
-            document.getElementById('countDocumentos').textContent = documentos.length;
+                // Charts
+                new Chart(document.getElementById('chartContenido'), {
+                    type: 'doughnut',
+                    data: { labels: ['Noticias', 'Semilleros', 'Proyectos', 'Documentos'],
+                        datasets: [{ data: [n.length, s.length, p.length, d.length], backgroundColor: ['#39a900','#00304d','#4dc800','#005580'] }] },
+                    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                });
+                const leidos = c.filter(x => x.leido === 1).length;
+                new Chart(document.getElementById('chartContactos'), {
+                    type: 'bar',
+                    data: { labels: ['Leídos', 'Sin leer'],
+                        datasets: [{ data: [leidos, c.length - leidos], backgroundColor: ['#39a900','#dc3545'] }] },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                });
 
-            const ctx1 = document.getElementById('chartContenido').getContext('2d');
-            if (chartContenidoRef) chartContenidoRef.destroy();
-            chartContenidoRef = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: ['Noticias', 'Semilleros', 'Proyectos', 'Documentos'],
-                    datasets: [{ data: [noticias.length, semilleros.length, proyectos.length, documentos.length], backgroundColor: ['#39A900','#2d8a00','#00304D','#76c043'] }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-            });
-
-            const porDia = {};
-            contactos.forEach(c => {
-                if (!c.created_at) return;
-                const key = new Date(c.created_at).toLocaleDateString('es-ES');
-                porDia[key] = (porDia[key] || 0) + 1;
-            });
-            const ctx2 = document.getElementById('chartContactos').getContext('2d');
-            if (chartContactosRef) chartContactosRef.destroy();
-            chartContactosRef = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: Object.keys(porDia),
-                    datasets: [{ data: Object.values(porDia), borderColor: '#39A900', backgroundColor: 'rgba(57,169,0,0.2)', tension: 0.3, fill: true, pointRadius: 4 }]
-                },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
-            });
-
-            document.getElementById('ultimasNoticias').innerHTML = noticias.slice(-5).reverse()
-                .map(n => `<li class="list-group-item d-flex justify-content-between"><span>${n.titulo}</span><small class="text-muted">${n.fecha}</small></li>`).join('');
-
-            document.getElementById('ultimosContactos').innerHTML = contactos.slice(-5).reverse()
-                .map(c => `<li class="list-group-item d-flex justify-content-between"><span>${c.nombre}</span><small class="text-muted">${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></li>`).join('');
+                // Listas recientes
+                const ulN = document.getElementById('ultimasNoticias');
+                ulN.innerHTML = n.slice(0, 5).map(x => `<li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0"><small>${x.titulo}</small><span class="badge bg-secondary" style="font-size:.7rem;">${x.tipo||'Noticia'}</span></li>`).join('') || '<li class="list-group-item px-0 text-muted">Sin noticias</li>';
+                const ulC = document.getElementById('ultimosContactos');
+                ulC.innerHTML = c.slice(0, 5).map(x => `<li class="list-group-item d-flex justify-content-between align-items-center py-2 px-0"><small>${x.nombre}</small><span class="badge ${x.leido ? 'bg-success' : 'bg-warning text-dark'}" style="font-size:.7rem;">${x.leido ? 'Leído' : 'Nuevo'}</span></li>`).join('') || '<li class="list-group-item px-0 text-muted">Sin mensajes</li>';
+            } catch (err) { console.error('Error dashboard:', err); }
         }
 
-        // ===== NOTICIAS =====
+        // ===================== NOTICIAS =====================
         async function cargarNoticias() {
             const res = await fetch(`${API}/api/noticias`);
             noticiasCache = await res.json();
             const lista = document.getElementById('listaNoticias');
             if (!noticiasCache.length) { lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>'; return; }
-            lista.innerHTML = `
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th>Dest.</th><th class="text-center col-acciones">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${noticiasCache.map(n => `
-                            <tr>
-                                <td>${n.id}</td>
-                                <td>${n.titulo}</td>
-                                <td>${n.fecha}</td>
-                                <td><span class="badge bg-secondary">${n.tipo || 'Noticia'}</span></td>
-                                <td>${n.destacada == 1 ? '⭐' : '—'}</td>
-                                <td class="col-acciones">
-                                    <div class="table-actions">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="verNoticia(${n.id})" title="Ver detalle">👁️ Ver</button>
-                                        <button class="btn btn-sm btn-warning" onclick="editarNoticia(${n.id})" title="Editar">✏️ Editar</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})" title="Eliminar">🗑️ Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>`;
+            lista.innerHTML = `<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${noticiasCache.map(n => `<tr><td>${n.id}</td><td>${n.titulo}</td><td>${n.fecha}</td><td><span class="badge bg-secondary">${n.tipo||'Noticia'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="editarNoticia(${n.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
 
-        function verNoticia(id) {
-            const n = noticiasCache.find(x => x.id === id);
-            if (!n) return;
-            document.getElementById('vn_titulo').textContent = n.titulo;
-            document.getElementById('vn_fecha').textContent = n.fecha;
-            document.getElementById('vn_tipo').textContent = n.tipo || 'Noticia';
-            document.getElementById('vn_destacada').textContent = n.destacada == 1 ? '⭐ Sí' : 'No';
-            document.getElementById('vn_descripcion').textContent = n.descripcion;
-            const img = document.getElementById('vn_imagen');
-            if (n.imagen) { img.src = n.imagen; img.style.display = 'block'; } else { img.style.display = 'none'; }
-            new bootstrap.Modal(document.getElementById('verNoticiaModal')).show();
+        document.getElementById('formNoticia').addEventListener('submit', async e => {
+            e.preventDefault();
+            const desc = getQuillHTML(quillNoticia);
+            if (!desc) { toast.error('La descripción es requerida'); return; }
+            document.getElementById('noticiaDescripcion').value = desc;
+            const body = {
+                titulo: document.getElementById('noticiaTitulo').value,
+                descripcion: desc,
+                fecha: document.getElementById('noticiaFecha').value,
+                imagen: document.getElementById('noticiaImagen').value,
+                tipo: document.getElementById('noticiaTipo').value,
+                destacada: document.getElementById('noticiaDestacada').checked
+            };
+            const editId = document.getElementById('noticiaEditId').value;
+            const method = editId ? 'PUT' : 'POST';
+            const url = editId ? `${API}/api/noticias/${editId}` : `${API}/api/noticias`;
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) {
+                toast.success(editId ? 'Noticia actualizada' : 'Noticia creada');
+                cancelarEdicionNoticia();
+                cargarNoticias();
+                cargarDashboard();
+            } else { toast.error('Error al guardar'); }
+        });
+
+        function cancelarEdicionNoticia() {
+            document.getElementById('formNoticia').reset();
+            quillNoticia.setContents([]);
+            document.getElementById('noticiaEditId').value = '';
+            document.getElementById('tituloFormNoticia').textContent = '➕ Nueva Noticia';
+            document.getElementById('btnSubmitNoticia').textContent = '✅ Crear Noticia';
+            document.getElementById('btnCancelNoticia').style.display = 'none';
         }
 
         function editarNoticia(id) {
             const n = noticiasCache.find(x => x.id === id);
             if (!n) return;
-            document.getElementById('edit_n_id').value = n.id;
-            document.getElementById('edit_n_titulo').value = n.titulo;
-            document.getElementById('edit_n_fecha').value = n.fecha;
-            document.getElementById('edit_n_tipo').value = n.tipo || 'Noticia';
-            document.getElementById('edit_n_descripcion').value = n.descripcion;
-            document.getElementById('edit_n_imagen').value = n.imagen || '';
-            document.getElementById('edit_n_destacada').checked = n.destacada == 1;
-            new bootstrap.Modal(document.getElementById('editarNoticiaModal')).show();
+            document.getElementById('noticiaEditId').value = n.id;
+            document.getElementById('noticiaTitulo').value = n.titulo;
+            document.getElementById('noticiaFecha').value = n.fecha;
+            document.getElementById('noticiaTipo').value = n.tipo || 'Noticia';
+            document.getElementById('noticiaImagen').value = n.imagen || '';
+            document.getElementById('noticiaDestacada').checked = n.destacada == 1;
+            quillNoticia.root.innerHTML = n.descripcion || '';
+            document.getElementById('tituloFormNoticia').textContent = '✏️ Editando Noticia';
+            document.getElementById('btnSubmitNoticia').textContent = '💾 Actualizar';
+            document.getElementById('btnCancelNoticia').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        async function guardarEdicionNoticia() {
-            const id = document.getElementById('edit_n_id').value;
-            const datos = {
-                titulo: document.getElementById('edit_n_titulo').value,
-                descripcion: document.getElementById('edit_n_descripcion').value,
-                fecha: document.getElementById('edit_n_fecha').value,
-                imagen: document.getElementById('edit_n_imagen').value,
-                tipo: document.getElementById('edit_n_tipo').value,
-                destacada: document.getElementById('edit_n_destacada').checked ? 1 : 0
-            };
-            const res = await fetch(`${API}/api/noticias/${id}`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('editarNoticiaModal')).hide();
-                toast.success('Noticia actualizada');
-                cargarNoticias(); cargarDashboard();
-            } else { toast.error('Error al actualizar noticia'); }
-        }
-
-        document.getElementById('formNoticia').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const datos = {
-                titulo: document.getElementById('noticiaTitulo').value,
-                descripcion: document.getElementById('noticiaDescripcion').value,
-                fecha: document.getElementById('noticiaFecha').value,
-                imagen: document.getElementById('noticiaImagen').value,
-                tipo: document.getElementById('noticiaTipo').value,
-                destacada: document.getElementById('noticiaDestacada').checked ? 1 : 0
-            };
-            const res = await fetch(`${API}/api/noticias`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                toast.success('Noticia creada');
-                document.getElementById('formNoticia').reset();
-                cargarNoticias(); cargarDashboard();
-            } else { toast.error('Error al crear noticia'); }
-        });
 
         async function eliminarNoticia(id) {
             if (!confirm('¿Eliminar esta noticia?')) return;
@@ -1224,126 +1058,78 @@
             else { toast.error('Error al eliminar'); }
         }
 
-        // ===== SEMILLEROS =====
+        async function guardarEdicionNoticia() {
+            const desc = getQuillHTML(quillEditNoticia);
+            document.getElementById('edit_n_descripcion').value = desc;
+            const id = document.getElementById('edit_n_id').value;
+            const body = {
+                titulo: document.getElementById('edit_n_titulo').value,
+                descripcion: desc,
+                fecha: document.getElementById('edit_n_fecha').value,
+                imagen: document.getElementById('edit_n_imagen').value,
+                tipo: document.getElementById('edit_n_tipo').value,
+                destacada: document.getElementById('edit_n_destacada').checked
+            };
+            const res = await fetch(`${API}/api/noticias/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) { toast.success('Noticia actualizada'); bootstrap.Modal.getInstance(document.getElementById('editarNoticiaModal')).hide(); cargarNoticias(); cargarDashboard(); }
+            else { toast.error('Error al guardar'); }
+        }
+
+        // ===================== SEMILLEROS =====================
         async function cargarSemilleros() {
             const res = await fetch(`${API}/api/semilleros`);
             semillerosCache = await res.json();
             todosLosSemilleros = semillerosCache;
-
-            const categoriaSelect = document.getElementById('proyectoCategoria');
-            if (categoriaSelect && !categoriaSelect.dataset.listenerSet) {
-                categoriaSelect.dataset.listenerSet = 'true';
-                categoriaSelect.addEventListener('change', function () {
-                    filtrarSemillerosEnProyecto(this.value, 'proyectoSemillero');
-                });
-            }
-
             const lista = document.getElementById('listaSemilleros');
             if (!semillerosCache.length) { lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>'; return; }
-            lista.innerHTML = `
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr>
-                    </thead>
-                    <tbody>
-                        ${semillerosCache.map(s => `
-                            <tr>
-                                <td>${s.id}</td>
-                                <td>${s.nombre}</td>
-                                <td><span class="badge bg-info text-dark">${s.categoria || 'Sin categoría'}</span></td>
-                                <td>${s.linea}</td>
-                                <td class="col-acciones">
-                                    <div class="table-actions">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="verSemillero(${s.id})" title="Ver">👁️ Ver</button>
-                                        <button class="btn btn-sm btn-warning" onclick="editarSemillero(${s.id})" title="Editar">✏️ Editar</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})" title="Eliminar">🗑️ Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>`;
+            lista.innerHTML = `<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${semillerosCache.map(s => `<tr><td>${s.id}</td><td>${s.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${s.categoria||''}</span></td><td><small>${s.linea}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="editarSemillero(${s.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
 
-        function filtrarSemillerosEnProyecto(categoria, selectId) {
-            const select = document.getElementById(selectId);
-            if (!categoria) {
-                select.disabled = true;
-                select.innerHTML = '<option value="">-- Selecciona categoría primero --</option>';
-                return;
-            }
-            select.disabled = false;
-            const filtrados = todosLosSemilleros.filter(s => s.categoria === categoria);
-            select.innerHTML = filtrados.length
-                ? '<option value="">-- Seleccionar semillero --</option>' + filtrados.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('')
-                : '<option value="">No hay semilleros en esta categoría</option>';
-        }
+        document.getElementById('formSemillero').addEventListener('submit', async e => {
+            e.preventDefault();
+            const desc = getQuillHTML(quillSemillero);
+            if (!desc) { toast.error('La descripción es requerida'); return; }
+            document.getElementById('semilleroDescripcion').value = desc;
+            const body = {
+                nombre: document.getElementById('semilleroNombre').value,
+                linea: document.getElementById('semilleroLinea').value,
+                enfoque: document.getElementById('semilleroEnfoque').value,
+                descripcion: desc,
+                imagen: document.getElementById('semilleroImagen').value,
+                categoria: document.getElementById('semilleroCategoria').value
+            };
+            const editId = document.getElementById('semilleroEditId').value;
+            const method = editId ? 'PUT' : 'POST';
+            const url = editId ? `${API}/api/semilleros/${editId}` : `${API}/api/semilleros`;
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) { toast.success(editId ? 'Semillero actualizado' : 'Semillero creado'); cancelarEdicionSemillero(); cargarSemilleros(); cargarDashboard(); }
+            else { toast.error('Error al guardar'); }
+        });
 
-        function verSemillero(id) {
-            const s = semillerosCache.find(x => x.id === id);
-            if (!s) return;
-            document.getElementById('vs_nombre').textContent = s.nombre;
-            document.getElementById('vs_categoria').textContent = s.categoria || 'Sin categoría';
-            document.getElementById('vs_linea').textContent = s.linea;
-            document.getElementById('vs_enfoque').textContent = s.enfoque;
-            document.getElementById('vs_descripcion').textContent = s.descripcion;
-            const img = document.getElementById('vs_imagen');
-            if (s.imagen) { img.src = s.imagen; img.style.display = 'block'; } else { img.style.display = 'none'; }
-            new bootstrap.Modal(document.getElementById('verSemilleroModal')).show();
+        function cancelarEdicionSemillero() {
+            document.getElementById('formSemillero').reset();
+            quillSemillero.setContents([]);
+            document.getElementById('semilleroEditId').value = '';
+            document.getElementById('tituloFormSemillero').textContent = '➕ Nuevo Semillero';
+            document.getElementById('btnSubmitSemillero').textContent = '✅ Crear Semillero';
+            document.getElementById('btnCancelSemillero').style.display = 'none';
         }
 
         function editarSemillero(id) {
             const s = semillerosCache.find(x => x.id === id);
             if (!s) return;
-            document.getElementById('edit_s_id').value = s.id;
-            document.getElementById('edit_s_categoria').value = s.categoria || 'Soluciones Digitales';
-            document.getElementById('edit_s_nombre').value = s.nombre;
-            document.getElementById('edit_s_linea').value = s.linea;
-            document.getElementById('edit_s_enfoque').value = s.enfoque;
-            document.getElementById('edit_s_imagen').value = s.imagen || '';
-            document.getElementById('edit_s_descripcion').value = s.descripcion;
-            new bootstrap.Modal(document.getElementById('editarSemilleroModal')).show();
+            document.getElementById('semilleroEditId').value = s.id;
+            document.getElementById('semilleroNombre').value = s.nombre;
+            document.getElementById('semilleroLinea').value = s.linea;
+            document.getElementById('semilleroEnfoque').value = s.enfoque;
+            document.getElementById('semilleroImagen').value = s.imagen || '';
+            document.getElementById('semilleroCategoria').value = s.categoria || 'Soluciones Digitales';
+            quillSemillero.root.innerHTML = s.descripcion || '';
+            document.getElementById('tituloFormSemillero').textContent = '✏️ Editando Semillero';
+            document.getElementById('btnSubmitSemillero').textContent = '💾 Actualizar';
+            document.getElementById('btnCancelSemillero').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        async function guardarEdicionSemillero() {
-            const id = document.getElementById('edit_s_id').value;
-            const datos = {
-                nombre: document.getElementById('edit_s_nombre').value,
-                linea: document.getElementById('edit_s_linea').value,
-                enfoque: document.getElementById('edit_s_enfoque').value,
-                descripcion: document.getElementById('edit_s_descripcion').value,
-                imagen: document.getElementById('edit_s_imagen').value,
-                categoria: document.getElementById('edit_s_categoria').value
-            };
-            const res = await fetch(`${API}/api/semilleros/${id}`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('editarSemilleroModal')).hide();
-                toast.success('Semillero actualizado');
-                cargarSemilleros(); cargarDashboard();
-            } else { toast.error('Error al actualizar semillero'); }
-        }
-
-        document.getElementById('formSemillero').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const datos = {
-                nombre: document.getElementById('semilleroNombre').value,
-                linea: document.getElementById('semilleroLinea').value,
-                enfoque: document.getElementById('semilleroEnfoque').value,
-                descripcion: document.getElementById('semilleroDescripcion').value,
-                imagen: document.getElementById('semilleroImagen').value,
-                categoria: document.getElementById('semilleroCategoria').value
-            };
-            const res = await fetch(`${API}/api/semilleros`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                toast.success('Semillero creado');
-                document.getElementById('formSemillero').reset();
-                cargarSemilleros(); cargarDashboard();
-            } else { toast.error('Error al crear semillero'); }
-        });
 
         async function eliminarSemillero(id) {
             if (!confirm('¿Eliminar este semillero? También se eliminarán sus proyectos asociados.')) return;
@@ -1352,47 +1138,74 @@
             else { toast.error('Error al eliminar'); }
         }
 
-        // ===== PROYECTOS =====
+        async function guardarEdicionSemillero() {
+            const desc = getQuillHTML(quillEditSemillero);
+            document.getElementById('edit_s_descripcion').value = desc;
+            const id = document.getElementById('edit_s_id').value;
+            const body = {
+                nombre: document.getElementById('edit_s_nombre').value,
+                linea: document.getElementById('edit_s_linea').value,
+                enfoque: document.getElementById('edit_s_enfoque').value,
+                descripcion: desc,
+                imagen: document.getElementById('edit_s_imagen').value,
+                categoria: document.getElementById('edit_s_categoria').value
+            };
+            const res = await fetch(`${API}/api/semilleros/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) { toast.success('Semillero actualizado'); bootstrap.Modal.getInstance(document.getElementById('editarSemilleroModal')).hide(); cargarSemilleros(); cargarDashboard(); }
+            else { toast.error('Error al guardar'); }
+        }
+
+        // ===================== PROYECTOS =====================
         async function cargarProyectos() {
             const res = await fetch(`${API}/api/proyectos`);
             proyectosCache = await res.json();
-
             if (!todosLosSemilleros.length) {
                 const resSem = await fetch(`${API}/api/semilleros`);
                 todosLosSemilleros = await resSem.json();
             }
-
             const editSelect = document.getElementById('edit_p_semillero');
             editSelect.innerHTML = todosLosSemilleros.map(s => `<option value="${s.id}">${s.nombre} (${s.categoria})</option>`).join('');
-
             const lista = document.getElementById('listaProyectos');
             if (!proyectosCache.length) { lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>'; return; }
-            lista.innerHTML = `
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr>
-                    </thead>
-                    <tbody>
-                        ${proyectosCache.map(p => {
-                            const semNombre = todosLosSemilleros.find(s => s.id === p.semillero_id);
-                            const badgeClass = p.estado === 'En ejecución' ? 'bg-primary' : p.estado === 'Finalizado' ? 'bg-success' : 'bg-warning text-dark';
-                            return `
-                            <tr>
-                                <td>${p.id}</td>
-                                <td>${p.titulo}</td>
-                                <td><small>${semNombre ? semNombre.nombre : 'ID: ' + p.semillero_id}</small></td>
-                                <td><span class="badge ${badgeClass}">${p.estado}</span></td>
-                                <td class="col-acciones">
-                                    <div class="table-actions">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="verProyecto(${p.id})" title="Ver">👁️ Ver</button>
-                                        <button class="btn btn-sm btn-warning" onclick="editarProyecto(${p.id})" title="Editar">✏️ Editar</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})" title="Eliminar">🗑️ Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>`;
-                        }).join('')}
-                    </tbody>
-                </table>`;
+            lista.innerHTML = `<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${proyectosCache.map(p => { const semNombre = todosLosSemilleros.find(s => s.id === p.semillero_id); const badgeClass = p.estado === 'En ejecución' ? 'bg-primary' : p.estado === 'Finalizado' ? 'bg-success' : 'bg-warning text-dark'; return `<tr><td>${p.id}</td><td>${p.titulo}</td><td><small>${semNombre ? semNombre.nombre : 'ID: ' + p.semillero_id}</small></td><td><span class="badge ${badgeClass}">${p.estado}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="verProyecto(${p.id})" title="Ver">👁️ Ver</button><button class="btn btn-sm btn-warning" onclick="editarProyecto(${p.id})" title="Editar">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})" title="Eliminar">🗑️ Eliminar</button></div></td></tr>`; }).join('')}</tbody></table>`;
+        }
+
+        document.getElementById('formProyecto').addEventListener('submit', async e => {
+            e.preventDefault();
+            const body = {
+                semillero_id: document.getElementById('proyectoSemillero').value,
+                titulo: document.getElementById('proyectoTitulo').value,
+                estado: document.getElementById('proyectoEstado').value,
+                aliados: document.getElementById('proyectoAliados').value,
+                objetivo: document.getElementById('proyectoObjetivo').value,
+                entregables: document.getElementById('proyectoEntregables').value,
+                evidencia: document.getElementById('proyectoEvidencia').value
+            };
+            const editId = document.getElementById('proyectoEditId').value;
+            const method = editId ? 'PUT' : 'POST';
+            const url = editId ? `${API}/api/proyectos/${editId}` : `${API}/api/proyectos`;
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) { toast.success(editId ? 'Proyecto actualizado' : 'Proyecto creado'); cancelarEdicionProyecto(); cargarProyectos(); cargarDashboard(); }
+            else { toast.error('Error al guardar'); }
+        });
+
+        document.getElementById('proyectoCategoria').addEventListener('change', async function() {
+            const cat = this.value;
+            const sel = document.getElementById('proyectoSemillero');
+            if (!cat) { sel.innerHTML = '<option value="">-- Selecciona categoría primero --</option>'; sel.disabled = true; return; }
+            const res = await fetch(`${API}/api/semilleros/categoria/${encodeURIComponent(cat)}`);
+            const sems = await res.json();
+            sel.innerHTML = sems.length ? sems.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('') : '<option value="">Sin semilleros en esta categoría</option>';
+            sel.disabled = false;
+        });
+
+        function cancelarEdicionProyecto() {
+            document.getElementById('formProyecto').reset();
+            document.getElementById('proyectoEditId').value = '';
+            document.getElementById('tituloFormProyecto').textContent = '➕ Nuevo Proyecto';
+            document.getElementById('btnSubmitProyecto').textContent = '✅ Crear Proyecto';
+            document.getElementById('btnCancelProyecto').style.display = 'none';
+            document.getElementById('proyectoSemillero').disabled = true;
         }
 
         function verProyecto(id) {
@@ -1427,7 +1240,7 @@
 
         async function guardarEdicionProyecto() {
             const id = document.getElementById('edit_p_id').value;
-            const datos = {
+            const body = {
                 semillero_id: document.getElementById('edit_p_semillero').value,
                 titulo: document.getElementById('edit_p_titulo').value,
                 estado: document.getElementById('edit_p_estado').value,
@@ -1436,37 +1249,10 @@
                 entregables: document.getElementById('edit_p_entregables').value,
                 evidencia: document.getElementById('edit_p_evidencia').value
             };
-            const res = await fetch(`${API}/api/proyectos/${id}`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('editarProyectoModal')).hide();
-                toast.success('Proyecto actualizado');
-                cargarProyectos(); cargarDashboard();
-            } else { toast.error('Error al actualizar proyecto'); }
+            const res = await fetch(`${API}/api/proyectos/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) { toast.success('Proyecto actualizado'); bootstrap.Modal.getInstance(document.getElementById('editarProyectoModal')).hide(); cargarProyectos(); cargarDashboard(); }
+            else { toast.error('Error al guardar'); }
         }
-
-        document.getElementById('formProyecto').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const datos = {
-                semillero_id: document.getElementById('proyectoSemillero').value,
-                titulo: document.getElementById('proyectoTitulo').value,
-                estado: document.getElementById('proyectoEstado').value,
-                aliados: document.getElementById('proyectoAliados').value,
-                objetivo: document.getElementById('proyectoObjetivo').value,
-                entregables: document.getElementById('proyectoEntregables').value,
-                evidencia: document.getElementById('proyectoEvidencia').value
-            };
-            const res = await fetch(`${API}/api/proyectos`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                toast.success('Proyecto creado');
-                document.getElementById('formProyecto').reset();
-                document.getElementById('proyectoSemillero').disabled = true;
-                cargarProyectos(); cargarDashboard();
-            } else { toast.error('Error al crear proyecto'); }
-        });
 
         async function eliminarProyecto(id) {
             if (!confirm('¿Eliminar este proyecto?')) return;
@@ -1475,118 +1261,69 @@
             else { toast.error('Error al eliminar'); }
         }
 
-        // ===== DOCUMENTOS =====
-        const dropZone = document.getElementById('dropZone');
-        const docArchivo = document.getElementById('docArchivo');
-        const dropText = document.getElementById('dropText');
-        const fileSelected = document.getElementById('fileSelected');
-        const fileName = document.getElementById('fileName');
-
-        dropZone.addEventListener('click', () => docArchivo.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.backgroundColor = 'rgba(57,169,0,0.1)'; });
-        dropZone.addEventListener('dragleave', () => { dropZone.style.backgroundColor = 'transparent'; });
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault(); dropZone.style.backgroundColor = 'transparent';
-            const files = e.dataTransfer.files;
-            if (files.length > 0) { docArchivo.files = files; actualizarNombreArchivo(files[0]); }
-        });
-        docArchivo.addEventListener('change', () => { if (docArchivo.files.length > 0) actualizarNombreArchivo(docArchivo.files[0]); });
-
-        function actualizarNombreArchivo(file) {
-            if (file.type !== 'application/pdf') {
-                toast.warning('Solo se permiten archivos PDF');
-                docArchivo.value = ''; dropText.style.display = 'block'; fileSelected.style.display = 'none'; return;
-            }
-            fileName.textContent = file.name;
-            dropText.style.display = 'none'; fileSelected.style.display = 'block';
-        }
-
+        // ===================== DOCUMENTOS =====================
         async function cargarDocumentos() {
             const res = await fetch(`${API}/api/documentos`);
             documentosCache = await res.json();
             const lista = document.getElementById('listaDocumentos');
             if (!documentosCache.length) { lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>'; return; }
-            lista.innerHTML = `
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Descripción</th><th class="text-center col-acciones">Acciones</th></tr>
-                    </thead>
-                    <tbody>
-                        ${documentosCache.map(doc => `
-                            <tr>
-                                <td>${doc.id}</td>
-                                <td>${doc.nombre}</td>
-                                <td><span class="badge bg-info text-dark">${doc.tipo}</span></td>
-                                <td><small class="text-muted">${(doc.descripcion || '').substring(0,60)}${doc.descripcion && doc.descripcion.length > 60 ? '...' : ''}</small></td>
-                                <td class="col-acciones">
-                                    <div class="table-actions">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="verDocumento(${doc.id})" title="Ver">👁️ Ver</button>
-                                        <button class="btn btn-sm btn-warning" onclick="editarDocumento(${doc.id})" title="Editar">✏️ Editar</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})" title="Eliminar">🗑️ Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>`;
+            lista.innerHTML = `<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Fecha</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${documentosCache.map(d => `<tr><td>${d.id}</td><td>${d.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${d.tipo}</span></td><td><small>${new Date(d.created_at).toLocaleDateString('es-CO')}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="verDocumento(${d.id})">👁️ Ver</button><button class="btn btn-sm btn-warning" onclick="editarDocumento(${d.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${d.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
 
+        document.getElementById('formDocumento').addEventListener('submit', async e => {
+            e.preventDefault();
+            const desc = getQuillHTML(quillDocumento);
+            document.getElementById('docDescripcion').value = desc;
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('docNombre').value);
+            formData.append('tipo', document.getElementById('docTipo').value);
+            formData.append('descripcion', desc);
+            formData.append('archivo', document.getElementById('docArchivo').files[0]);
+            const res = await fetch(`${API}/api/documentos`, { method: 'POST', body: formData });
+            if (res.ok) { toast.success('Documento subido'); document.getElementById('formDocumento').reset(); quillDocumento.setContents([]); document.getElementById('dropText').style.display = 'block'; document.getElementById('fileSelected').style.display = 'none'; cargarDocumentos(); cargarDashboard(); }
+            else { const err = await res.json(); toast.error(err.error || 'Error al subir'); }
+        });
+
+        // Drop zone
+        const dropZone = document.getElementById('dropZone');
+        const docArchivoInput = document.getElementById('docArchivo');
+        dropZone.addEventListener('click', () => docArchivoInput.click());
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.background = 'rgba(57,169,0,0.08)'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.background = ''; });
+        dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.background = ''; const file = e.dataTransfer.files[0]; if (file && file.type === 'application/pdf') { const dt = new DataTransfer(); dt.items.add(file); docArchivoInput.files = dt.files; mostrarArchivoSeleccionado(file.name); } else { toast.error('Solo se permiten archivos PDF'); } });
+        docArchivoInput.addEventListener('change', () => { if (docArchivoInput.files[0]) mostrarArchivoSeleccionado(docArchivoInput.files[0].name); });
+        function mostrarArchivoSeleccionado(nombre) { document.getElementById('dropText').style.display = 'none'; document.getElementById('fileSelected').style.display = 'block'; document.getElementById('fileName').textContent = nombre; }
+
         function verDocumento(id) {
-            const doc = documentosCache.find(x => x.id === id);
-            if (!doc) return;
-            document.getElementById('vd_nombre').textContent = doc.nombre;
-            document.getElementById('vd_tipo').textContent = doc.tipo;
-            document.getElementById('vd_descripcion').textContent = doc.descripcion || 'Sin descripción';
-            const link = document.getElementById('vd_archivo');
-            link.href = `${API}${doc.ruta_archivo}`;
+            const d = documentosCache.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('vd_nombre').textContent = d.nombre;
+            document.getElementById('vd_tipo').textContent = d.tipo;
+            const descEl = document.getElementById('vd_descripcion');
+            descEl.innerHTML = d.descripcion || '—';
+            document.getElementById('vd_archivo').href = `https://ceai-web-production.up.railway.app${d.ruta_archivo}`;
             new bootstrap.Modal(document.getElementById('verDocumentoModal')).show();
         }
 
         function editarDocumento(id) {
-            const doc = documentosCache.find(x => x.id === id);
-            if (!doc) return;
-            document.getElementById('edit_d_id').value = doc.id;
-            document.getElementById('edit_d_nombre').value = doc.nombre;
-            document.getElementById('edit_d_tipo').value = doc.tipo;
-            document.getElementById('edit_d_descripcion').value = doc.descripcion || '';
+            const d = documentosCache.find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('edit_d_id').value = d.id;
+            document.getElementById('edit_d_nombre').value = d.nombre;
+            document.getElementById('edit_d_tipo').value = d.tipo;
+            quillEditDocumento.root.innerHTML = d.descripcion || '';
             new bootstrap.Modal(document.getElementById('editarDocumentoModal')).show();
         }
 
         async function guardarEdicionDocumento() {
+            const desc = getQuillHTML(quillEditDocumento);
+            document.getElementById('edit_d_descripcion').value = desc;
             const id = document.getElementById('edit_d_id').value;
-            const datos = {
-                nombre: document.getElementById('edit_d_nombre').value,
-                tipo: document.getElementById('edit_d_tipo').value,
-                descripcion: document.getElementById('edit_d_descripcion').value
-            };
-            const res = await fetch(`${API}/api/documentos/${id}`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
-            });
-            if (res.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('editarDocumentoModal')).hide();
-                toast.success('Documento actualizado');
-                cargarDocumentos();
-            } else { toast.error('Error al actualizar documento'); }
+            const body = { nombre: document.getElementById('edit_d_nombre').value, tipo: document.getElementById('edit_d_tipo').value, descripcion: desc };
+            const res = await fetch(`${API}/api/documentos/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (res.ok) { toast.success('Documento actualizado'); bootstrap.Modal.getInstance(document.getElementById('editarDocumentoModal')).hide(); cargarDocumentos(); }
+            else { toast.error('Error al guardar'); }
         }
-
-        document.getElementById('formDocumento').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!docArchivo.files.length) { toast.warning('Por favor selecciona un archivo PDF'); return; }
-            const formData = new FormData();
-            formData.append('nombre', document.getElementById('docNombre').value);
-            formData.append('tipo', document.getElementById('docTipo').value);
-            formData.append('descripcion', document.getElementById('docDescripcion').value);
-            formData.append('archivo', docArchivo.files[0]);
-            try {
-                const res = await fetch(`${API}/api/documentos`, { method: 'POST', body: formData });
-                if (res.ok) {
-                    toast.success('Documento agregado');
-                    document.getElementById('formDocumento').reset();
-                    docArchivo.value = ''; dropText.style.display = 'block'; fileSelected.style.display = 'none';
-                    cargarDocumentos(); cargarDashboard();
-                } else { const err = await res.json(); toast.error('Error: ' + (err.error || '')); }
-            } catch (err) { toast.error('Error al subir: ' + err.message); }
-        });
 
         async function eliminarDocumento(id) {
             if (!confirm('¿Eliminar este documento?')) return;
@@ -1595,66 +1332,28 @@
             else { toast.error('Error al eliminar'); }
         }
 
-        // ===== CONTACTOS =====
+        // ===================== CONTACTOS =====================
         async function cargarContactos() {
             const res = await fetch(`${API}/api/contactos`);
             contactosCache = await res.json();
             const lista = document.getElementById('listaContactos');
             if (!contactosCache.length) { lista.innerHTML = '<p class="text-muted">No hay mensajes aún</p>'; return; }
-            lista.innerHTML = `
-                <table class="table table-hover table-sm align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Fecha</th><th class="text-center col-acciones">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${contactosCache.map(c => `
-                            <tr class="${c.leido == 1 ? '' : 'fw-bold'}">
-                                <td>${c.id}</td>
-                                <td>${c.nombre}</td>
-                                <td><small>${c.email}</small></td>
-                                <td><small>${c.asunto}</small></td>
-                                <td style="max-width:160px;"><small class="text-muted text-truncate d-inline-block" style="max-width:150px;">${c.mensaje}</small></td>
-                                <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
-                                <td class="col-acciones">
-                                    <div class="table-actions">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="verContacto(${c.id})" title="Ver mensaje">👁️ Ver</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})" title="Eliminar">🗑️ Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>`;
+            lista.innerHTML = `<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${contactosCache.map(c => `<tr><td>${c.id}</td><td>${c.nombre}</td><td><small>${c.email}</small></td><td>${c.asunto}</td><td><small>${(c.mensaje||'').substring(0,50)}...</small></td><td><span class="badge ${c.leido ? 'bg-success' : 'bg-warning text-dark'}">${c.leido ? 'Leído' : 'Nuevo'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-success" onclick="marcarLeido(${c.id},${c.leido ? 0 : 1})">${c.leido ? 'No leído' : '✔ Leído'}</button><button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
         }
 
-        function verContacto(id) {
-            const c = contactosCache.find(x => x.id === id);
-            if (!c) return;
-            document.getElementById('detalleNombre').textContent = c.nombre;
-            const emailEl = document.getElementById('detalleEmail');
-            emailEl.textContent = c.email; emailEl.href = `mailto:${c.email}`;
-            document.getElementById('detalleAsunto').textContent = c.asunto;
-            document.getElementById('detalleFecha').textContent = c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
-            document.getElementById('detalleMensaje').textContent = c.mensaje;
-            new bootstrap.Modal(document.getElementById('contactoModal')).show();
-            if (c.leido != 1) {
-                fetch(`${API}/api/contactos/${id}`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ leido: 1 })
-                }).then(() => { c.leido = 1; cargarContactos(); });
-            }
+        async function marcarLeido(id, leido) {
+            const res = await fetch(`${API}/api/contactos/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ leido }) });
+            if (res.ok) { cargarContactos(); cargarDashboard(); }
         }
 
         async function eliminarContacto(id) {
             if (!confirm('¿Eliminar este mensaje?')) return;
             const res = await fetch(`${API}/api/contactos/${id}`, { method: 'DELETE' });
             if (res.ok) { toast.info('Mensaje eliminado'); cargarContactos(); cargarDashboard(); }
-            else { toast.error('Error al eliminar'); }
         }
 
-        // ===== INIT =====
-        cargarDashboard();
+        // ===================== INIT =====================
+        document.addEventListener('DOMContentLoaded', cargarDashboard);
     </script>
 </body>
 </html>
