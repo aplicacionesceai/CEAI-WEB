@@ -9,7 +9,44 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* ===== BASE ADMIN ===== */
         body { background: linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%); font-family:'Roboto',sans-serif; overflow-x:hidden; }
+
+        /* ===== OVERRIDE GLOBAL: botones en admin NO full-width ===== */
+        .admin-btn,
+        .table .btn,
+        .table .btn-sm,
+        .modal .btn,
+        .modal .btn-sm,
+        .form-section .btn,
+        .quick-actions .btn,
+        .sidebar-footer .btn {
+            width: auto !important;
+        }
+
+        /* ===== BOTONES DE ACCIÓN EN TABLAS ===== */
+        .table-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+        .table-actions .btn {
+            width: auto !important;
+            padding: 4px 10px !important;
+            font-size: 0.78rem !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ===== SIDEBAR ===== */
         .sidebar { background:linear-gradient(180deg,var(--ceai-azul) 0%,var(--ceai-azul-dark) 100%); color:white; min-height:100vh; padding:25px 20px; position:fixed; top:0; left:0; width:280px; box-shadow:4px 0 20px rgba(0,0,0,.15); z-index:1000; transition:all .3s ease; overflow-y:auto; }
         .sidebar-header { padding-bottom:20px; border-bottom:2px solid rgba(57,169,0,.3); margin-bottom:25px; }
         .sidebar-header h4 { color:white; font-weight:800; font-size:1.6rem; margin:0; letter-spacing:-.5px; }
@@ -20,14 +57,21 @@
         .sidebar-link::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--ceai-verde); transform:scaleY(0); transition:transform .3s ease; }
         .sidebar-link:hover,.sidebar-link.active { background:linear-gradient(90deg,var(--ceai-verde) 0%,var(--ceai-verde-light) 100%); color:white; transform:translateX(6px); box-shadow:0 4px 20px rgba(57,169,0,.5); }
         .sidebar-link:hover::before,.sidebar-link.active::before { transform:scaleY(1); }
-        .sidebar-footer { margin-top:30px; padding-top:20px; border-top:1px solid rgba(255,255,255,.1); }
+        .sidebar-footer { margin-top:30px; padding-top:20px; border-top:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; gap:8px; }
+        .sidebar-footer .btn { width:100% !important; }
+
+        /* ===== LAYOUT ===== */
         .content-wrapper { margin-left:280px; padding:35px; min-height:100vh; transition:all .3s ease; }
         .content-section { display:none; animation:fadeInContent .5s ease; }
         .content-section.active { display:block; }
         @keyframes fadeInContent { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ===== SECTION HEADER ===== */
         .section-header { background:linear-gradient(135deg,white 0%,#f8f9fa 100%); border-radius:18px; padding:28px 35px; margin-bottom:35px; box-shadow:0 4px 25px rgba(0,0,0,.1); border-left:6px solid var(--ceai-verde); }
         .section-header h2 { color:var(--ceai-azul); font-weight:800; margin:0; font-size:1.9rem; }
         .section-header p { margin:8px 0 0 0; color:#6c757d; }
+
+        /* ===== CARDS ===== */
         .modern-card { background:white; border-radius:18px; padding:28px; margin-bottom:28px; box-shadow:0 6px 25px rgba(0,0,0,.09); border:1px solid rgba(0,0,0,.04); transition:all .3s ease; position:relative; overflow:hidden; }
         .modern-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--ceai-verde),var(--ceai-verde-light)); }
         .modern-card:hover { transform:translateY(-6px); box-shadow:0 12px 35px rgba(0,0,0,.14); }
@@ -38,20 +82,35 @@
         .stat-card h3 { color:white; font-size:2.8rem; font-weight:900; margin:0; text-shadow:0 3px 15px rgba(0,0,0,.25); }
         .stat-card.variant-azul { background:linear-gradient(135deg,var(--ceai-azul) 0%,var(--ceai-azul-light) 100%); box-shadow:0 6px 20px rgba(0,48,77,.35); }
         .stat-card.variant-azul:hover { box-shadow:0 15px 40px rgba(0,48,77,.5); }
+
+        /* ===== FORM SECTION ===== */
         .form-section { background:white; padding:35px; border-radius:18px; margin-bottom:35px; box-shadow:0 6px 25px rgba(0,0,0,.09); border-top:5px solid var(--ceai-verde); }
         .form-section h5 { color:var(--ceai-azul); font-weight:700; margin-bottom:28px; font-size:1.3rem; }
+
+        /* ===== TABLE SECTION ===== */
         .table-section { background:white; border-radius:18px; padding:28px; margin-top:28px; box-shadow:0 6px 25px rgba(0,0,0,.09); }
         .table-section h5 { color:var(--ceai-azul); font-weight:700; margin-bottom:22px; font-size:1.2rem; }
-        .table thead th { border-top:none; border-bottom:3px solid var(--ceai-verde); color:var(--ceai-azul); font-weight:700; text-transform:uppercase; font-size:.85rem; letter-spacing:.8px; padding:15px; }
+        .table thead th { border-top:none; border-bottom:3px solid var(--ceai-verde); color:var(--ceai-azul); font-weight:700; text-transform:uppercase; font-size:.85rem; letter-spacing:.8px; padding:15px; vertical-align:middle; }
         .table tbody tr { transition:all .25s ease; }
         .table tbody tr:hover { background-color:rgba(57,169,0,.06); }
+        .table td { vertical-align:middle; }
+        /* Columna acciones: ancho mínimo para que quepan los botones en línea */
+        .table th.col-acciones,
+        .table td.col-acciones { width:1%; white-space:nowrap; }
+
+        /* ===== QUICK ACTIONS ===== */
+        .quick-actions { background:linear-gradient(135deg,var(--ceai-azul) 0%,var(--ceai-azul-light) 100%); color:white; border-radius:18px; padding:28px; box-shadow:0 6px 25px rgba(0,48,77,.35); }
+        .quick-actions h5 { color:var(--ceai-verde); margin-bottom:18px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+        .quick-actions .btn { width:auto !important; }
+
+        /* ===== MODAL ===== */
         .modal-content { border-radius:18px; border:none; box-shadow:0 15px 60px rgba(0,0,0,.25); }
         .modal-header { background:linear-gradient(90deg,var(--ceai-verde) 0%,var(--ceai-verde-light) 100%); color:white; border-radius:18px 18px 0 0; border:none; padding:20px 30px; }
         .modal-header .modal-title { color:white; font-weight:700; }
         .modal-header .btn-close { filter:brightness(0) invert(1); }
-        .quick-actions { background:linear-gradient(135deg,var(--ceai-azul) 0%,var(--ceai-azul-light) 100%); color:white; border-radius:18px; padding:28px; box-shadow:0 6px 25px rgba(0,48,77,.35); }
-        .quick-actions h5 { color:var(--ceai-verde); margin-bottom:18px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
-        .quick-actions .btn { margin:6px; }
+        .modal-footer .btn { width:auto !important; }
+
+        /* ===== MISC ===== */
         .sidebar-toggle { display:none; position:fixed; top:22px; left:22px; z-index:1100; background:var(--ceai-verde); color:white; border:none; padding:14px 17px; border-radius:12px; font-size:1.3rem; box-shadow:0 6px 20px rgba(57,169,0,.45); cursor:pointer; transition:all .3s ease; }
         .sidebar-toggle:hover { background:var(--ceai-verde-oscuro); transform:scale(1.12); }
         .sidebar-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); z-index:999; opacity:0; transition:opacity .3s ease; backdrop-filter:blur(4px); }
@@ -60,6 +119,8 @@
         .sidebar::-webkit-scrollbar-track { background:rgba(0,0,0,.1); }
         .sidebar::-webkit-scrollbar-thumb { background:var(--ceai-verde); border-radius:10px; }
         .detail-box { white-space:pre-wrap; word-wrap:break-word; background:#f8f9fa; padding:15px; border-radius:10px; border:1px solid #e0e0e0; max-height:200px; overflow-y:auto; }
+
+        /* ===== RESPONSIVE ===== */
         @media(max-width:992px){
             .sidebar{transform:translateX(-100%);width:280px}
             .sidebar.show{transform:translateX(0)}
@@ -68,17 +129,24 @@
             .section-header h2{font-size:1.5rem}
             .stat-card h3{font-size:2.2rem}
         }
+        @media(max-width:768px){
+            /* Tabla overflow horizontal en lugar de wrap de botones */
+            .table-section { overflow-x:auto; padding:18px; }
+            .table-actions { gap:3px; }
+            .table-actions .btn { padding:3px 8px !important; font-size:0.75rem !important; }
+        }
         @media(max-width:576px){
-            .content-wrapper{padding:85px 15px 15px}
-            .section-header{padding:22px}
-            .section-header h2{font-size:1.3rem}
+            .content-wrapper{padding:80px 12px 12px}
+            .section-header{padding:18px 20px}
+            .section-header h2{font-size:1.2rem}
             .stat-card{padding:22px;margin-bottom:18px}
             .stat-card h3{font-size:2rem}
             .modern-card{padding:18px;margin-bottom:18px}
             .form-section{padding:18px}
-            .table-section{padding:18px;overflow-x:auto}
-            .quick-actions .btn{width:100%;margin:6px 0}
-            .table{font-size:.85rem}
+            /* Los botones del form SÍ pueden ser full-width en mobile */
+            .form-section .btn-submit-full { width:100% !important; }
+            .quick-actions { padding:18px; }
+            .quick-actions .btn { width:100% !important; margin:4px 0 !important; }
         }
     </style>
 </head>
@@ -106,11 +174,11 @@
             <div class="sidebar-link" data-section="documentos"><span>📄</span> Documentos</div>
             <div class="sidebar-link" data-section="contactos"><span>📨</span> Contactos</div>
             <div class="sidebar-footer">
-                <button class="btn btn-outline-light btn-sm w-100 mb-2"
+                <button class="btn btn-outline-light btn-sm"
                     onclick="localStorage.removeItem('ceai_admin_logged'); window.location.href='login.html';">
                     🚪 Cerrar sesión
                 </button>
-                <a href="index.html" class="btn btn-outline-light btn-sm w-100">← Volver al sitio</a>
+                <a href="index.html" class="btn btn-outline-light btn-sm">← Volver al sitio</a>
             </div>
         </div>
 
@@ -208,10 +276,10 @@
                                 </div>
                             </div>
                             <div class="col-md-8 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100" id="btnSubmitNoticia">✅ Crear Noticia</button>
+                                <button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitNoticia">✅ Crear Noticia</button>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <button type="button" class="btn btn-outline-secondary w-100" id="btnCancelNoticia" style="display:none" onclick="cancelarEdicionNoticia()">✖ Cancelar</button>
+                                <button type="button" class="btn btn-outline-secondary btn-submit-full w-100" id="btnCancelNoticia" style="display:none" onclick="cancelarEdicionNoticia()">✖ Cancelar</button>
                             </div>
                         </div>
                     </form>
@@ -264,10 +332,10 @@
                                 <textarea class="form-control" id="semilleroDescripcion" rows="3" required></textarea>
                             </div>
                             <div class="col-md-8 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100" id="btnSubmitSemillero">✅ Crear Semillero</button>
+                                <button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitSemillero">✅ Crear Semillero</button>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <button type="button" class="btn btn-outline-secondary w-100" id="btnCancelSemillero" style="display:none" onclick="cancelarEdicionSemillero()">✖ Cancelar</button>
+                                <button type="button" class="btn btn-outline-secondary btn-submit-full w-100" id="btnCancelSemillero" style="display:none" onclick="cancelarEdicionSemillero()">✖ Cancelar</button>
                             </div>
                         </div>
                     </form>
@@ -335,10 +403,10 @@
                                 <textarea class="form-control" id="proyectoEvidencia" rows="2"></textarea>
                             </div>
                             <div class="col-md-8 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100" id="btnSubmitProyecto">✅ Crear Proyecto</button>
+                                <button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitProyecto">✅ Crear Proyecto</button>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <button type="button" class="btn btn-outline-secondary w-100" id="btnCancelProyecto" style="display:none" onclick="cancelarEdicionProyecto()">✖ Cancelar</button>
+                                <button type="button" class="btn btn-outline-secondary btn-submit-full w-100" id="btnCancelProyecto" style="display:none" onclick="cancelarEdicionProyecto()">✖ Cancelar</button>
                             </div>
                         </div>
                     </form>
@@ -393,7 +461,7 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-3">
-                                <button type="submit" class="btn btn-ceai w-100">📤 Subir Documento</button>
+                                <button type="submit" class="btn btn-ceai btn-submit-full w-100">📤 Subir Documento</button>
                             </div>
                         </div>
                     </form>
@@ -598,7 +666,7 @@
                 </div>
                 <div class="modal-body">
                     <p><strong>Título:</strong> <span id="vp_titulo"></span></p>
-                    <p><strong>Semillero ID:</strong> <span id="vp_semillero"></span></p>
+                    <p><strong>Semillero:</strong> <span id="vp_semillero"></span></p>
                     <p><strong>Estado:</strong> <span id="vp_estado" class="badge"></span></p>
                     <p><strong>Aliados:</strong> <span id="vp_aliados"></span></p>
                     <hr>
@@ -629,7 +697,7 @@
                         <input type="hidden" id="edit_p_id">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Semillero ID <span class="text-danger">*</span></label>
+                                <label class="form-label">Semillero <span class="text-danger">*</span></label>
                                 <select class="form-control" id="edit_p_semillero" required></select>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -872,10 +940,10 @@
             const lista = document.getElementById('listaNoticias');
             if (!noticiasCache.length) { lista.innerHTML = '<p class="text-muted">No hay noticias aún</p>'; return; }
             lista.innerHTML = `
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th>Destacada</th><th class="text-center">Acciones</th>
+                            <th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th>Dest.</th><th class="text-center col-acciones">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -886,8 +954,8 @@
                                 <td>${n.fecha}</td>
                                 <td><span class="badge bg-secondary">${n.tipo || 'Noticia'}</span></td>
                                 <td>${n.destacada == 1 ? '⭐' : '—'}</td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                <td class="col-acciones">
+                                    <div class="table-actions">
                                         <button class="btn btn-sm btn-outline-primary" onclick="verNoticia(${n.id})" title="Ver detalle">👁️ Ver</button>
                                         <button class="btn btn-sm btn-warning" onclick="editarNoticia(${n.id})" title="Editar">✏️ Editar</button>
                                         <button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})" title="Eliminar">🗑️ Eliminar</button>
@@ -978,7 +1046,6 @@
             semillerosCache = await res.json();
             todosLosSemilleros = semillerosCache;
 
-            // Listener categoría proyectos
             const categoriaSelect = document.getElementById('proyectoCategoria');
             if (categoriaSelect && !categoriaSelect.dataset.listenerSet) {
                 categoriaSelect.dataset.listenerSet = 'true';
@@ -990,9 +1057,9 @@
             const lista = document.getElementById('listaSemilleros');
             if (!semillerosCache.length) { lista.innerHTML = '<p class="text-muted">No hay semilleros aún</p>'; return; }
             lista.innerHTML = `
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead class="table-light">
-                        <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center">Acciones</th></tr>
+                        <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr>
                     </thead>
                     <tbody>
                         ${semillerosCache.map(s => `
@@ -1001,8 +1068,8 @@
                                 <td>${s.nombre}</td>
                                 <td><span class="badge bg-info text-dark">${s.categoria || 'Sin categoría'}</span></td>
                                 <td>${s.linea}</td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                <td class="col-acciones">
+                                    <div class="table-actions">
                                         <button class="btn btn-sm btn-outline-primary" onclick="verSemillero(${s.id})" title="Ver">👁️ Ver</button>
                                         <button class="btn btn-sm btn-warning" onclick="editarSemillero(${s.id})" title="Editar">✏️ Editar</button>
                                         <button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})" title="Eliminar">🗑️ Eliminar</button>
@@ -1106,22 +1173,20 @@
             const res = await fetch(`${API}/api/proyectos`);
             proyectosCache = await res.json();
 
-            // Cargar semilleros si no están cargados
             if (!todosLosSemilleros.length) {
                 const resSem = await fetch(`${API}/api/semilleros`);
                 todosLosSemilleros = await resSem.json();
             }
 
-            // Poblar select editar proyecto
             const editSelect = document.getElementById('edit_p_semillero');
             editSelect.innerHTML = todosLosSemilleros.map(s => `<option value="${s.id}">${s.nombre} (${s.categoria})</option>`).join('');
 
             const lista = document.getElementById('listaProyectos');
             if (!proyectosCache.length) { lista.innerHTML = '<p class="text-muted">No hay proyectos aún</p>'; return; }
             lista.innerHTML = `
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead class="table-light">
-                        <tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center">Acciones</th></tr>
+                        <tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr>
                     </thead>
                     <tbody>
                         ${proyectosCache.map(p => {
@@ -1133,8 +1198,8 @@
                                 <td>${p.titulo}</td>
                                 <td><small>${semNombre ? semNombre.nombre : 'ID: ' + p.semillero_id}</small></td>
                                 <td><span class="badge ${badgeClass}">${p.estado}</span></td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                <td class="col-acciones">
+                                    <div class="table-actions">
                                         <button class="btn btn-sm btn-outline-primary" onclick="verProyecto(${p.id})" title="Ver">👁️ Ver</button>
                                         <button class="btn btn-sm btn-warning" onclick="editarProyecto(${p.id})" title="Editar">✏️ Editar</button>
                                         <button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})" title="Eliminar">🗑️ Eliminar</button>
@@ -1258,9 +1323,9 @@
             const lista = document.getElementById('listaDocumentos');
             if (!documentosCache.length) { lista.innerHTML = '<p class="text-muted">No hay documentos aún</p>'; return; }
             lista.innerHTML = `
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead class="table-light">
-                        <tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Descripción</th><th class="text-center">Acciones</th></tr>
+                        <tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Descripción</th><th class="text-center col-acciones">Acciones</th></tr>
                     </thead>
                     <tbody>
                         ${documentosCache.map(doc => `
@@ -1269,8 +1334,8 @@
                                 <td>${doc.nombre}</td>
                                 <td><span class="badge bg-info text-dark">${doc.tipo}</span></td>
                                 <td><small class="text-muted">${(doc.descripcion || '').substring(0,60)}${doc.descripcion && doc.descripcion.length > 60 ? '...' : ''}</small></td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                <td class="col-acciones">
+                                    <div class="table-actions">
                                         <button class="btn btn-sm btn-outline-primary" onclick="verDocumento(${doc.id})" title="Ver">👁️ Ver</button>
                                         <button class="btn btn-sm btn-warning" onclick="editarDocumento(${doc.id})" title="Editar">✏️ Editar</button>
                                         <button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${doc.id})" title="Eliminar">🗑️ Eliminar</button>
@@ -1356,7 +1421,7 @@
                 <table class="table table-hover table-sm align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Fecha</th><th style="min-width:120px" class="text-center">Acciones</th>
+                            <th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Fecha</th><th class="text-center col-acciones">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1366,12 +1431,12 @@
                                 <td>${c.nombre}</td>
                                 <td><small>${c.email}</small></td>
                                 <td><small>${c.asunto}</small></td>
-                                <td style="max-width:200px;"><small class="text-muted text-truncate d-inline-block w-100">${c.mensaje}</small></td>
+                                <td style="max-width:180px;"><small class="text-muted text-truncate d-inline-block w-100">${c.mensaje}</small></td>
                                 <td><small>${c.created_at ? new Date(c.created_at).toLocaleDateString('es-ES') : ''}</small></td>
-                                <td>
-                                    <div class="d-flex gap-1 justify-content-center">
+                                <td class="col-acciones">
+                                    <div class="table-actions">
                                         <button class="btn btn-sm btn-outline-primary" onclick="verContacto(${c.id})" title="Ver mensaje">👁️ Ver</button>
-                                        <button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})" title="Eliminar">🗑️</button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})" title="Eliminar">🗑️ Eliminar</button>
                                     </div>
                                 </td>
                             </tr>
@@ -1390,7 +1455,6 @@
             document.getElementById('detalleFecha').textContent = c.created_at ? new Date(c.created_at).toLocaleString('es-ES') : '';
             document.getElementById('detalleMensaje').textContent = c.mensaje;
             new bootstrap.Modal(document.getElementById('contactoModal')).show();
-            // Marcar como leído
             if (c.leido != 1) {
                 fetch(`${API}/api/contactos/${id}`, {
                     method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ leido: 1 })
