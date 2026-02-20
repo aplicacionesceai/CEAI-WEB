@@ -48,13 +48,54 @@
             flex-direction: column;
         }
         .sidebar-brand {
-            padding: 22px 20px 18px;
+            padding: 18px 20px 16px;
             border-bottom: 1px solid rgba(57,169,0,.25);
             flex-shrink: 0;
         }
-        .sidebar-brand h4 { color:white; font-weight:800; font-size:1.45rem; margin:0; letter-spacing:-.5px; }
-        .sidebar-brand span { color:var(--ceai-verde); }
-        .sidebar-brand small { display:block; color:rgba(255,255,255,.45); font-size:.72rem; margin-top:2px; }
+
+        /* ===== LOGO BRAND (NUEVO) ===== */
+        .sidebar-brand__inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-brand__logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            flex: 0 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.25);
+            transition: transform .2s ease;
+        }
+        .sidebar-brand__inner:hover .sidebar-brand__logo {
+            transform: scale(1.05);
+        }
+        .sidebar-brand__texts {
+            min-width: 0;
+            flex: 1;
+        }
+        .sidebar-brand__texts h4 {
+            color: white;
+            font-weight: 800;
+            font-size: 1.35rem;
+            margin: 0;
+            letter-spacing: -.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sidebar-brand__texts h4 span { color: var(--ceai-verde); }
+        .sidebar-brand__texts small {
+            display: block;
+            color: rgba(255,255,255,.45);
+            font-size: .72rem;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
         .sidebar h5.nav-label { color:rgba(255,255,255,.4); font-size:.7rem; text-transform:uppercase; letter-spacing:1.5px; margin:18px 20px 6px; font-weight:700; flex-shrink:0; }
         .sidebar-link {
             color: rgba(255,255,255,.72);
@@ -389,6 +430,9 @@
             .sidebar-footer .btn { font-size:.78rem; padding:7px 10px; }
             .quick-actions .btn { width:100% !important; }
             .dash-topbar-right { gap:7px; }
+            /* Logo más pequeño en mobile */
+            .sidebar-brand__logo { width:38px; height:38px; }
+            .sidebar-brand__texts h4 { font-size:1.1rem; }
         }
         @media (max-width:400px) {
             .kpi-body .kpi-value { font-size:1.3rem; }
@@ -409,10 +453,24 @@
     <div class="admin-wrapper">
         <!-- SIDEBAR -->
         <div class="sidebar" id="sidebar">
+
+            <!-- ✅ BRAND CON LOGO (NUEVO) -->
             <div class="sidebar-brand">
-                <h4><span>CEAI</span> Admin</h4>
-                <small>Panel de Control SENA</small>
+                <div class="sidebar-brand__inner">
+                    <img
+                        src="img/Logo-sena.jpg"
+                        alt="Logo SENA"
+                        class="sidebar-brand__logo"
+                        loading="lazy"
+                        decoding="async"
+                    >
+                    <div class="sidebar-brand__texts">
+                        <h4><span>CEAI</span> Admin</h4>
+                        <small>Panel de Control SENA</small>
+                    </div>
+                </div>
             </div>
+
             <div class="sidebar-nav">
                 <h5 class="nav-label">Principal</h5>
                 <div class="sidebar-link active" data-section="dashboard">
@@ -519,29 +577,16 @@
 
                 <!-- Fila 1: Gráfico barras proyectos + Donut contenido + Estado proyectos -->
                 <div class="charts-grid-3">
-                    <!-- Proyectos por semillero (barras) -->
                     <div class="dash-card">
-                        <div class="dash-card-header">
-                            <h5>📊 Proyectos por Estado</h5>
-                        </div>
-                        <div class="dash-card-body">
-                            <canvas id="chartProyectosEstado" style="max-height:220px;"></canvas>
-                        </div>
+                        <div class="dash-card-header"><h5>📊 Proyectos por Estado</h5></div>
+                        <div class="dash-card-body"><canvas id="chartProyectosEstado" style="max-height:220px;"></canvas></div>
                     </div>
-                    <!-- Donut distribución de contenido -->
                     <div class="dash-card">
-                        <div class="dash-card-header">
-                            <h5>🗂️ Distribución de Contenido</h5>
-                        </div>
-                        <div class="dash-card-body">
-                            <canvas id="chartContenido" style="max-height:220px;"></canvas>
-                        </div>
+                        <div class="dash-card-header"><h5>🗂️ Distribución de Contenido</h5></div>
+                        <div class="dash-card-body"><canvas id="chartContenido" style="max-height:220px;"></canvas></div>
                     </div>
-                    <!-- Mini estadísticas texto -->
                     <div class="dash-card">
-                        <div class="dash-card-header">
-                            <h5>📈 Resumen</h5>
-                        </div>
+                        <div class="dash-card-header"><h5>📈 Resumen</h5></div>
                         <div class="dash-card-body">
                             <div class="progress-item">
                                 <div class="progress-label"><span>📰 Noticias destacadas</span><span id="pctDestacadas">0</span></div>
@@ -566,26 +611,17 @@
                 <!-- Fila 2: Mensajes contacto + Semilleros por categoría -->
                 <div class="charts-grid-2">
                     <div class="dash-card">
-                        <div class="dash-card-header">
-                            <h5>📬 Mensajes de Contacto</h5>
-                        </div>
-                        <div class="dash-card-body">
-                            <canvas id="chartContactos" style="max-height:200px;"></canvas>
-                        </div>
+                        <div class="dash-card-header"><h5>📬 Mensajes de Contacto</h5></div>
+                        <div class="dash-card-body"><canvas id="chartContactos" style="max-height:200px;"></canvas></div>
                     </div>
                     <div class="dash-card">
-                        <div class="dash-card-header">
-                            <h5>🌱 Semilleros por Categoría</h5>
-                        </div>
-                        <div class="dash-card-body">
-                            <canvas id="chartSemillerosCat" style="max-height:200px;"></canvas>
-                        </div>
+                        <div class="dash-card-header"><h5>🌱 Semilleros por Categoría</h5></div>
+                        <div class="dash-card-body"><canvas id="chartSemillerosCat" style="max-height:200px;"></canvas></div>
                     </div>
                 </div>
 
                 <!-- Fila 3: Últimas noticias + Últimos contactos -->
                 <div class="charts-grid-2b">
-                    <!-- Últimas noticias -->
                     <div class="dash-card">
                         <div class="dash-card-header">
                             <h5>🗞️ Últimas Noticias</h5>
@@ -595,7 +631,6 @@
                             <div id="actividadNoticias" style="padding:4px 0;"></div>
                         </div>
                     </div>
-                    <!-- Últimos contactos -->
                     <div class="dash-card">
                         <div class="dash-card-header">
                             <h5>📨 Mensajes Recientes</h5>
@@ -943,7 +978,6 @@
                 ]);
                 const [n,s,p,d,c]=await Promise.all([rN.json(),rS.json(),rP.json(),rD.json(),rC.json()]);
 
-                // KPIs
                 document.getElementById('countNoticias').textContent=n.length||0;
                 document.getElementById('countSemilleros').textContent=s.length||0;
                 document.getElementById('countProyectos').textContent=p.length||0;
@@ -954,133 +988,51 @@
                 const sinLeer=c.filter(x=>!x.leido).length;
                 document.getElementById('subContactos').textContent=sinLeer>0?`⚠️ ${sinLeer} sin leer`:'todos leídos';
 
-                // Badge sidebar
                 const badge=document.getElementById('badgeContactos');
-                if(sinLeer>0){
-                    badge.textContent=sinLeer;
-                    document.getElementById('linkContactos').classList.add('has-badge');
-                } else {
-                    document.getElementById('linkContactos').classList.remove('has-badge');
-                }
+                if(sinLeer>0){badge.textContent=sinLeer;document.getElementById('linkContactos').classList.add('has-badge');}
+                else{document.getElementById('linkContactos').classList.remove('has-badge');}
 
-                // Alerta mensajes sin leer
                 const alertEl=document.getElementById('alertMensajes');
-                if(sinLeer>0){
-                    document.getElementById('alertMensajesText').textContent=`Tienes ${sinLeer} mensaje${sinLeer>1?'s':''} sin leer en tu bandeja de contacto.`;
-                    alertEl.classList.remove('hidden');
-                } else {
-                    alertEl.classList.add('hidden');
-                }
+                if(sinLeer>0){document.getElementById('alertMensajesText').textContent=`Tienes ${sinLeer} mensaje${sinLeer>1?'s':''} sin leer en tu bandeja de contacto.`;alertEl.classList.remove('hidden');}
+                else{alertEl.classList.add('hidden');}
 
-                // Subtitle
                 document.getElementById('dashSubtitle').textContent=`${n.length} noticias · ${s.length} semilleros · ${p.length} proyectos · ${c.length} mensajes`;
 
-                // ---- Progress bars ----
                 const enEjec=p.filter(x=>x.estado==='En ejecución').length;
                 const finalizados=p.filter(x=>x.estado==='Finalizado').length;
-                const totalP=p.length||1;
-                const totalN=n.length||1;
-                const totalC=c.length||1;
+                const totalP=p.length||1; const totalN=n.length||1; const totalC=c.length||1;
                 setProgress('pctDestacadas','barDestacadas',destacadas,totalN);
                 setProgress('pctEjecucion','barEjecucion',enEjec,totalP);
                 setProgress('pctFinalizados','barFinalizados',finalizados,totalP);
                 setProgress('pctSinLeer','barSinLeer',sinLeer,totalC);
 
-                // ---- Chart: Proyectos por estado (barra horizontal) ----
                 const enRevision=p.filter(x=>x.estado==='En revisión').length;
                 if(chartProyEstadoInst){chartProyEstadoInst.destroy();}
-                chartProyEstadoInst=new Chart(document.getElementById('chartProyectosEstado'),{
-                    type:'bar',
-                    data:{
-                        labels:['En ejecución','Finalizado','En revisión'],
-                        datasets:[{
-                            label:'Proyectos',
-                            data:[enEjec,finalizados,enRevision],
-                            backgroundColor:['rgba(8,145,178,.75)','rgba(57,169,0,.75)','rgba(245,158,11,.75)'],
-                            borderColor:['#0891b2','#39a900','#f59e0b'],
-                            borderWidth:2,
-                            borderRadius:8,
-                            borderSkipped:false
-                        }]
-                    },
-                    options:{
-                        responsive:true,
-                        indexAxis:'y',
-                        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x} proyecto${ctx.parsed.x!==1?'s':''}`}}},
-                        scales:{x:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,.05)'}},y:{grid:{display:false}}}
-                    }
-                });
+                chartProyEstadoInst=new Chart(document.getElementById('chartProyectosEstado'),{type:'bar',data:{labels:['En ejecución','Finalizado','En revisión'],datasets:[{label:'Proyectos',data:[enEjec,finalizados,enRevision],backgroundColor:['rgba(8,145,178,.75)','rgba(57,169,0,.75)','rgba(245,158,11,.75)'],borderColor:['#0891b2','#39a900','#f59e0b'],borderWidth:2,borderRadius:8,borderSkipped:false}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x} proyecto${ctx.parsed.x!==1?'s':''}`}}},scales:{x:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,.05)'}},y:{grid:{display:false}}}}});
 
-                // ---- Chart: Donut contenido ----
                 if(chartContenidoInst){chartContenidoInst.destroy();}
-                chartContenidoInst=new Chart(document.getElementById('chartContenido'),{
-                    type:'doughnut',
-                    data:{
-                        labels:['Noticias','Semilleros','Proyectos','Documentos'],
-                        datasets:[{data:[n.length,s.length,p.length,d.length],backgroundColor:['#39a900','#00304d','#0891b2','#f59e0b'],borderWidth:3,borderColor:'#fff',hoverOffset:6}]
-                    },
-                    options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{padding:12,font:{size:11}}}}}
-                });
+                chartContenidoInst=new Chart(document.getElementById('chartContenido'),{type:'doughnut',data:{labels:['Noticias','Semilleros','Proyectos','Documentos'],datasets:[{data:[n.length,s.length,p.length,d.length],backgroundColor:['#39a900','#00304d','#0891b2','#f59e0b'],borderWidth:3,borderColor:'#fff',hoverOffset:6}]},options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{padding:12,font:{size:11}}}}}});
 
-                // ---- Chart: Mensajes leídos/sin leer ----
                 const leidos=c.filter(x=>x.leido==1).length;
                 if(chartContactosInst){chartContactosInst.destroy();}
-                chartContactosInst=new Chart(document.getElementById('chartContactos'),{
-                    type:'bar',
-                    data:{
-                        labels:['Leídos','Sin leer'],
-                        datasets:[{data:[leidos,sinLeer],backgroundColor:['rgba(57,169,0,.75)','rgba(220,53,69,.7)'],borderColor:['#39a900','#dc3545'],borderWidth:2,borderRadius:8,borderSkipped:false}]
-                    },
-                    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false}}}}
-                });
+                chartContactosInst=new Chart(document.getElementById('chartContactos'),{type:'bar',data:{labels:['Leídos','Sin leer'],datasets:[{data:[leidos,sinLeer],backgroundColor:['rgba(57,169,0,.75)','rgba(220,53,69,.7)'],borderColor:['#39a900','#dc3545'],borderWidth:2,borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false}}}}});
 
-                // ---- Chart: Semilleros por categoría (polar o bar) ----
                 const catMap={};
                 s.forEach(x=>{ const k=x.categoria||'Sin categoría'; catMap[k]=(catMap[k]||0)+1; });
-                const catLabels=Object.keys(catMap);
-                const catVals=Object.values(catMap);
+                const catLabels=Object.keys(catMap); const catVals=Object.values(catMap);
                 const catColors=['#39a900','#00304d','#0891b2','#f59e0b','#6366f1'];
                 if(chartSemCatInst){chartSemCatInst.destroy();}
-                chartSemCatInst=new Chart(document.getElementById('chartSemillerosCat'),{
-                    type:'polarArea',
-                    data:{
-                        labels:catLabels,
-                        datasets:[{data:catVals,backgroundColor:catColors.slice(0,catLabels.length).map(c=>c+'bb'),borderColor:catColors.slice(0,catLabels.length),borderWidth:2}]
-                    },
-                    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{padding:10,font:{size:10}}}}}
-                });
+                chartSemCatInst=new Chart(document.getElementById('chartSemillerosCat'),{type:'polarArea',data:{labels:catLabels,datasets:[{data:catVals,backgroundColor:catColors.slice(0,catLabels.length).map(c=>c+'bb'),borderColor:catColors.slice(0,catLabels.length),borderWidth:2}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{padding:10,font:{size:10}}}}}});
 
-                // ---- Lista actividad noticias ----
                 const actEl=document.getElementById('actividadNoticias');
                 const nSlice=n.slice(0,6);
                 if(!nSlice.length){ actEl.innerHTML='<p class="text-muted" style="padding:16px 20px;font-size:.85rem;">Sin noticias registradas</p>'; }
-                else{
-                    actEl.innerHTML=nSlice.map(x=>{
-                        const tipo=x.tipo||'Noticia';
-                        const dotCls=tipo==='Evento'?'dot-teal':tipo==='Convocatoria'?'dot-orange':tipo==='Resultado'?'dot-blue':'dot-green';
-                        const chipCls=tipo==='Evento'?'chip-blue':tipo==='Convocatoria'?'chip-yellow':tipo==='Resultado'?'chip-blue':'chip-green';
-                        return `<div class="activity-item" style="padding:10px 20px;">
-                            <div class="activity-dot ${dotCls}">${tipo==='Evento'?'📅':tipo==='Convocatoria'?'📢':tipo==='Resultado'?'🏆':'📰'}</div>
-                            <div class="activity-body" style="flex:1;min-width:0;">
-                                <div class="a-title">${x.titulo}</div>
-                                <div class="a-meta">${x.fecha} · <span class="chip ${chipCls}">${tipo}</span>${x.destacada==1?' · ⭐ Destacada':''}</div>
-                            </div>
-                        </div>`;
-                    }).join('');
-                }
+                else{ actEl.innerHTML=nSlice.map(x=>{ const tipo=x.tipo||'Noticia'; const dotCls=tipo==='Evento'?'dot-teal':tipo==='Convocatoria'?'dot-orange':tipo==='Resultado'?'dot-blue':'dot-green'; const chipCls=tipo==='Evento'?'chip-blue':tipo==='Convocatoria'?'chip-yellow':tipo==='Resultado'?'chip-blue':'chip-green'; return `<div class="activity-item" style="padding:10px 20px;"><div class="activity-dot ${dotCls}">${tipo==='Evento'?'📅':tipo==='Convocatoria'?'📢':tipo==='Resultado'?'🏆':'📰'}</div><div class="activity-body" style="flex:1;min-width:0;"><div class="a-title">${x.titulo}</div><div class="a-meta">${x.fecha} · <span class="chip ${chipCls}">${tipo}</span>${x.destacada==1?' · ⭐ Destacada':''}</div></div></div>`; }).join(''); }
 
-                // ---- Tabla mini contactos ----
                 const tbody=document.getElementById('bodyContactos');
                 const cSlice=c.slice(0,6);
                 if(!cSlice.length){ tbody.innerHTML='<tr><td colspan="3" class="text-muted" style="padding:14px;">Sin mensajes</td></tr>'; }
-                else{
-                    tbody.innerHTML=cSlice.map(x=>`
-                        <tr>
-                            <td style="font-weight:600;">${x.nombre}</td>
-                            <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${x.asunto}</td>
-                            <td><span class="chip ${x.leido?'chip-green':'chip-yellow'}">${x.leido?'Leído':'Nuevo'}</span></td>
-                        </tr>`).join('');
-                }
+                else{ tbody.innerHTML=cSlice.map(x=>`<tr><td style="font-weight:600;">${x.nombre}</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${x.asunto}</td><td><span class="chip ${x.leido?'chip-green':'chip-yellow'}">${x.leido?'Leído':'Nuevo'}</span></td></tr>`).join(''); }
 
             } catch(err){ console.error('Error dashboard:',err); document.getElementById('dashSubtitle').textContent='Error al cargar datos.'; }
         }
