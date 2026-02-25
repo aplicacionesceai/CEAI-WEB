@@ -187,8 +187,17 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="index.html">
-                <span style="color: var(--ceai-verde);">CEAI</span> SENA
+            <a class="navbar-brand fw-bold ceai-brand" href="index.html" aria-label="CEAI SENA - Ir al inicio">
+                <img
+                    class="ceai-brand__logo"
+                    src="https://i.postimg.cc/cHpqyBX5/Logo-sena.jpg"
+                    alt="Logo SENA"
+                    loading="lazy"
+                    decoding="async"
+                >
+                <span class="ceai-brand__text">
+                    <span style="color: var(--ceai-verde);">CEAI</span> SENA
+                </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -254,6 +263,43 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Modal detalle proyecto -->
+    <div class="modal fade" id="detalleProyectoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dp_titulo"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="dp_carrusel" class="position-relative mb-3" style="background:#f0f0f0; border-radius:10px; overflow:hidden;">
+                        <img id="dp_carrusel_img" src="" class="w-100" style="object-fit:contain; max-height:60vh;">
+                        <button class="dp-prev btn btn-light position-absolute top-50 start-0 translate-middle-y" style="opacity:.7;">&#10094;</button>
+                        <button class="dp-next btn btn-light position-absolute top-50 end-0 translate-middle-y" style="opacity:.7;">&#10095;</button>
+                        <div id="dp_dots" class="position-absolute bottom-0 start-50 translate-middle-x d-flex gap-1 mb-2"></div>
+                    </div>
+                    <div class="mb-2">
+                        <span id="dp_estado" class="badge"></span>
+                        <span id="dp_lider" class="badge bg-success"></span>
+                        <span id="dp_apoyo" class="badge bg-info"></span>
+                    </div>
+                    <div id="dp_resumen" class="mb-3" style="font-size:0.95rem; color:#555;"></div>
+                    <div class="mb-2"><strong>📄 Descripción completa</strong></div>
+                    <div id="dp_objetivo" style="background:#f8f9fa; padding:12px; border-radius:8px; border-left:4px solid var(--ceai-verde); font-size:0.95rem; color:#333;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* estilos carousel modal */
+        .dp-prev, .dp-next { width:36px; height:36px; border-radius:50%; }
+        .dp-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer; }
+    </style>
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
 
@@ -437,86 +483,64 @@
         }
 
         // Modal para ver detalle de proyecto
+        // ==== nueva función para mostrar detalle usando modal Bootstrap ====
         function mostrarDetalleProyecto(proyecto) {
-            const badgeColor = proyecto.estado === 'En ejecución' ? '#0d6efd' : proyecto.estado === 'Finalizado' ? '#198754' : '#ffc107';
-            const imagenes = (proyecto.imagenes || '').split('|').filter(x => x.trim());
-            
-            let carruselHTML = '';
-            if (imagenes.length > 0) {
-                carruselHTML = `
-                    <div style="position:relative; width:100%; background:#f0f0f0; border-radius:10px; overflow:hidden; margin-bottom:16px;">
-                        <img id="detalle_img" src="${imagenes[0]}" style="width:100%; height:250px; object-fit:cover;" alt="Imagen del proyecto">
-                        ${imagenes.length > 1 ? `
-                            <button onclick="detalle_prevImagen(${imagenes.length})" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.5); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:18px;">‹</button>
-                            <button onclick="detalle_nextImagen(${imagenes.length})" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.5); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:18px;">›</button>
-                            <div style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:4px;" id="detalle_dots">
-                                ${imagenes.map((_, i) => `<span style="width:8px; height:8px; border-radius:50%; background:${i === 0 ? 'white' : 'rgba(255,255,255,.5)'}; cursor:pointer;" onclick="detalle_goToImagen(${i}, ${imagenes.length})"></span>`).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
+            // etiquetas de datos
+            document.getElementById('dp_titulo').textContent = proyecto.titulo;
+            document.getElementById('dp_estado').textContent = proyecto.estado;
+            document.getElementById('dp_estado').className = 'badge ' +
+                (proyecto.estado === 'En ejecución' ? 'bg-primary' : proyecto.estado === 'Finalizado' ? 'bg-success' : 'bg-warning text-dark');
+            document.getElementById('dp_lider').textContent = proyecto.lider ? `Líder del proyecto: ${proyecto.lider}` : '';
+            document.getElementById('dp_apoyo').textContent = proyecto.apoyo_tecnico ? `Apoyo técnico: ${proyecto.apoyo_tecnico}` : '';
+            document.getElementById('dp_resumen').textContent = proyecto.resumen || '';
+            document.getElementById('dp_objetivo').innerHTML = proyecto.objetivo || '';
+
+            // imágenes para carrusel
+            dp_imagenes_actual = (proyecto.imagenes || '').split('|').filter(x => x.trim());
+            dp_indice_actual = 0;
+            actualizarCarrusel();
+
+            // mostrar modal
+            new bootstrap.Modal(document.getElementById('detalleProyectoModal')).show();
+        }
+
+        let dp_imagenes_actual = [];
+        let dp_indice_actual = 0;
+
+        function actualizarCarrusel() {
+            const imgEl = document.getElementById('dp_carrusel_img');
+            const dots = document.getElementById('dp_dots');
+            const prevBtn = document.querySelector('#dp_carrusel .dp-prev');
+            const nextBtn = document.querySelector('#dp_carrusel .dp-next');
+            if (!imgEl || !dots) return;
+            if (dp_imagenes_actual.length === 0) {
+                imgEl.src = '';
+                dots.innerHTML = '';
+                return;
             }
-            
-            const modalHTML = `
-                <div style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:9999; padding:20px;">
-                    <div style="background:white; border-radius:14px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,.3); padding:28px;">
-                        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:16px;">
-                            <h3 style="color:var(--ceai-azul); margin:0; font-size:1.4rem;">${proyecto.titulo}</h3>
-                            <button onclick="this.closest('[style*=position:fixed]').remove();" style="background:none; border:none; font-size:24px; cursor:pointer; color:#666;">✕</button>
-                        </div>
-                        
-                        ${carruselHTML}
-                        
-                        <div style="display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
-                            <span style="background:${badgeColor}; color:white; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight:600;">${proyecto.estado}</span>
-                            ${proyecto.lider ? `<span style="background:rgba(57,169,0,.15); color:var(--ceai-verde); padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight:600;">👤 ${proyecto.lider}</span>` : ''}
-                            ${proyecto.apoyo_tecnico ? `<span style="background:rgba(0,48,77,.15); color:var(--ceai-azul); padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight:600;">🔧 ${proyecto.apoyo_tecnico}</span>` : ''}
-                        </div>
-                        
-                        ${proyecto.resumen ? `
-                            <div style="margin-bottom:16px;">
-                                <h5 style="color:var(--ceai-azul); margin:0 0 8px 0; font-size:0.95rem;">📝 Resumen</h5>
-                                <p style="margin:0; color:#555; font-size:0.9rem; line-height:1.6;">${proyecto.resumen}</p>
-                            </div>
-                        ` : ''}
-                        
-                        ${proyecto.objetivo ? `
-                            <div style="margin-bottom:16px;">
-                                <h5 style="color:var(--ceai-azul); margin:0 0 8px 0; font-size:0.95rem;">🎯 Objetivo</h5>
-                                <div style="background:#f8f9fa; padding:12px; border-radius:8px; border-left:4px solid var(--ceai-verde); font-size:0.9rem; line-height:1.6; color:#333;">${proyecto.objetivo}</div>
-                            </div>
-                        ` : ''}
-                        
-                        <div style="text-align:center; margin-top:20px;">
-                            <button onclick="this.closest('[style*=position:fixed]').remove();" class="btn btn-ceai" style="font-size:0.9rem;">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            detalle_imagenes_actual = imagenes;
-            detalle_indice_actual = 0;
-        }
-        
-        let detalle_imagenes_actual = [];
-        let detalle_indice_actual = 0;
-        
-        function detalle_goToImagen(idx, total) {
-            detalle_indice_actual = idx;
-            document.getElementById('detalle_img').src = detalle_imagenes_actual[idx];
-            document.querySelectorAll('#detalle_dots span').forEach((dot, i) => {
-                dot.style.background = i === idx ? 'white' : 'rgba(255,255,255,.5)';
+            imgEl.src = dp_imagenes_actual[dp_indice_actual];
+            dots.innerHTML = dp_imagenes_actual.map((_, i) =>
+                `<span class="dp-dot" data-idx="${i}"></span>`
+            ).join('');
+            document.querySelectorAll('.dp-dot').forEach(dot => {
+                const idx = parseInt(dot.getAttribute('data-idx'));
+                dot.style.background = idx === dp_indice_actual ? 'white' : 'rgba(255,255,255,.5)';
+                dot.onclick = () => { dp_indice_actual = idx; actualizarCarrusel(); };
             });
+            if (prevBtn) prevBtn.onclick = dp_prevImagen;
+            if (nextBtn) nextBtn.onclick = dp_nextImagen;
         }
-        
-        function detalle_prevImagen(total) {
-            detalle_indice_actual = (detalle_indice_actual - 1 + total) % total;
-            detalle_goToImagen(detalle_indice_actual, total);
+
+        function dp_prevImagen() {
+            if (dp_imagenes_actual.length === 0) return;
+            dp_indice_actual = (dp_indice_actual - 1 + dp_imagenes_actual.length) % dp_imagenes_actual.length;
+            actualizarCarrusel();
         }
-        
-        function detalle_nextImagen(total) {
-            detalle_indice_actual = (detalle_indice_actual + 1) % total;
-            detalle_goToImagen(detalle_indice_actual, total);
+
+        function dp_nextImagen() {
+            if (dp_imagenes_actual.length === 0) return;
+            dp_indice_actual = (dp_indice_actual + 1) % dp_imagenes_actual.length;
+            actualizarCarrusel();
         }
 
         document.addEventListener('DOMContentLoaded', cargarSemillero);
