@@ -705,10 +705,11 @@
                             <div class="col-md-6 mb-3"><label class="form-label">Semillero <span class="text-danger">*</span></label><select class="form-control" id="proyectoSemillero" required disabled><option value="">-- Selecciona categoría primero --</option></select></div>
                             <div class="col-md-6 mb-3"><label class="form-label">Título <span class="text-danger">*</span></label><input type="text" class="form-control" id="proyectoTitulo" required></div>
                             <div class="col-md-6 mb-3"><label class="form-label">Estado <span class="text-danger">*</span></label><select class="form-control" id="proyectoEstado" required><option value="En ejecución">En ejecución</option><option value="Finalizado">Finalizado</option><option value="En revisión">En revisión</option></select></div>
-                            <div class="col-md-6 mb-3"><label class="form-label">Aliados</label><input type="text" class="form-control" id="proyectoAliados"></div>
-                            <div class="col-12 mb-3"><label class="form-label">Objetivo</label><textarea class="form-control" id="proyectoObjetivo" rows="2"></textarea></div>
-                            <div class="col-12 mb-3"><label class="form-label">Entregables</label><textarea class="form-control" id="proyectoEntregables" rows="2"></textarea></div>
-                            <div class="col-12 mb-3"><label class="form-label">Evidencia</label><textarea class="form-control" id="proyectoEvidencia" rows="2"></textarea></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Líder del Proyecto</label><input type="text" class="form-control" id="proyectoLider"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Apoyo Técnico</label><input type="text" class="form-control" id="proyectoApoyoTecnico"></div>
+                            <div class="col-12 mb-3"><label class="form-label">Resumen <span class="text-danger">*</span></label><textarea class="form-control" id="proyectoResumen" rows="2" placeholder="Breve descripción del proyecto" required></textarea></div>
+                            <div class="col-12 mb-3"><label class="form-label quill-label">Objetivo</label><div class="quill-wrapper"><div id="editorProyecto"></div></div><input type="hidden" id="proyectoObjetivo"></div>
+                            <div class="col-12 mb-3"><label class="form-label">URLs de Imágenes (una por línea)</label><textarea class="form-control" id="proyectoImagenes" rows="3" placeholder="https://ejemplo.com/img1.jpg&#10;https://ejemplo.com/img2.jpg"></textarea></div>
                             <div class="col-md-8 mb-3"><button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitProyecto">✅ Crear Proyecto</button></div>
                             <div class="col-md-4 mb-3"><button type="button" class="btn btn-outline-secondary btn-submit-full w-100" id="btnCancelProyecto" style="display:none" onclick="cancelarEdicionProyecto()">✖ Cancelar</button></div>
                         </div>
@@ -760,11 +761,12 @@
                     <p><strong>Título:</strong> <span id="vp_titulo"></span></p>
                     <p><strong>Semillero:</strong> <span id="vp_semillero"></span></p>
                     <p><strong>Estado:</strong> <span id="vp_estado" class="badge"></span></p>
-                    <p><strong>Aliados:</strong> <span id="vp_aliados"></span></p>
+                    <p><strong>Líder del Proyecto:</strong> <span id="vp_lider">—</span></p>
+                    <p><strong>Apoyo Técnico:</strong> <span id="vp_apoyo_tecnico">—</span></p>
                     <hr>
+                    <p><strong>Resumen:</strong></p><div class="detail-box mb-3" id="vp_resumen"></div>
                     <p><strong>Objetivo:</strong></p><div class="detail-box mb-3" id="vp_objetivo"></div>
-                    <p><strong>Entregables:</strong></p><div class="detail-box mb-3" id="vp_entregables"></div>
-                    <p><strong>Evidencia:</strong></p><div class="detail-box" id="vp_evidencia"></div>
+                    <p><strong>Imágenes:</strong></p><div id="vp_carrusel_container" style="display:none;" class="mb-3"><div id="vp_carrusel" style="position:relative; width:100%; background:#f0f0f0; border-radius:10px; overflow:hidden;"><img id="vp_carrusel_img" src="" style="width:100%; height:200px; object-fit:cover;" alt="Imagen del proyecto"><div style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:4px;" id="vp_carrusel_dots"></div><button onclick="vp_prevImagen()" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.5); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:16px;">‹</button><button onclick="vp_nextImagen()" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.5); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:16px;">›</button></div></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
             </div>
@@ -782,10 +784,12 @@
                             <div class="col-md-6 mb-3"><label class="form-label">Semillero <span class="text-danger">*</span></label><select class="form-control" id="edit_p_semillero" required></select></div>
                             <div class="col-md-6 mb-3"><label class="form-label">Título <span class="text-danger">*</span></label><input type="text" class="form-control" id="edit_p_titulo" required></div>
                             <div class="col-md-6 mb-3"><label class="form-label">Estado</label><select class="form-control" id="edit_p_estado"><option value="En ejecución">En ejecución</option><option value="Finalizado">Finalizado</option><option value="En revisión">En revisión</option></select></div>
-                            <div class="col-md-6 mb-3"><label class="form-label">Aliados</label><input type="text" class="form-control" id="edit_p_aliados"></div>
-                            <div class="col-12 mb-3"><label class="form-label">Objetivo</label><textarea class="form-control" id="edit_p_objetivo" rows="2"></textarea></div>
-                            <div class="col-12 mb-3"><label class="form-label">Entregables</label><textarea class="form-control" id="edit_p_entregables" rows="2"></textarea></div>
-                            <div class="col-12 mb-3"><label class="form-label">Evidencia</label><textarea class="form-control" id="edit_p_evidencia" rows="2"></textarea></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Líder del Proyecto</label><input type="text" class="form-control" id="edit_p_lider"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Apoyo Técnico</label><input type="text" class="form-control" id="edit_p_apoyo_tecnico"></div>
+                            <div class="col-md-6 mb-3"></div>
+                            <div class="col-12 mb-3"><label class="form-label">Resumen</label><textarea class="form-control" id="edit_p_resumen" rows="2" placeholder="Breve descripción del proyecto"></textarea></div>
+                            <div class="col-12 mb-3"><label class="form-label quill-label">Objetivo</label><div class="quill-wrapper"><div id="editorEditProyecto"></div></div><input type="hidden" id="edit_p_objetivo"></div>
+                            <div class="col-12 mb-3"><label class="form-label">URLs de Imágenes (una por línea)</label><textarea class="form-control" id="edit_p_imagenes" rows="3" placeholder="https://ejemplo.com/img1.jpg&#10;https://ejemplo.com/img2.jpg"></textarea></div>
                         </div>
                     </form>
                 </div>
@@ -905,9 +909,11 @@
         const quillOpts = { theme:'snow', modules:{ toolbar:[[{'font':[]},{'size':['small',false,'large','huge']}],['bold','italic','underline','strike'],[{'color':[]},{'background':[]}],[{'align':[]}],[{'list':'ordered'},{'list':'bullet'}],['link'],['clean']] }, placeholder:'Escribe la descripción aquí...' };
         const quillNoticia       = new Quill('#editorNoticia',       quillOpts);
         const quillSemillero     = new Quill('#editorSemillero',     quillOpts);
+        const quillProyecto      = new Quill('#editorProyecto',      quillOpts);
         const quillDocumento     = new Quill('#editorDocumento',     quillOpts);
         const quillEditNoticia   = new Quill('#editorEditNoticia',   quillOpts);
         const quillEditSemillero = new Quill('#editorEditSemillero', quillOpts);
+        const quillEditProyecto  = new Quill('#editorEditProyecto',  quillOpts);
         const quillEditDocumento = new Quill('#editorEditDocumento', quillOpts);
         function getQuillHTML(q) { const h=q.root.innerHTML; return h==='<p><br></p>'?'':h; }
 
@@ -1135,7 +1141,11 @@
         }
         document.getElementById('formProyecto').addEventListener('submit',async e=>{
             e.preventDefault();
-            const body={semillero_id:document.getElementById('proyectoSemillero').value,titulo:document.getElementById('proyectoTitulo').value,estado:document.getElementById('proyectoEstado').value,aliados:document.getElementById('proyectoAliados').value,objetivo:document.getElementById('proyectoObjetivo').value,entregables:document.getElementById('proyectoEntregables').value,evidencia:document.getElementById('proyectoEvidencia').value};
+            const obj=getQuillHTML(quillProyecto);
+            if(!obj){toast.error('El objetivo es requerido');return;}
+            document.getElementById('proyectoObjetivo').value=obj;
+            const imagenes=(document.getElementById('proyectoImagenes').value||'').split('\n').filter(x=>x.trim()).join('|');
+            const body={semillero_id:document.getElementById('proyectoSemillero').value,titulo:document.getElementById('proyectoTitulo').value,estado:document.getElementById('proyectoEstado').value,lider:document.getElementById('proyectoLider').value||null,apoyo_tecnico:document.getElementById('proyectoApoyoTecnico').value||null,objetivo:obj,resumen:document.getElementById('proyectoResumen').value||null,imagenes:imagenes||null};
             const editId=document.getElementById('proyectoEditId').value;
             const res=await fetch(editId?`${API}/api/proyectos/${editId}`:`${API}/api/proyectos`,{method:editId?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
             if(res.ok){toast.success(editId?'Proyecto actualizado':'Proyecto creado');cancelarEdicionProyecto();cargarProyectos();cargarDashboard();}else{toast.error('Error al guardar');}
@@ -1148,26 +1158,59 @@
             sel.innerHTML=sems.length?sems.map(s=>`<option value="${s.id}">${s.nombre}</option>`).join(''):'<option value="">Sin semilleros en esta categoría</option>';
             sel.disabled=false;
         });
-        function cancelarEdicionProyecto(){document.getElementById('formProyecto').reset();document.getElementById('proyectoEditId').value='';document.getElementById('tituloFormProyecto').textContent='➕ Nuevo Proyecto';document.getElementById('btnSubmitProyecto').textContent='✅ Crear Proyecto';document.getElementById('btnCancelProyecto').style.display='none';document.getElementById('proyectoSemillero').disabled=true;}
+        function cancelarEdicionProyecto(){document.getElementById('formProyecto').reset();quillProyecto.setContents([]);document.getElementById('proyectoEditId').value='';document.getElementById('tituloFormProyecto').textContent='➕ Nuevo Proyecto';document.getElementById('btnSubmitProyecto').textContent='✅ Crear Proyecto';document.getElementById('btnCancelProyecto').style.display='none';document.getElementById('proyectoSemillero').disabled=true;}
+        
+        let vp_imagenes_actual=[];let vp_cambio_actual=0;
+        function vp_prevImagen(){if(vp_cambio_actual>0)vp_cambio_actual--;else vp_cambio_actual=vp_imagenes_actual.length-1;vp_mostrarImagenCarrusel();}
+        function vp_nextImagen(){if(vp_cambio_actual<vp_imagenes_actual.length-1)vp_cambio_actual++;else vp_cambio_actual=0;vp_mostrarImagenCarrusel();}
+        function vp_mostrarImagenCarrusel(){if(!vp_imagenes_actual.length)return;document.getElementById('vp_carrusel_img').src=vp_imagenes_actual[vp_cambio_actual];const dots=document.getElementById('vp_carrusel_dots');dots.innerHTML=vp_imagenes_actual.map((_, i)=>`<span style="width:8px;height:8px;border-radius:50%;background:${i===vp_cambio_actual?'white':'rgba(255,255,255,.5)'};" onclick="vp_cambio_actual=${i};vp_mostrarImagenCarrusel();"></span>`).join('');}
+        
         function verProyecto(id){
             const p=proyectosCache.find(x=>x.id===id);if(!p)return;
             const sem=todosLosSemilleros.find(s=>s.id===p.semillero_id);
-            document.getElementById('vp_titulo').textContent=p.titulo;document.getElementById('vp_semillero').textContent=sem?`${sem.nombre} (ID: ${p.semillero_id})`:`ID: ${p.semillero_id}`;
+            document.getElementById('vp_titulo').textContent=p.titulo;
+            document.getElementById('vp_semillero').textContent=sem?`${sem.nombre}`:`ID: ${p.semillero_id}`;
             const badge=document.getElementById('vp_estado');badge.textContent=p.estado;badge.className='badge '+(p.estado==='En ejecución'?'bg-primary':p.estado==='Finalizado'?'bg-success':'bg-warning text-dark');
-            document.getElementById('vp_aliados').textContent=p.aliados||'—';document.getElementById('vp_objetivo').textContent=p.objetivo||'—';document.getElementById('vp_entregables').textContent=p.entregables||'—';document.getElementById('vp_evidencia').textContent=p.evidencia||'—';
+            document.getElementById('vp_lider').textContent=p.lider||'—';
+            document.getElementById('vp_apoyo_tecnico').textContent=p.apoyo_tecnico||'—';
+            document.getElementById('vp_resumen').textContent=p.resumen||'—';
+            document.getElementById('vp_objetivo').innerHTML=p.objetivo||'—';
+            
+            vp_imagenes_actual=(p.imagenes||'').split('|').filter(x=>x.trim());
+            if(vp_imagenes_actual.length>0){
+                vp_cambio_actual=0;
+                document.getElementById('vp_carrusel_container').style.display='block';
+                vp_mostrarImagenCarrusel();
+            }else{
+                document.getElementById('vp_carrusel_container').style.display='none';
+            }
             new bootstrap.Modal(document.getElementById('verProyectoModal')).show();
         }
+        
         function editarProyecto(id){
             const p=proyectosCache.find(x=>x.id===id);if(!p)return;
-            document.getElementById('edit_p_id').value=p.id;document.getElementById('edit_p_semillero').value=p.semillero_id;document.getElementById('edit_p_titulo').value=p.titulo;document.getElementById('edit_p_estado').value=p.estado;document.getElementById('edit_p_aliados').value=p.aliados||'';document.getElementById('edit_p_objetivo').value=p.objetivo||'';document.getElementById('edit_p_entregables').value=p.entregables||'';document.getElementById('edit_p_evidencia').value=p.evidencia||'';
+            document.getElementById('edit_p_id').value=p.id;
+            document.getElementById('edit_p_semillero').value=p.semillero_id;
+            document.getElementById('edit_p_titulo').value=p.titulo;
+            document.getElementById('edit_p_estado').value=p.estado;
+            document.getElementById('edit_p_lider').value=p.lider||'';
+            document.getElementById('edit_p_apoyo_tecnico').value=p.apoyo_tecnico||'';
+            document.getElementById('edit_p_resumen').value=p.resumen||'';
+            quillEditProyecto.root.innerHTML=p.objetivo||'';
+            document.getElementById('edit_p_imagenes').value=(p.imagenes||'').split('|').join('\n');
             new bootstrap.Modal(document.getElementById('editarProyectoModal')).show();
         }
+        
         async function guardarEdicionProyecto(){
+            const obj=getQuillHTML(quillEditProyecto);
+            document.getElementById('edit_p_objetivo').value=obj;
             const id=document.getElementById('edit_p_id').value;
-            const body={semillero_id:document.getElementById('edit_p_semillero').value,titulo:document.getElementById('edit_p_titulo').value,estado:document.getElementById('edit_p_estado').value,aliados:document.getElementById('edit_p_aliados').value,objetivo:document.getElementById('edit_p_objetivo').value,entregables:document.getElementById('edit_p_entregables').value,evidencia:document.getElementById('edit_p_evidencia').value};
+            const imagenes=(document.getElementById('edit_p_imagenes').value||'').split('\n').filter(x=>x.trim()).join('|');
+            const body={semillero_id:document.getElementById('edit_p_semillero').value,titulo:document.getElementById('edit_p_titulo').value,estado:document.getElementById('edit_p_estado').value,lider:document.getElementById('edit_p_lider').value||null,apoyo_tecnico:document.getElementById('edit_p_apoyo_tecnico').value||null,objetivo:obj,resumen:document.getElementById('edit_p_resumen').value||null,imagenes:imagenes||null};
             const res=await fetch(`${API}/api/proyectos/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
             if(res.ok){toast.success('Proyecto actualizado');bootstrap.Modal.getInstance(document.getElementById('editarProyectoModal')).hide();cargarProyectos();cargarDashboard();}else{toast.error('Error al guardar');}
         }
+        
         async function eliminarProyecto(id){
             if(!confirm('¿Eliminar este proyecto?'))return;
             const res=await fetch(`${API}/api/proyectos/${id}`,{method:'DELETE'});
