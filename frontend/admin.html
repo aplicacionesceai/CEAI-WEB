@@ -708,7 +708,7 @@
                             <div class="col-md-6 mb-3"><label class="form-label">Líder del Proyecto</label><input type="text" class="form-control" id="proyectoLider"></div>
                             <div class="col-md-6 mb-3"><label class="form-label">Apoyo Técnico</label><input type="text" class="form-control" id="proyectoApoyoTecnico"></div>
                             <div class="col-12 mb-3"><label class="form-label">Resumen <span class="text-danger">*</span></label><textarea class="form-control" id="proyectoResumen" rows="2" placeholder="Breve descripción del proyecto" required></textarea></div>
-                            <div class="col-12 mb-3"><label class="form-label quill-label">Objetivo</label><div class="quill-wrapper"><div id="editorProyecto"></div></div><input type="hidden" id="proyectoObjetivo"></div>
+                            <div class="col-12 mb-3"><label class="form-label quill-label">Descripción</label><div class="quill-wrapper"><div id="editorProyecto"></div></div><input type="hidden" id="proyectoObjetivo"></div>
                             <div class="col-12 mb-3"><label class="form-label">URLs de Imágenes (una por línea)</label><textarea class="form-control" id="proyectoImagenes" rows="3" placeholder="https://ejemplo.com/img1.jpg&#10;https://ejemplo.com/img2.jpg"></textarea></div>
                             <div class="col-md-8 mb-3"><button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitProyecto">✅ Crear Proyecto</button></div>
                             <div class="col-md-4 mb-3"><button type="button" class="btn btn-outline-secondary btn-submit-full w-100" id="btnCancelProyecto" style="display:none" onclick="cancelarEdicionProyecto()">✖ Cancelar</button></div>
@@ -810,6 +810,24 @@
                     <p><strong>Tipo:</strong> <span id="vd_tipo" class="badge bg-info"></span></p>
                     <p><strong>Descripción:</strong></p><div class="detail-box" id="vd_descripcion"></div>
                     <p class="mt-3"><strong>Archivo:</strong> <a id="vd_archivo" href="#" target="_blank" class="btn btn-sm btn-outline-primary">📥 Descargar PDF</a></p>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="verContactoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">👁️ Mensaje de Contacto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <p><strong>ID:</strong> <span id="vc_id"></span></p>
+                    <p><strong>Nombre:</strong> <span id="vc_nombre"></span></p>
+                    <p><strong>Email:</strong> <span id="vc_email"></span></p>
+                    <p><strong>Asunto:</strong> <span id="vc_asunto"></span></p>
+                    <hr>
+                    <p><strong>Mensaje:</strong></p>
+                    <div class="detail-box" id="vc_mensaje" style="white-space:pre-wrap;"></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
             </div>
@@ -1274,7 +1292,7 @@
             contactosCache=await res.json();
             const lista=document.getElementById('listaContactos');
             if(!contactosCache.length){lista.innerHTML='<p class="text-muted">No hay mensajes aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${contactosCache.map(c=>`<tr><td>${c.id}</td><td>${c.nombre}</td><td><small>${c.email}</small></td><td>${c.asunto}</td><td><small>${(c.mensaje||'').substring(0,50)}...</small></td><td><span class="badge ${c.leido?'bg-success':'bg-warning text-dark'}">${c.leido?'Leído':'Nuevo'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-success" onclick="marcarLeido(${c.id},${c.leido?0:1})">${c.leido?'No leído':'✔ Leído'}</button><button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${contactosCache.map(c=>`<tr><td>${c.id}</td><td>${c.nombre}</td><td><small>${c.email}</small></td><td>${c.asunto}</td><td><small>${(c.mensaje||'').substring(0,50)}...</small></td><td><span class="badge ${c.leido?'bg-success':'bg-warning text-dark'}">${c.leido?'Leído':'Nuevo'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="verContacto(${c.id})">👁️ Ver</button><button class="btn btn-sm btn-outline-success" onclick="marcarLeido(${c.id},${c.leido?0:1})">${c.leido?'No leído':'✔ Leído'}</button><button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
         }
         async function marcarLeido(id,leido){
             const res=await fetch(`${API}/api/contactos/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({leido})});
@@ -1284,6 +1302,18 @@
             if(!confirm('¿Eliminar este mensaje?'))return;
             const res=await fetch(`${API}/api/contactos/${id}`,{method:'DELETE'});
             if(res.ok){toast.info('Mensaje eliminado');cargarContactos();cargarDashboard();}
+        }
+
+        function verContacto(id){
+            const c = contactosCache.find(x=>x.id===id);
+            if(!c){toast.error('Mensaje no encontrado');return;}
+            document.getElementById('vc_id').textContent = c.id;
+            document.getElementById('vc_nombre').textContent = c.nombre;
+            document.getElementById('vc_email').textContent = c.email;
+            document.getElementById('vc_asunto').textContent = c.asunto;
+            document.getElementById('vc_mensaje').textContent = c.mensaje || '—';
+            if(!c.leido){marcarLeido(id,1);} // Marca leído al visualizar
+            new bootstrap.Modal(document.getElementById('verContactoModal')).show();
         }
 
         // ===== INIT =====
