@@ -182,12 +182,12 @@
         }
         .btn-refresh:hover { background: var(--ceai-verde-oscuro); transform: scale(1.05); }
 
-        .btn-ver, .btn-editar {
+        .btn-ver {
             background: #007832;
             border-color: #007832;
             color: white;
         }
-        .btn-ver:hover, .btn-editar:hover {
+        .btn-ver:hover {
             background: #006a2a;
             border-color: #006a2a;
             color: white;
@@ -196,6 +196,18 @@
             outline: 2px solid rgba(95, 190, 0, 0.6);
             outline-offset: 2px;
         }
+
+        .btn-editar {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #1f1f1f;
+        }
+        .btn-editar:hover {
+            background: #e0a800;
+            border-color: #d39e00;
+            color: #1f1f1f;
+        }
+
 
         /* ===== SECTION HEADER ===== */
         .section-header {
@@ -1166,7 +1178,7 @@
             semillerosCache=await res.json();todosLosSemilleros=semillerosCache;
             const lista=document.getElementById('listaSemilleros');
             if(!semillerosCache.length){lista.innerHTML='<p class="text-muted">No hay semilleros aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${semillerosCache.map(s=>`<tr><td>${s.id}</td><td>${s.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${s.categoria||''}</span></td><td><small>${s.linea}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verSemillero(${s.id})">👁️ Ver</button><button class="btn btn-sm btn-outline-primary" onclick="editarSemillero(${s.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${semillerosCache.map(s=>`<tr><td>${s.id}</td><td>${s.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${s.categoria||''}</span></td><td><small>${s.linea}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verSemillero(${s.id})">👁️ Ver</button><button class="btn btn-sm btn-editar" onclick="editarSemillero(${s.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
         document.getElementById('formSemillero').addEventListener('submit',async e=>{
             e.preventDefault();
