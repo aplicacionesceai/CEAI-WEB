@@ -163,3 +163,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// --- Fallback: abrir dropdown si el cursor está en la franja superior (útil cuando hover directo no se dispara)
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return; // solo desktop
+        if (!isSemillerosPage()) return; // solo en páginas de semilleros
+
+        const toggle = document.getElementById('semillerosDropdown');
+        if (!toggle) return;
+        const dropdownItem = toggle.closest('.nav-item.dropdown') || toggle.parentElement;
+        const menu = dropdownItem ? dropdownItem.querySelector('.dropdown-menu') : null;
+        if (!dropdownItem) return;
+
+        let openedByTop = false;
+        const TOP_ZONE = 120; // px desde la parte superior donde se abrirá el dropdown
+
+        function openDropdown() {
+            if (!openedByTop) {
+                dropdownItem.classList.add('show');
+                if (menu) menu.classList.add('show');
+                toggle.setAttribute('aria-expanded', 'true');
+                openedByTop = true;
+            }
+        }
+        function closeDropdown() {
+            if (openedByTop) {
+                dropdownItem.classList.remove('show');
+                if (menu) menu.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
+                openedByTop = false;
+            }
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            try {
+                if (e.clientY <= TOP_ZONE) {
+                    openDropdown();
+                } else {
+                    // cerramos solo si el cursor no está sobre el propio toggle o el menú
+                    const rectT = toggle.getBoundingClientRect();
+                    const rectM = menu ? menu.getBoundingClientRect() : null;
+                    const x = e.clientX, y = e.clientY;
+                    const overToggle = x >= rectT.left && x <= rectT.right && y >= rectT.top && y <= rectT.bottom;
+                    const overMenu = rectM && x >= rectM.left && x <= rectM.right && y >= rectM.top && y <= rectM.bottom;
+                    if (!overToggle && !overMenu) closeDropdown();
+                }
+            } catch (err) {
+                // ignore
+            }
+        });
+
+        // también cerrar al hacer scroll hacia abajo
+        window.addEventListener('scroll', function() {
+            closeDropdown();
+        });
+    } catch (err) {
+        console.error('Error en fallback top-zone dropdown:', err);
+    }
+});
