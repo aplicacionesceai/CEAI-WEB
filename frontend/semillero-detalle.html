@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+
     <style>
         /* ========== TIPOGRAFÍA GLOBAL AJUSTADA ========== */
         body {
@@ -95,6 +96,7 @@
             box-shadow: 0 4px 14px rgba(57,169,0,0.3);
             transition: all 0.3s ease;
             margin-bottom: 1rem;
+            white-space: nowrap;
         }
         .proyectos-toggle-btn:hover {
             transform: translateY(-2px);
@@ -133,6 +135,7 @@
             font-weight: 700;
             margin-bottom: 0.4rem;
             color: var(--ceai-azul, #00304d);
+            word-break: break-word;          /* evita desbordes de títulos largos */
         }
         .proyecto-card p {
             font-size: 0.85rem;
@@ -167,6 +170,123 @@
             font-size: 0.85rem;
         }
 
+        /* ========== MODAL DETALLE PROYECTO ========== */
+        /* Hacemos que el contenido del modal use casi toda la pantalla en alto,
+           imagen arriba y texto abajo con scroll, sin recortar título ni imagen. */
+        #detalleProyectoModal .modal-dialog {
+            max-width: 900px;
+        }
+        #detalleProyectoModal .modal-content {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        #detalleProyectoModal .modal-header {
+            border-bottom: 1px solid #e5e5e5;
+        }
+        #detalleProyectoModal .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #00304d;
+            text-align: center;
+            width: 100%;
+            white-space: normal;         /* permite varias líneas */
+            word-break: break-word;      /* evita overflow horizontal */
+        }
+        #detalleProyectoModal .btn-close {
+            margin-left: 0;
+        }
+
+        /* El body del modal se divide visualmente: carrusel + texto,
+           con altura máxima relativa a la pantalla. */
+        #detalleProyectoModal .modal-body {
+            padding: 0;
+        }
+
+        #detalleProyectoModal .dp-layout {
+            display: flex;
+            flex-direction: column;
+            max-height: 80vh;            /* altura máx del contenido del modal */
+        }
+
+        /* Contenedor de la imagen/carrusel */
+        #dp_carrusel {
+            background: #f0f0f0;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            max-height: 60vh;
+        }
+        #dp_carrusel_img {
+            width: 100%;
+            height: 100%;
+            max-height: 60vh;
+            object-fit: contain;         /* que se vea todo sin recortar */
+            display: block;
+        }
+
+        /* Navegación carrusel */
+        .dp-prev,
+        .dp-next {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+        .dp-prev:hover,
+        .dp-next:hover {
+            background-color: #ffffff;
+        }
+        #dp_dots {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+        }
+        .dp-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.5);
+            cursor: pointer;
+        }
+
+        /* Contenedor de texto debajo de la imagen */
+        #detalleProyectoModal .dp-text-content {
+            padding: 1rem 1.25rem 1.1rem;
+            overflow-y: auto;
+        }
+        #detalleProyectoModal .dp-text-content p {
+            font-size: 0.93rem;
+            color: #444;
+            margin-bottom: 0.4rem;
+        }
+        #dp_resumen {
+            font-size: 0.93rem;
+            color: #555;
+        }
+        #dp_objetivo {
+            background:#f8f9fa;
+            padding:12px;
+            border-radius:8px;
+            border-left:4px solid var(--ceai-verde);
+            font-size:0.93rem;
+            color:#333;
+        }
+
+        #detalleProyectoModal .modal-footer {
+            border-top: 1px solid #e5e5e5;
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             #semilleroContent .col-md-8,
@@ -180,6 +300,22 @@
             }
             #semilleroContent h1 { font-size: 1.35rem; }
             #semilleroContent h3 { font-size: 1.05rem; }
+
+            #detalleProyectoModal .modal-dialog {
+                margin: 0.5rem;
+            }
+            #detalleProyectoModal .modal-title {
+                font-size: 0.95rem;
+            }
+            #detalleProyectoModal .dp-layout {
+                max-height: 85vh;
+            }
+            .dp-prev,
+            .dp-next {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -213,11 +349,11 @@
                             <li><a class="dropdown-item" href="semilleros.html">📚 Ver todos los semilleros</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Por categoría:</h6></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones%20Digitales">💻 Soluciones Digitales</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatizaci%C3%B3n%20e%20Instrumentaci%C3%B3n">🤖 Automatización e Instrumentación</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones%20Digitales">💻 Soluciones Digitales</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatizaci%C3%B3n%20e%20Instrumentaci%C3%B3n">🤖 Automatización e Instrumentación</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
@@ -284,22 +420,29 @@
                     <h5 class="modal-title" id="dp_titulo"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <div id="dp_carrusel" class="position-relative mb-3" style="background:#f0f0f0; border-radius:10px; overflow:hidden;">
-                        <img id="dp_carrusel_img" src="" class="w-100" style="object-fit:contain; max-height:60vh;">
-                        <button class="dp-prev btn btn-light position-absolute top-50 start-0 translate-middle-y" style="opacity:.7;">&#10094;</button>
-                        <button class="dp-next btn btn-light position-absolute top-50 end-0 translate-middle-y" style="opacity:.7;">&#10095;</button>
-                        <div id="dp_dots" class="position-absolute bottom-0 start-50 translate-middle-x d-flex gap-1 mb-2"></div>
+                    <div class="dp-layout">
+                        <div id="dp_carrusel" class="mb-0">
+                            <img id="dp_carrusel_img" src="" alt="Imagen del proyecto">
+                            <button class="dp-prev position-absolute top-50 start-0 translate-middle-y">&#10094;</button>
+                            <button class="dp-next position-absolute top-50 end-0 translate-middle-y">&#10095;</button>
+                            <div id="dp_dots"></div>
+                        </div>
+
+                        <div class="dp-text-content">
+                            <div class="mb-2">
+                                <span id="dp_estado" class="badge"></span>
+                                <span id="dp_lider" class="badge bg-success"></span>
+                                <span id="dp_apoyo" class="badge bg-info"></span>
+                            </div>
+                            <div id="dp_resumen" class="mb-3"></div>
+                            <div class="mb-2"><strong>📄 Descripción completa</strong></div>
+                            <div id="dp_objetivo"></div>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <span id="dp_estado" class="badge"></span>
-                        <span id="dp_lider" class="badge bg-success"></span>
-                        <span id="dp_apoyo" class="badge bg-info"></span>
-                    </div>
-                    <div id="dp_resumen" class="mb-3" style="font-size:0.95rem; color:#555;"></div>
-                    <div class="mb-2"><strong>📄 Descripción completa</strong></div>
-                    <div id="dp_objetivo" style="background:#f8f9fa; padding:12px; border-radius:8px; border-left:4px solid var(--ceai-verde); font-size:0.95rem; color:#333;"></div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
@@ -307,11 +450,6 @@
         </div>
     </div>
 
-    <style>
-        /* estilos carousel modal */
-        .dp-prev, .dp-next { width:36px; height:36px; border-radius:50%; }
-        .dp-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer; }
-    </style>
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
 
@@ -360,7 +498,7 @@
                             <div class="card h-100 shadow-sm" style="transition:transform .3s; border-radius:12px; border:none;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
                                 ${s.imagen ? `<img src="${s.imagen}" class="card-img-top" alt="${s.nombre}" style="height:190px;object-fit:cover;border-radius:12px 12px 0 0;">` : ''}
                                 <div class="card-body p-3">
-                                    <h5 class="card-title" style="color:var(--ceai-verde);font-size:0.95rem;">${s.nombre}</h5>
+                                    <h5 class="card-title" style="color:var(--ceai-verde);font-size:0.95rem;word-break:break-word;">${s.nombre}</h5>
                                     <p class="card-text" style="font-size:0.83rem;">
                                         <strong>📚 Línea:</strong> ${s.linea}<br>
                                         <strong>🎯 Enfoque:</strong> ${s.enfoque}
@@ -402,7 +540,6 @@
             const proyectos = await cargarProyectos(semillero.id);
             const totalProyectos = proyectos.length;
 
-            // Renderizar la descripción: si viene con HTML (de Quill), mostrarlo; si no, como texto
             const descHTML = semillero.descripcion && semillero.descripcion.trim().startsWith('<')
                 ? semillero.descripcion
                 : `<p>${semillero.descripcion || ''}</p>`;
@@ -426,7 +563,7 @@
 
                         <!-- Sección Proyectos con toggle -->
                         <div class="mt-3">
-                            <div class="d-flex align-items-center gap-3 mb-2">
+                            <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
                                 <h3 style="color:var(--ceai-azul); margin:0;">🚀 Proyectos</h3>
                                 ${totalProyectos > 0 ? `
                                 <button class="proyectos-toggle-btn" id="btnVerProyectos" onclick="toggleProyectos()">
@@ -441,14 +578,14 @@
                                         const badgeColor = p.estado === 'En ejecución' ? '#0d6efd' : p.estado === 'Finalizado' ? '#198754' : '#ffc107';
                                         const badgeText = p.estado === 'Planeación' ? '#333' : '#fff';
                                         return `<div class="proyecto-card">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
                                                 <h5 style="margin:0;">${p.titulo}</h5>
                                                 <span class="estado-badge" style="background:${badgeColor}; color:${badgeText}; white-space:nowrap; margin-left:10px;">${p.estado}</span>
                                             </div>
                                             ${p.lider ? `<p style="margin:4px 0;"><strong>👤 Líder:</strong> ${p.lider}</p>` : ''}
                                             ${p.apoyo_tecnico ? `<p style="margin:4px 0;"><strong>🔧 Apoyo Técnico:</strong> ${p.apoyo_tecnico}</p>` : ''}
                                             ${p.resumen ? `<p style="margin:6px 0; color:#555; font-size:0.9rem;">${p.resumen.substring(0, 150)}${p.resumen.length > 150 ? '...' : ''}</p>` : ''}
-                                            <button class="btn btn-sm btn-ceai mt-2" style="font-size:0.85rem;" onclick="mostrarDetalleProyecto(${JSON.stringify(p).replace(/"/g, '&quot;')})">Ver más →</button>
+                                            <button class="btn btn-sm btn-ceai mt-2" style="font-size:0.85rem;" onclick='mostrarDetalleProyecto(${JSON.stringify(p).replace(/'/g, "&apos;")})'>Ver más →</button>
                                         </div>`;
                                     }).join('')}
                                 </div>`
@@ -469,14 +606,14 @@
 
                         <div class="sidebar-card card">
                             <div class="card-body">
-                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">� Ver semilleros por categoría</h6>
+                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">📂 Ver semilleros por categoría</h6>
                                 <ul id="sidebarCategorias" class="list-unstyled mb-0" style="font-size:0.83rem;"></ul>
                             </div>
                         </div>
 
                         <div class="sidebar-card card">
                             <div class="card-body">
-                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">�🔗 Enlaces útiles</h6>
+                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">🔗 Enlaces útiles</h6>
                                 <ul class="list-unstyled mb-0">
                                     <li class="mb-1"><a href="semilleros.html" class="text-decoration-none" style="font-size:0.83rem;">📚 Ver todos los semilleros</a></li>
                                     <li class="mb-1"><a href="grupo-investigacion.html" class="text-decoration-none" style="font-size:0.83rem;">👥 Grupo de Investigación</a></li>
@@ -492,11 +629,12 @@
         function toggleProyectos() {
             const listado = document.getElementById('proyectosListado');
             const btn = document.getElementById('btnVerProyectos');
-            if (!listado) return;
+            if (!listado || !btn) return;
             const abierto = listado.classList.toggle('visible');
+            const total = listado.querySelectorAll('.proyecto-card').length;
             btn.innerHTML = abierto
-                ? `📂 Ocultar proyectos <span class="count-badge">${listado.querySelectorAll('.proyecto-card').length}</span>`
-                : `📂 Ver proyectos <span class="count-badge">${listado.querySelectorAll('.proyecto-card').length}</span>`;
+                ? `📂 Ocultar proyectos <span class="count-badge">${total}</span>`
+                : `📂 Ver proyectos <span class="count-badge">${total}</span>`;
         }
 
         async function cargarProyectos(semilleroId) {
@@ -522,30 +660,37 @@
             `;
         }
 
-        // Modal para ver detalle de proyecto
-        // ==== nueva función para mostrar detalle usando modal Bootstrap ====
+        /* ===== MODAL DETALLE PROYECTO ===== */
+        let dp_imagenes_actual = [];
+        let dp_indice_actual = 0;
+
         function mostrarDetalleProyecto(proyecto) {
-            // etiquetas de datos
             document.getElementById('dp_titulo').textContent = proyecto.titulo;
-            document.getElementById('dp_estado').textContent = proyecto.estado;
-            document.getElementById('dp_estado').className = 'badge ' +
-                (proyecto.estado === 'En ejecución' ? 'bg-primary' : proyecto.estado === 'Finalizado' ? 'bg-success' : 'bg-warning text-dark');
-            document.getElementById('dp_lider').textContent = proyecto.lider ? `Líder del proyecto: ${proyecto.lider}` : '';
-            document.getElementById('dp_apoyo').textContent = proyecto.apoyo_tecnico ? `Apoyo técnico: ${proyecto.apoyo_tecnico}` : '';
+            const estado = document.getElementById('dp_estado');
+            estado.textContent = proyecto.estado;
+            estado.className = 'badge ' + (
+                proyecto.estado === 'En ejecución' ? 'bg-primary' :
+                proyecto.estado === 'Finalizado' ? 'bg-success' :
+                'bg-warning text-dark'
+            );
+
+            const lider = document.getElementById('dp_lider');
+            lider.textContent = proyecto.lider ? `LÍDER DEL PROYECTO: ${proyecto.lider}` : '';
+            lider.style.display = proyecto.lider ? 'inline-block' : 'none';
+
+            const apoyo = document.getElementById('dp_apoyo');
+            apoyo.textContent = proyecto.apoyo_tecnico ? `APOYO TÉCNICO: ${proyecto.apoyo_tecnico}` : '';
+            apoyo.style.display = proyecto.apoyo_tecnico ? 'inline-block' : 'none';
+
             document.getElementById('dp_resumen').textContent = proyecto.resumen || '';
             document.getElementById('dp_objetivo').innerHTML = proyecto.objetivo || '';
 
-            // imágenes para carrusel
             dp_imagenes_actual = (proyecto.imagenes || '').split('|').filter(x => x.trim());
             dp_indice_actual = 0;
             actualizarCarrusel();
 
-            // mostrar modal
             new bootstrap.Modal(document.getElementById('detalleProyectoModal')).show();
         }
-
-        let dp_imagenes_actual = [];
-        let dp_indice_actual = 0;
 
         function actualizarCarrusel() {
             const imgEl = document.getElementById('dp_carrusel_img');
@@ -553,20 +698,30 @@
             const prevBtn = document.querySelector('#dp_carrusel .dp-prev');
             const nextBtn = document.querySelector('#dp_carrusel .dp-next');
             if (!imgEl || !dots) return;
+
             if (dp_imagenes_actual.length === 0) {
                 imgEl.src = '';
                 dots.innerHTML = '';
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
                 return;
             }
+
             imgEl.src = dp_imagenes_actual[dp_indice_actual];
+
             dots.innerHTML = dp_imagenes_actual.map((_, i) =>
                 `<span class="dp-dot" data-idx="${i}"></span>`
             ).join('');
+
             document.querySelectorAll('.dp-dot').forEach(dot => {
                 const idx = parseInt(dot.getAttribute('data-idx'));
                 dot.style.background = idx === dp_indice_actual ? 'white' : 'rgba(255,255,255,.5)';
                 dot.onclick = () => { dp_indice_actual = idx; actualizarCarrusel(); };
             });
+
+            prevBtn.style.display = dp_imagenes_actual.length > 1 ? 'flex' : 'none';
+            nextBtn.style.display = dp_imagenes_actual.length > 1 ? 'flex' : 'none';
+
             if (prevBtn) prevBtn.onclick = dp_prevImagen;
             if (nextBtn) nextBtn.onclick = dp_nextImagen;
         }
