@@ -196,10 +196,6 @@ a {
     position: relative;
 }
 
-/* Prevent global link underline when inside navbar - navbar uses its own underline indicator */
-.navbar a::after {
-    display: none;
-}
 
 a:hover {
     color: var(--ceai-verde-oscuro);
@@ -308,6 +304,19 @@ a:hover::after {
     background: linear-gradient(90deg, var(--ceai-verde), var(--ceai-verde-light));
     transition: width var(--transition-normal);
     border-radius: 2px;
+}
+
+/* Disable underline for the Semilleros dropdown link only */
+#semillerosDropdown::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Make sure hover/active do not force the underline on Semilleros */
+#semillerosDropdown:hover::after,
+#semillerosDropdown.active::after,
+#semillerosDropdown:focus::after {
+    width: 0 !important;
 }
 
 .navbar-nav .nav-link:hover,
