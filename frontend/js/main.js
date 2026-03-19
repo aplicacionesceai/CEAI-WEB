@@ -1,5 +1,4 @@
 const API = 'https://ceai-web-production.up.railway.app';
-let semillerosPaginaCache = []; // cache para filtros
 
 // ==================== CAROUSEL NOTICIAS DESTACADAS ====================
 async function cargarNoticiasDestacadas() {
@@ -179,69 +178,32 @@ async function cargarSemillerosPagina() {
             return;
         }
 
-        semillerosPaginaCache = semilleros;
-        renderFiltroSemilleros(semilleros);
-        mostrarSemillerosFiltrados('Todos');
-    } catch (error) {
-        console.error('Error cargando semilleros:', error);
-        container.innerHTML = '<p class="text-danger">Error al cargar semilleros.</p>';
-    }
-}
-
-function renderFiltroSemilleros(semilleros) {
-    const filtroContainer = document.getElementById('semillerosFiltroContainer');
-    if (!filtroContainer) return;
-
-    const categorias = [...new Set(semilleros.map(c => (c.categoria || 'Sin categoría').trim()))];
-    categorias.sort((a, b) => a.localeCompare(b, 'es'));
-
-    filtroContainer.innerHTML = `
-        <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-            <button type="button" class="btn btn-sm btn-outline-ceai active" data-cat="Todos">Ver todos</button>
-            ${categorias.map(cat => `<button type="button" class="btn btn-sm btn-outline-secondary" data-cat="${cat}">${cat}</button>`).join('')}
-        </div>
-    `;
-
-    filtroContainer.querySelectorAll('button[data-cat]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const cat = btn.getAttribute('data-cat');
-            mostrarSemillerosFiltrados(cat);
-            filtroContainer.querySelectorAll('button[data-cat]').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-}
-
-function mostrarSemillerosFiltrados(categoria) {
-    const container = document.getElementById('semillerosListContainer');
-    if (!container) return;
-
-    const datos = categoria === 'Todos' ? semillerosPaginaCache : semillerosPaginaCache.filter(s => (s.categoria || 'Sin categoría').trim() === categoria);
-
-    if (!datos.length) {
-        container.innerHTML = `<p class="text-muted">No hay semilleros en la categoría "${categoria}".</p>`;
-        return;
-    }
-
-    container.innerHTML = datos.map(semillero => `
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="${semillero.imagen || 'https://via.placeholder.com/300x200'}" class="img-fluid rounded-start" alt="${semillero.nombre}" style="height: 200px; object-fit: cover;">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">${semillero.nombre}</h5>
-                            <p class="card-text small"><strong>Línea:</strong> ${semillero.linea}</p>
-                            <p class="card-text">${truncarTexto(semillero.descripcion, 120)}</p>
-                            <a href="semillero-detalle.html?id=${semillero.id}" class="btn btn-ceai btn-sm">Ver proyectos</a>
+        container.innerHTML = semilleros.map(semillero => `
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="${semillero.imagen || 'https://via.placeholder.com/300x200'}"
+                                 class="img-fluid rounded-start"
+                                 alt="${semillero.nombre}"
+                                 style="height: 200px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">${semillero.nombre}</h5>
+                                <p class="card-text small"><strong>Línea:</strong> ${semillero.linea}</p>
+                                <p class="card-text">${truncarTexto(semillero.descripcion, 120)}</p>
+                                <a href="semillero-detalle.html?id=${semillero.id}" class="btn btn-ceai btn-sm">Ver proyectos</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    } catch (error) {
+        console.error('Error cargando semilleros:', error);
+        container.innerHTML = '<p class="text-danger">Error al cargar semilleros.</p>';
+    }
 }
 
 // ==================== PROYECTOS POR SEMILLERO ====================
