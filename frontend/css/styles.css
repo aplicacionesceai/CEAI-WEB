@@ -196,10 +196,17 @@ a {
     position: relative;
 }
 
+/* Prevent global link underline when inside navbar - navbar uses its own underline indicator */
+.navbar a::after,
+.navbar-nav .nav-link::after {
+    display: none;
+}
+
 a:hover {
     color: var(--ceai-verde-oscuro);
 }
 
+/* Global link underline used outside navbar and footer */
 a::after {
     content: '';
     position: absolute;
@@ -214,6 +221,36 @@ a::after {
 a:hover::after {
     width: 100%;
 }
+
+/* Improve dropdown arrow (green, crisp SVG) for Bootstrap dropdown-toggle inside navbar */
+.navbar .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: .25rem;
+    vertical-align: .255em;
+    content: '';
+    width: 0.8rem;
+    height: 0.5rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3e%3cpath fill='%2339A900' d='M6 7L0 0h12z'/%3e%3c/svg%3e");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.95;
+    transform: translateY(1px);
+}
+
+/* Ensure the default Bootstrap dropdown caret is hidden so only our custom arrow shows */
+.navbar .dropdown-toggle[data-bs-toggle] > .caret,
+.navbar .dropdown-toggle .caret {
+    display: none !important;
+}
+
+/* Slight hover rotation for arrow when open */
+.navbar .dropdown.show > .nav-link.dropdown-toggle::after,
+.navbar .dropdown-toggle[aria-expanded="true"]::after {
+    transform: translateY(1px) rotate(180deg);
+}
+
+/* Ensure only one underline appears on nav links: the .nav-link::before indicator is used */
+.navbar-nav .nav-link::after { display: none; }
 
 /* Navbar */
 .navbar {
