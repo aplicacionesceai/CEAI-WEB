@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/styles.css">
 
     <style>
-        /* ========== TIPOGRAFÍA GLOBAL AJUSTADA ========== */
+        /* ========== TIPOGRAFÍA GLOBAL ========== */
         body {
             font-family: 'Roboto', sans-serif;
             font-size: 15px;
@@ -17,7 +17,7 @@
             line-height: 1.6;
         }
 
-        /* ========== LAYOUT DETALLE SEMILLERO ========== */
+        /* ========== LAYOUT PRINCIPAL ========== */
         #semilleroContent .row {
             display: flex;
             flex-wrap: wrap;
@@ -39,255 +39,236 @@
             height: auto;
             max-height: 320px;
             object-fit: cover;
+            border-radius: 12px;
         }
 
-        /* ========== TÍTULOS ESCALADOS ========== */
+        /* ========== TÍTULOS ========== */
         #semilleroContent h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 0.6rem;
+            margin-bottom: 1rem;
+            color: var(--ceai-azul, #00304d);
         }
         #semilleroContent h3 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 700;
             margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-        #semilleroContent h5 {
-            font-size: 0.95rem;
-            font-weight: 700;
-        }
-        #semilleroContent .lead {
-            font-size: 0.97rem;
-            line-height: 1.7;
-            color: #444;
+            margin-bottom: 1rem;
+            color: var(--ceai-azul, #00304d);
         }
 
-        /* ========== CARD INFORMACIÓN SEMILLERO ========== */
-        .info-semillero-card {
+        /* ========== CARDS ========== */
+        .info-semillero-card, .sidebar-card {
             border-radius: 12px;
             border: none;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
         }
-        .info-semillero-card .card-body {
-            padding: 1.1rem 1.3rem;
-        }
-        .info-semillero-card li {
-            font-size: 0.88rem;
-            margin-bottom: 0.4rem;
+        .proyecto-card {
+            background: #fff;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 1rem;
+            padding: 1.25rem;
+            border-left: 5px solid var(--ceai-verde, #39a900);
         }
 
-        /* ========== SECCIÓN PROYECTOS ========== */
+        /* ========== BOTÓN PROYECTOS ========== */
         .proyectos-toggle-btn {
             background: linear-gradient(135deg, var(--ceai-verde, #39a900) 0%, #4dc800 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 10px 22px;
-            font-size: 0.92rem;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 14px rgba(57,169,0,0.3);
+            box-shadow: 0 4px 16px rgba(57,169,0,0.3);
             transition: all 0.3s ease;
-            margin-bottom: 1rem;
             white-space: nowrap;
         }
         .proyectos-toggle-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(57,169,0,0.45);
-        }
-        .proyectos-toggle-btn .count-badge {
-            background: rgba(255,255,255,0.25);
-            border-radius: 20px;
-            padding: 1px 9px;
-            font-size: 0.8rem;
-        }
-        #proyectosListado {
-            display: none;
-            animation: fadeSlide 0.35s ease;
-        }
-        #proyectosListado.visible {
-            display: block;
-        }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            box-shadow: 0 8px 24px rgba(57,169,0,0.4);
         }
 
-        /* ========== TARJETAS DE PROYECTO ========== */
-        .proyecto-card {
-            background: #fff;
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-            margin-bottom: 0.9rem;
-            padding: 1rem 1.2rem;
-            border-left: 4px solid var(--ceai-verde, #39a900);
+        /* ========== MODAL MEJORADO - PROBLEMA RESUELTO ========== */
+        #detalleProyectoModal {
+            z-index: 1060;
         }
-        .proyecto-card h5 {
-            font-size: 0.93rem;
-            font-weight: 700;
-            margin-bottom: 0.4rem;
-            color: var(--ceai-azul, #00304d);
-            word-break: break-word;          /* evita desbordes de títulos largos */
-        }
-        .proyecto-card p {
-            font-size: 0.85rem;
-            margin-bottom: 0.25rem;
-            color: #444;
-        }
-        .estado-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-
-        /* ========== SIDEBAR CARDS ========== */
-        .sidebar-card {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-            margin-bottom: 1rem;
-        }
-        .sidebar-card .card-body {
-            padding: 1.1rem;
-        }
-        .sidebar-card h5 {
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-        .sidebar-card .btn {
-            font-size: 0.85rem;
-        }
-        .sidebar-card a {
-            font-size: 0.85rem;
-        }
-
-        /* ========== MODAL DETALLE PROYECTO ========== */
-        /* Hacemos que el contenido del modal use casi toda la pantalla en alto,
-           imagen arriba y texto abajo con scroll, sin recortar título ni imagen. */
         #detalleProyectoModal .modal-dialog {
-            max-width: 900px;
+            max-width: 95vw;
+            width: 95vw;
+            max-width: 1000px;
+            margin: 1rem auto;
         }
         #detalleProyectoModal .modal-content {
-            border-radius: 16px;
-            overflow: hidden;
+            border-radius: 20px;
+            height: 90vh;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
         }
         #detalleProyectoModal .modal-header {
-            border-bottom: 1px solid #e5e5e5;
+            flex-shrink: 0;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
         }
         #detalleProyectoModal .modal-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.05rem;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
             font-weight: 700;
             color: #00304d;
-            text-align: center;
-            width: 100%;
-            white-space: normal;         /* permite varias líneas */
-            word-break: break-word;      /* evita overflow horizontal */
+            margin: 0;
+            line-height: 1.3;
+            max-height: 4rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            word-break: break-word;
         }
-        #detalleProyectoModal .btn-close {
-            margin-left: 0;
-        }
-
-        /* El body del modal se divide visualmente: carrusel + texto,
-           con altura máxima relativa a la pantalla. */
+        
+        /* BODY FLEX - CLAVE DEL ARREGLO */
         #detalleProyectoModal .modal-body {
+            flex: 1;
             padding: 0;
-        }
-
-        #detalleProyectoModal .dp-layout {
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            max-height: 80vh;            /* altura máx del contenido del modal */
         }
 
-        /* Contenedor de la imagen/carrusel */
+        /* CONTENEDOR PRINCIPAL FLEX */
+        .dp-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* IMAGEN ADAPTATIVA */
         #dp_carrusel {
-            background: #f0f0f0;
-            border-radius: 0;
-            overflow: hidden;
+            flex: 0 0 45%;
+            min-height: 250px;
+            max-height: 500px;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e9ecef 100%);
             position: relative;
-            max-height: 60vh;
+            overflow: hidden;
         }
         #dp_carrusel_img {
             width: 100%;
             height: 100%;
-            max-height: 60vh;
-            object-fit: contain;         /* que se vea todo sin recortar */
+            object-fit: contain;
+            object-position: center;
             display: block;
         }
 
-        /* Navegación carrusel */
-        .dp-prev,
-        .dp-next {
-            width: 36px;
-            height: 36px;
+        /* BOTONES CARRUSEL MEJORADOS */
+        .dp-prev, .dp-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: none;
-            background-color: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 10;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
         }
-        .dp-prev:hover,
-        .dp-next:hover {
-            background-color: #ffffff;
+        .dp-prev {
+            left: 12px;
         }
+        .dp-next {
+            right: 12px;
+        }
+        .dp-prev:hover, .dp-next:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
         #dp_dots {
             position: absolute;
-            bottom: 8px;
+            bottom: 16px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
         .dp-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: rgba(255,255,255,.5);
+            background: rgba(255,255,255,0.6);
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .dp-dot.active {
+            background: white;
+            transform: scale(1.2);
         }
 
-        /* Contenedor de texto debajo de la imagen */
-        #detalleProyectoModal .dp-text-content {
-            padding: 1rem 1.25rem 1.1rem;
+        /* TEXTO CON SCROLL */
+        .dp-text-content {
+            flex: 1;
+            padding: 1.5rem;
             overflow-y: auto;
+            background: #fff;
         }
-        #detalleProyectoModal .dp-text-content p {
-            font-size: 0.93rem;
-            color: #444;
-            margin-bottom: 0.4rem;
+        .dp-text-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .dp-text-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .dp-text-content::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        #dp_estado {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            margin-right: 0.5rem;
+        }
+        #dp_lider, #dp_apoyo {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.7rem;
         }
         #dp_resumen {
-            font-size: 0.93rem;
+            font-size: 0.95rem;
             color: #555;
+            line-height: 1.6;
+            margin-top: 1rem;
         }
         #dp_objetivo {
-            background:#f8f9fa;
-            padding:12px;
-            border-radius:8px;
-            border-left:4px solid var(--ceai-verde);
-            font-size:0.93rem;
-            color:#333;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--ceai-verde, #39a900);
+            font-size: 0.92rem;
+            color: #333;
+            line-height: 1.6;
+            margin-top: 1rem;
         }
 
-        #detalleProyectoModal .modal-footer {
-            border-top: 1px solid #e5e5e5;
-        }
-
-        /* ========== RESPONSIVE ========== */
+        /* RESPONSIVE PERFECTO */
         @media (max-width: 768px) {
             #semilleroContent .col-md-8,
             #semilleroContent .col-md-4 {
@@ -298,23 +279,37 @@
                 position: static;
                 margin-top: 2rem;
             }
-            #semilleroContent h1 { font-size: 1.35rem; }
-            #semilleroContent h3 { font-size: 1.05rem; }
+            #semilleroContent h1 { font-size: 1.5rem; }
+            #semilleroContent h3 { font-size: 1.1rem; }
 
             #detalleProyectoModal .modal-dialog {
-                margin: 0.5rem;
+                width: 98vw;
+                margin: 0.25rem;
             }
-            #detalleProyectoModal .modal-title {
-                font-size: 0.95rem;
+            #detalleProyectoModal .modal-content {
+                height: 92vh;
+                border-radius: 16px;
             }
-            #detalleProyectoModal .dp-layout {
-                max-height: 85vh;
+            #dp_carrusel {
+                flex: 0 0 40%;
+                min-height: 200px;
             }
-            .dp-prev,
-            .dp-next {
-                width: 30px;
-                height: 30px;
-                font-size: 1rem;
+            .dp-prev, .dp-next {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+            .dp-text-content {
+                padding: 1.25rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #detalleProyectoModal .modal-header {
+                padding: 1rem;
+            }
+            .dp-text-content {
+                padding: 1rem 0.75rem;
             }
         }
     </style>
@@ -324,13 +319,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold ceai-brand" href="index.html" aria-label="CEAI SENA - Ir al inicio">
-                <img
-                    class="ceai-brand__logo"
-                    src="https://i.postimg.cc/cHpqyBX5/Logo-sena.jpg"
-                    alt="Logo SENA"
-                    loading="lazy"
-                    decoding="async"
-                >
+                <img class="ceai-brand__logo" src="https://i.postimg.cc/cHpqyBX5/Logo-sena.jpg" alt="Logo SENA" loading="lazy" decoding="async">
                 <span class="ceai-brand__text">
                     <span style="color: var(--ceai-verde);">CEAI</span> SENA
                 </span>
@@ -412,39 +401,33 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Modal detalle proyecto -->
-    <div class="modal fade" id="detalleProyectoModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <!-- Modal detalle proyecto MEJORADO -->
+    <div class="modal fade" id="detalleProyectoModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="dp_titulo"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="dp_titulo">Título del proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="dp-layout">
-                        <div id="dp_carrusel" class="mb-0">
+                        <div id="dp_carrusel">
                             <img id="dp_carrusel_img" src="" alt="Imagen del proyecto">
-                            <button class="dp-prev position-absolute top-50 start-0 translate-middle-y">&#10094;</button>
-                            <button class="dp-next position-absolute top-50 end-0 translate-middle-y">&#10095;</button>
+                            <button class="dp-prev" type="button">&#8249;</button>
+                            <button class="dp-next" type="button">&#8250;</button>
                             <div id="dp_dots"></div>
                         </div>
-
                         <div class="dp-text-content">
-                            <div class="mb-2">
+                            <div class="mb-3">
                                 <span id="dp_estado" class="badge"></span>
                                 <span id="dp_lider" class="badge bg-success"></span>
                                 <span id="dp_apoyo" class="badge bg-info"></span>
                             </div>
-                            <div id="dp_resumen" class="mb-3"></div>
-                            <div class="mb-2"><strong>📄 Descripción completa</strong></div>
+                            <div id="dp_resumen"></div>
+                            <div class="mb-3"><strong>📄 Descripción completa</strong></div>
                             <div id="dp_objetivo"></div>
                         </div>
                     </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -452,6 +435,9 @@
 
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
+
+        let dp_imagenes_actual = [];
+        let dp_indice_actual = 0;
 
         async function cargarSemillero() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -462,7 +448,6 @@
 
             try {
                 let semilleros = [];
-
                 if (id) {
                     const response = await fetch(`${API}/api/semilleros/${id}`);
                     if (response.ok) {
@@ -487,184 +472,111 @@
             }
         }
 
-        function mostrarListaSemilleros(semilleros, categoria) {
+        function mostrarDetalleSemillero(semillero) {
             const container = document.getElementById('semilleroContent');
-            container.innerHTML = `
-                <h1 style="color: var(--ceai-azul);">${categoria || 'Semilleros'}</h1>
-                <p class="text-muted" style="font-size:0.9rem; margin-bottom:1.5rem;">Selecciona un semillero para ver más detalles</p>
-                <div class="row">
-                    ${semilleros.map(s => `
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm" style="transition:transform .3s; border-radius:12px; border:none;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-                                ${s.imagen ? `<img src="${s.imagen}" class="card-img-top" alt="${s.nombre}" style="height:190px;object-fit:cover;border-radius:12px 12px 0 0;">` : ''}
-                                <div class="card-body p-3">
-                                    <h5 class="card-title" style="color:var(--ceai-verde);font-size:0.95rem;word-break:break-word;">${s.nombre}</h5>
-                                    <p class="card-text" style="font-size:0.83rem;">
-                                        <strong>📚 Línea:</strong> ${s.linea}<br>
-                                        <strong>🎯 Enfoque:</strong> ${s.enfoque}
-                                    </p>
-                                    <p class="card-text text-muted" style="font-size:0.8rem;">${(s.descripcion||'').substring(0,100)}...</p>
+            cargarProyectos(semillero.id).then(proyectos => {
+                const totalProyectos = proyectos.length;
+                const descHTML = semillero.descripcion && semillero.descripcion.trim().startsWith('<')
+                    ? semillero.descripcion
+                    : `<p>${semillero.descripcion || ''}</p>`;
+
+                container.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h1>${semillero.nombre}</h1>
+                            <div class="descripcion-content mb-4" style="font-size:0.97rem; line-height:1.7; color:#444;">${descHTML}</div>
+
+                            <div class="info-semillero-card card">
+                                <div class="card-body">
+                                    <h5 style="color:var(--ceai-verde);">📋 Información del Semillero</h5>
+                                    <ul class="list-unstyled mt-3">
+                                        <li class="mb-2"><strong>📂 Categoría:</strong> <span class="badge bg-info ms-2">${semillero.categoria || 'Sin categoría'}</span></li>
+                                        <li class="mb-2"><strong>📚 Línea:</strong> ${semillero.linea}</li>
+                                        <li class="mb-1"><strong>🎯 Enfoque:</strong> ${semillero.enfoque}</li>
+                                    </ul>
                                 </div>
-                                <div class="card-footer bg-white border-top-0 px-3 pb-3">
-                                    <a href="semillero-detalle.html?id=${s.id}" class="btn btn-ceai btn-sm w-100" style="font-size:0.85rem;">Ver detalles</a>
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+                                    <h3>🚀 Proyectos</h3>
+                                    ${totalProyectos > 0 ? `<button class="proyectos-toggle-btn" id="btnVerProyectos">📂 Ver proyectos <span class="count-badge">${totalProyectos}</span></button>` : ''}
+                                </div>
+
+                                ${totalProyectos === 0
+                                    ? '<div class="alert alert-info"><strong>ℹ️</strong> No hay proyectos registrados para este semillero.</div>'
+                                    : `<div id="proyectosListado" style="display:none;">
+                                        ${proyectos.map(p => {
+                                            const badgeColor = p.estado === 'En ejecución' ? '#0d6efd' : p.estado === 'Finalizado' ? '#198754' : '#ffc107';
+                                            const badgeText = p.estado === 'Planeación' ? '#333' : '#fff';
+                                            return `
+                                            <div class="proyecto-card">
+                                                <div class="d-flex justify-content-between align-items-start mb-3 gap-3">
+                                                    <h6 style="margin:0; color:var(--ceai-azul); font-size:1rem;">${p.titulo}</h6>
+                                                    <span class="estado-badge" style="background:${badgeColor}; color:${badgeText};">${p.estado}</span>
+                                                </div>
+                                                ${p.lider ? `<p><strong>👤 Líder:</strong> ${p.lider}</p>` : ''}
+                                                ${p.apoyo_tecnico ? `<p><strong>🔧 Apoyo:</strong> ${p.apoyo_tecnico}</p>` : ''}
+                                                ${p.resumen ? `<p style="color:#555; font-size:0.92rem;">${p.resumen.substring(0, 180)}${p.resumen.length > 180 ? '...' : ''}</p>` : ''}
+                                                <button class="btn btn-sm btn-ceai mt-2 px-3" onclick='mostrarDetalleProyecto(${JSON.stringify(p).replace(/'/g, "\\'")})'>Ver más →</button>
+                                            </div>`;
+                                        }).join('')}
+                                    </div>`
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            ${semillero.imagen ? `<img src="${semillero.imagen}" class="img-fluid shadow-sm mb-4 w-100" alt="${semillero.nombre}">` : ''}
+                            
+                            <div class="sidebar-card card">
+                                <div class="card-body text-center">
+                                    <h6 style="color:var(--ceai-verde);">💡 ¿Te interesa participar?</h6>
+                                    <p class="text-muted small mt-2">Contáctanos para unirte a este semillero.</p>
+                                    <a href="contacto.html" class="btn btn-ceai w-100 mt-2">Contactar</a>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-card card">
+                                <div class="card-body">
+                                    <h6 style="color:var(--ceai-azul);">📂 Por categoría</h6>
+                                    <ul id="sidebarCategorias" class="list-unstyled mt-2"></ul>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-card card">
+                                <div class="card-body">
+                                    <h6 style="color:var(--ceai-azul);">🔗 Enlaces útiles</h6>
+                                    <ul class="list-unstyled mt-2">
+                                        <li><a href="semilleros.html" class="text-decoration-none small">📚 Todos los semilleros</a></li>
+                                        <li><a href="grupo-investigacion.html" class="text-decoration-none small">👥 Grupo de Investigación</a></li>
+                                        <li><a href="innovacion.html" class="text-decoration-none small">💡 Área de Innovación</a></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        async function cargarCategoriasSidebar() {
-            try {
-                const response = await fetch(`${API}/api/semilleros`);
-                if (!response.ok) return;
-                const semilleros = await response.json();
-                const categorias = [...new Set(semilleros.map(c => (c.categoria || 'Sin categoría').trim()))];
-                categorias.sort((a,b) => a.localeCompare(b, 'es'));
-
-                const list = document.getElementById('sidebarCategorias');
-                if (!list) return;
-
-                list.innerHTML = `
-                    <li><a href="semilleros.html" class="text-decoration-none">📚 Ver todos</a></li>
-                    ${categorias.map(c => `<li><a href="semillero-detalle.html?categoria=${encodeURIComponent(c)}" class="text-decoration-none">• ${c}</a></li>`).join('')}
+                    </div>
                 `;
-            } catch (error) {
-                console.error('Error cargando categorías sidebar:', error);
-            }
+                
+                if (totalProyectos > 0) {
+                    window.toggleProyectos = toggleProyectos;
+                }
+                cargarCategoriasSidebar();
+            });
         }
 
-        async function mostrarDetalleSemillero(semillero) {
-            const container = document.getElementById('semilleroContent');
-            const proyectos = await cargarProyectos(semillero.id);
-            const totalProyectos = proyectos.length;
-
-            const descHTML = semillero.descripcion && semillero.descripcion.trim().startsWith('<')
-                ? semillero.descripcion
-                : `<p>${semillero.descripcion || ''}</p>`;
-
-            container.innerHTML = `
-                <div class="row">
-                    <div class="col-md-8">
-                        <h1 style="color: var(--ceai-azul);">${semillero.nombre}</h1>
-                        <div class="descripcion-content mb-3" style="font-size:0.95rem; line-height:1.7; color:#444;">${descHTML}</div>
-
-                        <div class="info-semillero-card card">
-                            <div class="card-body">
-                                <h5 style="color:var(--ceai-verde);">📋 Información del Semillero</h5>
-                                <ul class="list-unstyled mt-2 mb-0">
-                                    <li class="mb-1"><strong>📂 Categoría:</strong> <span class="badge bg-info" style="font-size:0.78rem;">${semillero.categoria || 'Sin categoría'}</span></li>
-                                    <li class="mb-1"><strong>📚 Línea de Investigación:</strong> ${semillero.linea}</li>
-                                    <li><strong>🎯 Enfoque:</strong> ${semillero.enfoque}</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Sección Proyectos con toggle -->
-                        <div class="mt-3">
-                            <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
-                                <h3 style="color:var(--ceai-azul); margin:0;">🚀 Proyectos</h3>
-                                ${totalProyectos > 0 ? `
-                                <button class="proyectos-toggle-btn" id="btnVerProyectos" onclick="toggleProyectos()">
-                                    📂 Ver proyectos <span class="count-badge">${totalProyectos}</span>
-                                </button>` : ''}
-                            </div>
-
-                            ${totalProyectos === 0
-                                ? '<div class="alert alert-info py-2" style="font-size:0.88rem;"><strong>ℹ️</strong> No hay proyectos registrados para este semillero.</div>'
-                                : `<div id="proyectosListado">
-                                    ${proyectos.map(p => {
-                                        const badgeColor = p.estado === 'En ejecución' ? '#0d6efd' : p.estado === 'Finalizado' ? '#198754' : '#ffc107';
-                                        const badgeText = p.estado === 'Planeación' ? '#333' : '#fff';
-                                        return `<div class="proyecto-card">
-                                            <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
-                                                <h5 style="margin:0;">${p.titulo}</h5>
-                                                <span class="estado-badge" style="background:${badgeColor}; color:${badgeText}; white-space:nowrap; margin-left:10px;">${p.estado}</span>
-                                            </div>
-                                            ${p.lider ? `<p style="margin:4px 0;"><strong>👤 Líder:</strong> ${p.lider}</p>` : ''}
-                                            ${p.apoyo_tecnico ? `<p style="margin:4px 0;"><strong>🔧 Apoyo Técnico:</strong> ${p.apoyo_tecnico}</p>` : ''}
-                                            ${p.resumen ? `<p style="margin:6px 0; color:#555; font-size:0.9rem;">${p.resumen.substring(0, 150)}${p.resumen.length > 150 ? '...' : ''}</p>` : ''}
-                                            <button class="btn btn-sm btn-ceai mt-2" style="font-size:0.85rem;" onclick='mostrarDetalleProyecto(${JSON.stringify(p).replace(/'/g, "&apos;")})'>Ver más →</button>
-                                        </div>`;
-                                    }).join('')}
-                                </div>`
-                            }
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        ${semillero.imagen ? `<img src="${semillero.imagen}" class="img-fluid rounded shadow-sm mb-3" alt="${semillero.nombre}" style="border-radius:12px;">` : ''}
-
-                        <div class="sidebar-card card">
-                            <div class="card-body text-center">
-                                <h5 style="color:var(--ceai-verde);">💡 ¿Te interesa participar?</h5>
-                                <p class="text-muted" style="font-size:0.83rem;">Si estás interesado en formar parte de este semillero, contáctanos para más información.</p>
-                                <a href="contacto.html" class="btn btn-ceai w-100 mt-1" style="font-size:0.85rem;">Contactar</a>
-                            </div>
-                        </div>
-
-                        <div class="sidebar-card card">
-                            <div class="card-body">
-                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">📂 Ver semilleros por categoría</h6>
-                                <ul id="sidebarCategorias" class="list-unstyled mb-0" style="font-size:0.83rem;"></ul>
-                            </div>
-                        </div>
-
-                        <div class="sidebar-card card">
-                            <div class="card-body">
-                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">🔗 Enlaces útiles</h6>
-                                <ul class="list-unstyled mb-0">
-                                    <li class="mb-1"><a href="semilleros.html" class="text-decoration-none" style="font-size:0.83rem;">📚 Ver todos los semilleros</a></li>
-                                    <li class="mb-1"><a href="grupo-investigacion.html" class="text-decoration-none" style="font-size:0.83rem;">👥 Grupo de Investigación</a></li>
-                                    <li><a href="innovacion.html" class="text-decoration-none" style="font-size:0.83rem;">💡 Área de Innovación</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function toggleProyectos() {
+        window.toggleProyectos = function() {
             const listado = document.getElementById('proyectosListado');
             const btn = document.getElementById('btnVerProyectos');
             if (!listado || !btn) return;
-            const abierto = listado.classList.toggle('visible');
-            const total = listado.querySelectorAll('.proyecto-card').length;
-            btn.innerHTML = abierto
-                ? `📂 Ocultar proyectos <span class="count-badge">${total}</span>`
-                : `📂 Ver proyectos <span class="count-badge">${total}</span>`;
-        }
+            const isVisible = listado.style.display === 'block';
+            listado.style.display = isVisible ? 'none' : 'block';
+            btn.innerHTML = isVisible 
+                ? `📂 Ver proyectos <span class="count-badge">${listado.children.length}</span>`
+                : `📂 Ocultar proyectos <span class="count-badge">${listado.children.length}</span>`;
+        };
 
-        async function cargarProyectos(semilleroId) {
-            try {
-                const response = await fetch(`${API}/api/proyectos/semillero/${semilleroId}`);
-                if (response.ok) return await response.json();
-                return [];
-            } catch (error) {
-                console.error('Error cargando proyectos:', error);
-                return [];
-            }
-        }
-
-        function mostrarError(mensaje) {
-            const container = document.getElementById('semilleroContent');
-            container.innerHTML = `
-                <div class="text-center py-5">
-                    <div style="font-size:3rem; color:var(--ceai-verde);">🔍</div>
-                    <h2 class="mt-3" style="color:var(--ceai-azul); font-size:1.3rem;">Semillero no encontrado</h2>
-                    <p class="text-muted" style="font-size:0.9rem;">${mensaje}</p>
-                    <a href="semilleros.html" class="btn btn-ceai mt-3" style="font-size:0.9rem;">← Ver todos los semilleros</a>
-                </div>
-            `;
-        }
-
-        /* ===== MODAL DETALLE PROYECTO ===== */
-        let dp_imagenes_actual = [];
-        let dp_indice_actual = 0;
-
-        function mostrarDetalleProyecto(proyecto) {
+        window.mostrarDetalleProyecto = function(proyecto) {
             document.getElementById('dp_titulo').textContent = proyecto.titulo;
             const estado = document.getElementById('dp_estado');
             estado.textContent = proyecto.estado;
@@ -675,32 +587,32 @@
             );
 
             const lider = document.getElementById('dp_lider');
-            lider.textContent = proyecto.lider ? `LÍDER DEL PROYECTO: ${proyecto.lider}` : '';
+            lider.textContent = proyecto.lider ? `👤 ${proyecto.lider}` : '';
             lider.style.display = proyecto.lider ? 'inline-block' : 'none';
 
             const apoyo = document.getElementById('dp_apoyo');
-            apoyo.textContent = proyecto.apoyo_tecnico ? `APOYO TÉCNICO: ${proyecto.apoyo_tecnico}` : '';
+            apoyo.textContent = proyecto.apoyo_tecnico ? `🔧 ${proyecto.apoyo_tecnico}` : '';
             apoyo.style.display = proyecto.apoyo_tecnico ? 'inline-block' : 'none';
 
-            document.getElementById('dp_resumen').textContent = proyecto.resumen || '';
-            document.getElementById('dp_objetivo').innerHTML = proyecto.objetivo || '';
+            document.getElementById('dp_resumen').textContent = proyecto.resumen || 'Sin resumen disponible.';
+            document.getElementById('dp_objetivo').innerHTML = proyecto.objetivo || 'Sin descripción disponible.';
 
             dp_imagenes_actual = (proyecto.imagenes || '').split('|').filter(x => x.trim());
             dp_indice_actual = 0;
             actualizarCarrusel();
 
             new bootstrap.Modal(document.getElementById('detalleProyectoModal')).show();
-        }
+        };
 
         function actualizarCarrusel() {
             const imgEl = document.getElementById('dp_carrusel_img');
             const dots = document.getElementById('dp_dots');
-            const prevBtn = document.querySelector('#dp_carrusel .dp-prev');
-            const nextBtn = document.querySelector('#dp_carrusel .dp-next');
-            if (!imgEl || !dots) return;
+            const prevBtn = document.querySelector('.dp-prev');
+            const nextBtn = document.querySelector('.dp-next');
 
             if (dp_imagenes_actual.length === 0) {
                 imgEl.src = '';
+                imgEl.alt = 'Sin imagen disponible';
                 dots.innerHTML = '';
                 prevBtn.style.display = 'none';
                 nextBtn.style.display = 'none';
@@ -708,22 +620,23 @@
             }
 
             imgEl.src = dp_imagenes_actual[dp_indice_actual];
+            imgEl.alt = `Imagen ${dp_indice_actual + 1} del proyecto`;
 
-            dots.innerHTML = dp_imagenes_actual.map((_, i) =>
-                `<span class="dp-dot" data-idx="${i}"></span>`
+            dots.innerHTML = dp_imagenes_actual.map((_, i) => 
+                `<span class="dp-dot ${i === dp_indice_actual ? 'active' : ''}" data-idx="${i}"></span>`
             ).join('');
 
-            document.querySelectorAll('.dp-dot').forEach(dot => {
-                const idx = parseInt(dot.getAttribute('data-idx'));
-                dot.style.background = idx === dp_indice_actual ? 'white' : 'rgba(255,255,255,.5)';
-                dot.onclick = () => { dp_indice_actual = idx; actualizarCarrusel(); };
+            document.querySelectorAll('.dp-dot').forEach((dot, i) => {
+                dot.onclick = () => { 
+                    dp_indice_actual = i; 
+                    actualizarCarrusel(); 
+                };
             });
 
             prevBtn.style.display = dp_imagenes_actual.length > 1 ? 'flex' : 'none';
             nextBtn.style.display = dp_imagenes_actual.length > 1 ? 'flex' : 'none';
-
-            if (prevBtn) prevBtn.onclick = dp_prevImagen;
-            if (nextBtn) nextBtn.onclick = dp_nextImagen;
+            prevBtn.onclick = dp_prevImagen;
+            nextBtn.onclick = dp_nextImagen;
         }
 
         function dp_prevImagen() {
@@ -736,6 +649,74 @@
             if (dp_imagenes_actual.length === 0) return;
             dp_indice_actual = (dp_indice_actual + 1) % dp_imagenes_actual.length;
             actualizarCarrusel();
+        }
+
+        async function cargarProyectos(semilleroId) {
+            try {
+                const response = await fetch(`${API}/api/proyectos/semillero/${semilleroId}`);
+                return response.ok ? await response.json() : [];
+            } catch (error) {
+                console.error('Error:', error);
+                return [];
+            }
+        }
+
+        async function cargarCategoriasSidebar() {
+            try {
+                const response = await fetch(`${API}/api/semilleros`);
+                if (!response.ok) return;
+                const semilleros = await response.json();
+                const categorias = [...new Set(semilleros.map(c => (c.categoria || 'Sin categoría').trim()))].sort((a,b) => a.localeCompare(b, 'es'));
+                
+                const list = document.getElementById('sidebarCategorias');
+                if (list) {
+                    list.innerHTML = `
+                        <li><a href="semilleros.html" class="text-decoration-none small d-flex align-items-center"><span class="me-2">📚</span>Ver todos</a></li>
+                        ${categorias.map(c => `<li class="mt-1"><a href="semillero-detalle.html?categoria=${encodeURIComponent(c)}" class="text-decoration-none small">• ${c}</a></li>`).join('')}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function mostrarListaSemilleros(semilleros, categoria) {
+            const container = document.getElementById('semilleroContent');
+            container.innerHTML = `
+                <h1 style="color: var(--ceai-azul);">${categoria}</h1>
+                <p class="text-muted mb-4">Selecciona un semillero para ver detalles</p>
+                <div class="row">
+                    ${semilleros.map(s => `
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow border-0" style="border-radius:12px; transition: transform 0.3s;" 
+                                 onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                                ${s.imagen ? `<img src="${s.imagen}" class="card-img-top" style="height:200px; object-fit:cover; border-radius:12px 12px 0 0;">` : ''}
+                                <div class="card-body p-3">
+                                    <h6 class="card-title" style="color:var(--ceai-verde);">${s.nombre}</h6>
+                                    <p class="card-text small">
+                                        <strong>📚 Línea:</strong> ${s.linea}<br>
+                                        <strong>🎯 Enfoque:</strong> ${s.enfoque}
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-white border-top-0 p-3">
+                                    <a href="semillero-detalle.html?id=${s.id}" class="btn btn-ceai w-100 small">Ver detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function mostrarError(mensaje) {
+            document.getElementById('semilleroContent').innerHTML = `
+                <div class="text-center py-5">
+                    <div style="font-size:4rem; color:var(--ceai-verde);">🔍</div>
+                    <h2 class="mt-3" style="color:var(--ceai-azul);">No encontrado</h2>
+                    <p class="text-muted">${mensaje}</p>
+                    <a href="semilleros.html" class="btn btn-ceai mt-3">← Ver semilleros</a>
+                </div>
+            `;
         }
 
         document.addEventListener('DOMContentLoaded', cargarSemillero);
