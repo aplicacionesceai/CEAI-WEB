@@ -330,6 +330,7 @@
                 } else {
                     mostrarDetalleSemillero(semilleros[0]);
                 }
+                cargarCategoriasSidebar();
             } catch (error) {
                 console.error('Error:', error);
                 mostrarError('Error al cargar el semillero');
@@ -362,6 +363,26 @@
                     `).join('')}
                 </div>
             `;
+        }
+
+        async function cargarCategoriasSidebar() {
+            try {
+                const response = await fetch(`${API}/api/semilleros`);
+                if (!response.ok) return;
+                const semilleros = await response.json();
+                const categorias = [...new Set(semilleros.map(c => (c.categoria || 'Sin categoría').trim()))];
+                categorias.sort((a,b) => a.localeCompare(b, 'es'));
+
+                const list = document.getElementById('sidebarCategorias');
+                if (!list) return;
+
+                list.innerHTML = `
+                    <li><a href="semilleros.html" class="text-decoration-none">📚 Ver todos</a></li>
+                    ${categorias.map(c => `<li><a href="semillero-detalle.html?categoria=${encodeURIComponent(c)}" class="text-decoration-none">• ${c}</a></li>`).join('')}
+                `;
+            } catch (error) {
+                console.error('Error cargando categorías sidebar:', error);
+            }
         }
 
         async function mostrarDetalleSemillero(semillero) {
@@ -436,7 +457,14 @@
 
                         <div class="sidebar-card card">
                             <div class="card-body">
-                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">🔗 Enlaces útiles</h6>
+                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">� Ver semilleros por categoría</h6>
+                                <ul id="sidebarCategorias" class="list-unstyled mb-0" style="font-size:0.83rem;"></ul>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-card card">
+                            <div class="card-body">
+                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;">�🔗 Enlaces útiles</h6>
                                 <ul class="list-unstyled mb-0">
                                     <li class="mb-1"><a href="semilleros.html" class="text-decoration-none" style="font-size:0.83rem;">📚 Ver todos los semilleros</a></li>
                                     <li class="mb-1"><a href="grupo-investigacion.html" class="text-decoration-none" style="font-size:0.83rem;">👥 Grupo de Investigación</a></li>
