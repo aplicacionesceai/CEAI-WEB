@@ -197,8 +197,7 @@ a {
 }
 
 /* Prevent global link underline when inside navbar - navbar uses its own underline indicator */
-.navbar a::after,
-.navbar-nav .nav-link::after {
+.navbar a::after {
     display: none;
 }
 
@@ -249,8 +248,54 @@ a:hover::after {
     transform: translateY(1px) rotate(180deg);
 }
 
-/* Ensure only one underline appears on nav links: the .nav-link::before indicator is used */
-.navbar-nav .nav-link::after { display: none; }
+/* Small dropdown indicator specifically under 'Semilleros' link */
+#semillerosDropdown::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(100% + 6px);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--ceai-verde);
+    opacity: 0.95;
+    transition: transform var(--transition-normal), opacity var(--transition-normal);
+    pointer-events: none;
+    z-index: 1030;
+}
+
+/* When dropdown is open, slightly move the indicator up for visual feedback */
+.navbar .dropdown.show > #semillerosDropdown::before,
+#semillerosDropdown[aria-expanded="true"]::before {
+    transform: translateX(-50%) translateY(-2px);
+}
+
+/* Hide the small indicator on smaller screens to avoid layout issues */
+@media (max-width: 768px) {
+    #semillerosDropdown::before { display: none; }
+}
+
+/* Desktop: open semilleros dropdown on hover (keep click behavior for touch/mobiles) */
+@media (hover: hover) and (pointer: fine) {
+    /* when hovering the dropdown container, show the menu */
+    .nav-item.dropdown:hover > .dropdown-menu {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* add the .show class styles so Bootstrap styles apply similarly */
+    .nav-item.dropdown:hover > .dropdown-toggle::after {
+        transform: translateY(1px) rotate(180deg);
+    }
+
+    .nav-item.dropdown:hover {
+        z-index: 1050; /* ensure it sits above other elements */
+    }
+}
 
 /* Navbar */
 .navbar {
@@ -300,7 +345,7 @@ a:hover::after {
     animation: fadeInRight 0.6s ease 0.2s both;
 }
 
-.navbar-nav .nav-link::before {
+.navbar-nav .nav-link::after {
     content: '';
     position: absolute;
     bottom: -4px;
@@ -317,8 +362,8 @@ a:hover::after {
     color: var(--ceai-verde) !important;
 }
 
-.navbar-nav .nav-link:hover::before,
-.navbar-nav .nav-link.active::before {
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
     width: 100%;
 }
 
