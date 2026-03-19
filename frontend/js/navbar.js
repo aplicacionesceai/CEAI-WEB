@@ -1,4 +1,5 @@
 // navbar.js - Genera el dropdown dinámico de semilleros en todas las páginas
+// y fuerza su apertura cuando la página actual pertenece a la sección "semilleros".
 
 const API = 'https://ceai-web-production.up.railway.app';
 
@@ -31,7 +32,9 @@ async function cargarSemillerosDropdown() {
         }
         
         // Inyectar en el dropdown
-        const dropdownMenu = document.querySelector('#semillerosDropdown').parentElement.querySelector('.dropdown-menu');
+        const toggle = document.getElementById('semillerosDropdown');
+        if (!toggle) return;
+        const dropdownMenu = toggle.parentElement.querySelector('.dropdown-menu');
         if (dropdownMenu) {
             dropdownMenu.innerHTML = dropdownHTML;
         }
@@ -51,7 +54,46 @@ function getIconoCategoria(categoria) {
     return iconos[categoria] || '📚';
 }
 
+function isSemillerosPage() {
+    const path = window.location.pathname || '';
+    const filename = path.substring(path.lastIndexOf('/') + 1).toLowerCase();
+    const search = window.location.search || '';
+
+    if (filename === 'semilleros.html' || filename === 'semillero-detalle.html' || filename.startsWith('semillero')) return true;
+    if (search.includes('categoria=') || search.includes('id=')) return true;
+    // also check pathname containing semilleros (fallback)
+    if (path.toLowerCase().includes('semilleros')) return true;
+    return false;
+}
+
+function abrirDropdownSemilleros() {
+    try {
+        const toggle = document.getElementById('semillerosDropdown');
+        if (!toggle) return;
+
+        // Limitamos la apertura forzada a dispositivos con puntero (escritorio)
+        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+        const dropdownItem = toggle.closest('.nav-item.dropdown') || toggle.parentElement;
+        const menu = dropdownItem ? dropdownItem.querySelector('.dropdown-menu') : null;
+
+        if (dropdownItem) dropdownItem.classList.add('show');
+        if (menu) {
+            menu.classList.add('show');
+            menu.style.display = 'block';
+        }
+        toggle.setAttribute('aria-expanded', 'true');
+    } catch (err) {
+        console.error('Error abriendo dropdown de semilleros:', err);
+    }
+}
+
 // Ejecutar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    cargarSemillerosDropdown();
+    // Cargar items del dropdown y después decidir si abrirlo
+    cargarSemillerosDropdown().then(() => {
+        if (isSemillerosPage()) {
+            abrirDropdownSemilleros();
+        }
+    });
 });
