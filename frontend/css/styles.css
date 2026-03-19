@@ -221,61 +221,14 @@ a:hover::after {
     width: 100%;
 }
 
-/* Improve dropdown arrow (green, crisp SVG) for Bootstrap dropdown-toggle inside navbar */
-.navbar .dropdown-toggle::after {
-    display: inline-block;
-    margin-left: .25rem;
-    vertical-align: .255em;
-    content: '';
-    width: 0.8rem;
-    height: 0.5rem;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3e%3cpath fill='%2339A900' d='M6 7L0 0h12z'/%3e%3c/svg%3e");
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.95;
-    transform: translateY(1px);
-}
-
-/* Ensure the default Bootstrap dropdown caret is hidden so only our custom arrow shows */
+/* Remove custom dropdown caret. Keep Bootstrap default behavior but hide carets to avoid double indicators */
+.navbar .dropdown-toggle::after,
 .navbar .dropdown-toggle[data-bs-toggle] > .caret,
 .navbar .dropdown-toggle .caret {
     display: none !important;
+    content: none !important;
 }
 
-/* Slight hover rotation for arrow when open */
-.navbar .dropdown.show > .nav-link.dropdown-toggle::after,
-.navbar .dropdown-toggle[aria-expanded="true"]::after {
-    transform: translateY(1px) rotate(180deg);
-}
-
-/* Small dropdown indicator specifically under 'Semilleros' link */
-#semillerosDropdown::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: calc(100% + 6px);
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid var(--ceai-verde);
-    opacity: 0.95;
-    transition: transform var(--transition-normal), opacity var(--transition-normal);
-    pointer-events: none;
-    z-index: 1030;
-}
-
-/* When dropdown is open, slightly move the indicator up for visual feedback */
-.navbar .dropdown.show > #semillerosDropdown::before,
-#semillerosDropdown[aria-expanded="true"]::before {
-    transform: translateX(-50%) translateY(-2px);
-}
-
-/* Hide the small indicator on smaller screens to avoid layout issues */
-@media (max-width: 768px) {
-    #semillerosDropdown::before { display: none; }
-}
 
 /* Desktop: open semilleros dropdown on hover (keep click behavior for touch/mobiles) */
 @media (hover: hover) and (pointer: fine) {
