@@ -90,36 +90,73 @@ function abrirDropdownSemilleros() {
 
 // Ejecutar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    console.debug('[navbar] DOMContentLoaded - inicializando navbar.js');
+
     // Cargar items del dropdown y después decidir si abrirlo
-    cargarSemillerosDropdown().then(() => {
+    // Use catch so listeners are attached even if loading fails
+    cargarSemillerosDropdown().catch(()=>{}).then(() => {
+        console.debug('[navbar] cargarSemillerosDropdown: done');
+        const toggle = document.getElementById('semillerosDropdown');
+        if (toggle) console.debug('[navbar] semillerosDropdown encontrado'); else console.debug('[navbar] semillerosDropdown NO encontrado');
+
         if (isSemillerosPage()) {
+            console.debug('[navbar] isSemillerosPage -> abrirDropdownSemilleros');
             abrirDropdownSemilleros();
         }
 
         // Añadir listeners por JS para abrir/ cerrar el dropdown al pasar el mouse
         try {
             if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-                const toggle = document.getElementById('semillerosDropdown');
-                if (toggle) {
-                    const dropdownItem = toggle.closest('.nav-item.dropdown') || toggle.parentElement;
+                const toggleEl = document.getElementById('semillerosDropdown');
+                if (toggleEl) {
+                    const dropdownItem = toggleEl.closest('.nav-item.dropdown') || toggleEl.parentElement;
                     const menu = dropdownItem ? dropdownItem.querySelector('.dropdown-menu') : null;
+                    console.debug('[navbar] dropdownItem/menu encontrados:', !!dropdownItem, !!menu);
                     if (dropdownItem) {
-                        // Avoid attaching multiple times
+                        // Attach more robust hover handlers to dropdownItem, toggle and menu
                         if (!dropdownItem.__hoverBound) {
-                            dropdownItem.addEventListener('mouseenter', function() {
+                            let closeTimer = null;
+                            function abrir() {
                                 dropdownItem.classList.add('show');
                                 if (menu) menu.classList.add('show');
-                                toggle.setAttribute('aria-expanded','true');
-                            });
-                            dropdownItem.addEventListener('mouseleave', function() {
+                                toggleEl.setAttribute('aria-expanded','true');
+                            }
+                            function cerrar() {
                                 dropdownItem.classList.remove('show');
                                 if (menu) menu.classList.remove('show');
-                                toggle.setAttribute('aria-expanded','false');
-                            });
+                                toggleEl.setAttribute('aria-expanded','false');
+                            }
+
+                            const scheduleClose = () => {
+                                if (closeTimer) clearTimeout(closeTimer);
+                                closeTimer = setTimeout(() => { cerrar(); closeTimer = null; }, 200);
+                            };
+
+                            const cancelClose = () => {
+                                if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+                            };
+
+                            // Bind on dropdownItem, toggle and menu so hover works reliably
+                            dropdownItem.addEventListener('mouseenter', () => { cancelClose(); abrir(); });
+                            dropdownItem.addEventListener('mouseleave', () => { scheduleClose(); });
+
+                            toggleEl.addEventListener('mouseenter', () => { cancelClose(); abrir(); });
+                            toggleEl.addEventListener('mouseleave', () => { scheduleClose(); });
+
+                            if (menu) {
+                                menu.addEventListener('mouseenter', () => { cancelClose(); abrir(); });
+                                menu.addEventListener('mouseleave', () => { scheduleClose(); });
+                            }
+
                             dropdownItem.__hoverBound = true;
+                            console.debug('[navbar] hover listeners attached');
                         }
                     }
+                } else {
+                    console.debug('[navbar] toggleEl no encontrado, no se adjuntan listeners');
                 }
+            } else {
+                console.debug('[navbar] dispositivo no soporta hover, no se adjuntan listeners');
             }
         } catch (err) {
             console.error('Error attaching hover listeners for semilleros dropdown', err);

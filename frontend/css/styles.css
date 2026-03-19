@@ -275,7 +275,7 @@ a:hover::after {
 .navbar.sticky-top {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 1200; /* keep consistent with .navbar above so dropdown sits on top */
 }
 
 .navbar-brand {
