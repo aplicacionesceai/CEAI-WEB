@@ -80,7 +80,7 @@ function abrirDropdownSemilleros() {
         if (dropdownItem) dropdownItem.classList.add('show');
         if (menu) {
             menu.classList.add('show');
-            menu.style.display = 'block';
+            // don't set inline styles; let CSS handle visibility so hover still works
         }
         toggle.setAttribute('aria-expanded', 'true');
     } catch (err) {
@@ -94,6 +94,35 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarSemillerosDropdown().then(() => {
         if (isSemillerosPage()) {
             abrirDropdownSemilleros();
+        }
+
+        // Añadir listeners por JS para abrir/ cerrar el dropdown al pasar el mouse
+        try {
+            if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                const toggle = document.getElementById('semillerosDropdown');
+                if (toggle) {
+                    const dropdownItem = toggle.closest('.nav-item.dropdown') || toggle.parentElement;
+                    const menu = dropdownItem ? dropdownItem.querySelector('.dropdown-menu') : null;
+                    if (dropdownItem) {
+                        // Avoid attaching multiple times
+                        if (!dropdownItem.__hoverBound) {
+                            dropdownItem.addEventListener('mouseenter', function() {
+                                dropdownItem.classList.add('show');
+                                if (menu) menu.classList.add('show');
+                                toggle.setAttribute('aria-expanded','true');
+                            });
+                            dropdownItem.addEventListener('mouseleave', function() {
+                                dropdownItem.classList.remove('show');
+                                if (menu) menu.classList.remove('show');
+                                toggle.setAttribute('aria-expanded','false');
+                            });
+                            dropdownItem.__hoverBound = true;
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Error attaching hover listeners for semilleros dropdown', err);
         }
     });
 });

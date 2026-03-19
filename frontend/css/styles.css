@@ -253,6 +253,23 @@ a:hover::after {
     backdrop-filter: blur(10px);
     border-bottom: 2px solid var(--ceai-verde);
     animation: slideInDown 0.5s ease;
+    z-index: 1200; /* ensure navbar sits above page content */
+    pointer-events: auto;
+}
+
+/* Ensure dropdown menu opens on hover in desktop environments */
+@media (hover: hover) and (pointer: fine) {
+    .navbar .nav-item.dropdown:hover > .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+    }
+
+    /* also ensure the parent dropdown shows the .show class for Bootstrap visuals */
+    .navbar .nav-item.dropdown:hover {
+        z-index: 1250;
+    }
 }
 
 .navbar.sticky-top {
