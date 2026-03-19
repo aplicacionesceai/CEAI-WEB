@@ -157,6 +157,13 @@ async function cargarSemillerosHome() {
     }
 }
 
+// ==================== UTILIDADES ====================
+function truncarTexto(texto, maxCaracteres = 120) {
+    if (!texto) return '';
+    if (texto.length <= maxCaracteres) return texto;
+    return texto.slice(0, maxCaracteres).trimEnd() + '...';
+}
+
 // ==================== SEMILLEROS PÁGINA ====================
 async function cargarSemillerosPagina() {
     const container = document.getElementById('semillerosListContainer');
@@ -185,7 +192,7 @@ async function cargarSemillerosPagina() {
                             <div class="card-body">
                                 <h5 class="card-title">${semillero.nombre}</h5>
                                 <p class="card-text small"><strong>Línea:</strong> ${semillero.linea}</p>
-                                <p class="card-text">${semillero.descripcion}</p>
+                                <p class="card-text">${truncarTexto(semillero.descripcion, 120)}</p>
                                 <a href="semillero-detalle.html?id=${semillero.id}" class="btn btn-ceai btn-sm">Ver proyectos</a>
                             </div>
                         </div>
