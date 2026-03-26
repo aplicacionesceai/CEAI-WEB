@@ -183,19 +183,31 @@
         .btn-refresh:hover { background: var(--ceai-verde-oscuro); transform: scale(1.05); }
 
         .btn-ver {
-            background: #5FBE00;
-            border-color: #5FBE00;
+            background: #007832;
+            border-color: #007832;
             color: white;
         }
         .btn-ver:hover {
-            background: var(--ceai-verde);
-            border-color: var(--ceai-verde);
+            background: #006a2a;
+            border-color: #006a2a;
             color: white;
         }
         .btn-ver:focus-visible {
             outline: 2px solid rgba(95, 190, 0, 0.6);
             outline-offset: 2px;
         }
+
+        .btn-editar {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #1f1f1f;
+        }
+        .btn-editar:hover {
+            background: #e0a800;
+            border-color: #d39e00;
+            color: #1f1f1f;
+        }
+
 
         /* ===== SECTION HEADER ===== */
         .section-header {
@@ -1126,7 +1138,7 @@
             noticiasCache=await res.json();
             const lista=document.getElementById('listaNoticias');
             if(!noticiasCache.length){lista.innerHTML='<p class="text-muted">No hay noticias aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${noticiasCache.map(n=>`<tr><td>${n.id}</td><td>${n.titulo}</td><td>${n.fecha}</td><td><span class="badge bg-secondary">${n.tipo||'Noticia'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verNoticia(${n.id})">👁️ Ver</button><button class="btn btn-sm btn-outline-primary" onclick="editarNoticia(${n.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Título</th><th>Fecha</th><th>Tipo</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${noticiasCache.map(n=>`<tr><td>${n.id}</td><td>${n.titulo}</td><td>${n.fecha}</td><td><span class="badge bg-secondary">${n.tipo||'Noticia'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verNoticia(${n.id})">👁️ Ver</button><button class="btn btn-sm btn-editar" onclick="editarNoticia(${n.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarNoticia(${n.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
         document.getElementById('formNoticia').addEventListener('submit',async e=>{
             e.preventDefault();
@@ -1166,7 +1178,7 @@
             semillerosCache=await res.json();todosLosSemilleros=semillerosCache;
             const lista=document.getElementById('listaSemilleros');
             if(!semillerosCache.length){lista.innerHTML='<p class="text-muted">No hay semilleros aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${semillerosCache.map(s=>`<tr><td>${s.id}</td><td>${s.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${s.categoria||''}</span></td><td><small>${s.linea}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verSemillero(${s.id})">👁️ Ver</button><button class="btn btn-sm btn-outline-primary" onclick="editarSemillero(${s.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Línea</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${semillerosCache.map(s=>`<tr><td>${s.id}</td><td>${s.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${s.categoria||''}</span></td><td><small>${s.linea}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verSemillero(${s.id})">👁️ Ver</button><button class="btn btn-sm btn-editar" onclick="editarSemillero(${s.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarSemillero(${s.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
         document.getElementById('formSemillero').addEventListener('submit',async e=>{
             e.preventDefault();
@@ -1208,7 +1220,7 @@
             editSelect.innerHTML=todosLosSemilleros.map(s=>`<option value="${s.id}">${s.nombre} (${s.categoria})</option>`).join('');
             const lista=document.getElementById('listaProyectos');
             if(!proyectosCache.length){lista.innerHTML='<p class="text-muted">No hay proyectos aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${proyectosCache.map(p=>{const sem=todosLosSemilleros.find(s=>s.id===p.semillero_id);const bc=p.estado==='En ejecución'?'bg-primary':p.estado==='Finalizado'?'bg-success':'bg-warning text-dark';return `<tr><td>${p.id}</td><td>${p.titulo}</td><td><small>${sem?sem.nombre:'ID: '+p.semillero_id}</small></td><td><span class="badge ${bc}">${p.estado}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="verProyecto(${p.id})">👁️ Ver</button><button class="btn btn-sm btn-warning" onclick="editarProyecto(${p.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})">🗑️ Eliminar</button></div></td></tr>`;}).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Título</th><th>Semillero</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${proyectosCache.map(p=>{const sem=todosLosSemilleros.find(s=>s.id===p.semillero_id);const bc=p.estado==='En ejecución'?'bg-primary':p.estado==='Finalizado'?'bg-success':'bg-warning text-dark';return `<tr><td>${p.id}</td><td>${p.titulo}</td><td><small>${sem?sem.nombre:'ID: '+p.semillero_id}</small></td><td><span class="badge ${bc}">${p.estado}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verProyecto(${p.id})">👁️ Ver</button><button class="btn btn-sm btn-editar" onclick="editarProyecto(${p.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarProyecto(${p.id})">🗑️ Eliminar</button></div></td></tr>`;}).join('')}</tbody></table>`;
         }
         document.getElementById('formProyecto').addEventListener('submit',async e=>{
             e.preventDefault();
@@ -1294,7 +1306,7 @@
             documentosCache=await res.json();
             const lista=document.getElementById('listaDocumentos');
             if(!documentosCache.length){lista.innerHTML='<p class="text-muted">No hay documentos aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Fecha</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${documentosCache.map(d=>`<tr><td>${d.id}</td><td>${d.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${d.tipo}</span></td><td><small>${new Date(d.created_at).toLocaleDateString('es-CO')}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="verDocumento(${d.id})">👁️ Ver</button><button class="btn btn-sm btn-warning" onclick="editarDocumento(${d.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${d.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Fecha</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${documentosCache.map(d=>`<tr><td>${d.id}</td><td>${d.nombre}</td><td><span class="badge bg-info" style="font-size:.75rem;">${d.tipo}</span></td><td><small>${new Date(d.created_at).toLocaleDateString('es-CO')}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verDocumento(${d.id})">👁️ Ver</button><button class="btn btn-sm btn-editar" onclick="editarDocumento(${d.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarDocumento(${d.id})">🗑️ Eliminar</button></div></td></tr>`).join('')}</tbody></table>`;
         }
         document.getElementById('formDocumento').addEventListener('submit',async e=>{
             e.preventDefault();
@@ -1344,7 +1356,7 @@
             contactosCache=await res.json();
             const lista=document.getElementById('listaContactos');
             if(!contactosCache.length){lista.innerHTML='<p class="text-muted">No hay mensajes aún</p>';return;}
-            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${contactosCache.map(c=>`<tr><td>${c.id}</td><td>${c.nombre}</td><td><small>${c.email}</small></td><td>${c.asunto}</td><td><small>${(c.mensaje||'').substring(0,50)}...</small></td><td><span class="badge ${c.leido?'bg-success':'bg-warning text-dark'}">${c.leido?'Leído':'Nuevo'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-outline-primary" onclick="verContacto(${c.id})">👁️ Ver</button><button class="btn btn-sm btn-outline-success" onclick="marcarLeido(${c.id},${c.leido?0:1})">${c.leido?'No leído':'✔ Leído'}</button><button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
+            lista.innerHTML=`<table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Mensaje</th><th>Estado</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${contactosCache.map(c=>`<tr><td>${c.id}</td><td>${c.nombre}</td><td><small>${c.email}</small></td><td>${c.asunto}</td><td><small>${(c.mensaje||'').substring(0,50)}...</small></td><td><span class="badge ${c.leido?'bg-success':'bg-warning text-dark'}">${c.leido?'Leído':'Nuevo'}</span></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="verContacto(${c.id})">👁️ Ver</button><button class="btn btn-sm btn-outline-success" onclick="marcarLeido(${c.id},${c.leido?0:1})">${c.leido?'No leído':'✔ Leído'}</button><button class="btn btn-sm btn-danger" onclick="eliminarContacto(${c.id})">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
         }
         async function marcarLeido(id,leido){
             const res=await fetch(`${API}/api/contactos/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({leido})});
