@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - CEAI SENA</title>
+    <title>Panel Administrativo - SENA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
@@ -516,6 +516,9 @@
                 <div class="sidebar-link" data-section="documentos">
                     <span class="nav-icon">📄</span> Documentos
                 </div>
+                <div class="sidebar-link" data-section="grupo-investigacion">
+                    <span class="nav-icon">👥</span> Grupo Investigación
+                </div>
                 <h5 class="nav-label">Comunicación</h5>
                 <div class="sidebar-link has-badge" data-section="contactos" id="linkContactos">
                     <span class="nav-icon">📨</span> Contactos
@@ -588,6 +591,14 @@
                             <div class="kpi-sub" id="subContactos">recibidos</div>
                         </div>
                     </div>
+                    <div class="kpi-card kpi-blue">
+                        <div class="kpi-icon">👥</div>
+                        <div class="kpi-body">
+                            <div class="kpi-value" id="countMiembros">—</div>
+                            <div class="kpi-label">Miembros</div>
+                            <div class="kpi-sub" id="subMiembros">grupo investigación</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Acciones Rápidas -->
@@ -597,6 +608,7 @@
                         <button class="btn btn-ceai btn-sm" onclick="irSeccion('noticias')">+ Nueva Noticia</button>
                         <button class="btn btn-ceai btn-sm" onclick="irSeccion('semilleros')">+ Nuevo Semillero</button>
                         <button class="btn btn-ceai btn-sm" onclick="irSeccion('proyectos')">+ Nuevo Proyecto</button>
+                        <button class="btn btn-ceai btn-sm" onclick="irSeccion('grupo-investigacion')">+ Nuevo Miembro</button>
                         <button class="btn btn-ceai btn-sm" onclick="irSeccion('documentos')">+ Subir Documento</button>
                         <button class="btn btn-outline-light btn-sm" onclick="irSeccion('contactos')">📨 Ver Contactos</button>
                     </div>
@@ -768,6 +780,55 @@
                     </form>
                 </div>
                 <div class="table-section"><h5 class="mb-3">📋 Documentos Registrados</h5><div class="table-responsive" id="listaDocumentos"></div></div>
+            </div>
+
+            <!-- ==================== GRUPO DE INVESTIGACIÓN ==================== -->
+            <div id="grupo-investigacion" class="content-section">
+                <div class="section-header"><h2>👥 Gestionar Grupo de Investigación</h2><p class="mb-0">Agregar, editar y eliminar miembros del grupo (Líderes e Investigadores)</p></div>
+                <div class="form-section">
+                    <h5 id="tituloFormMiembro">➕ Nuevo Miembro</h5>
+                    <form id="formMiembro">
+                        <input type="hidden" id="miembroEditId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="miembroNombre" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tipo <span class="text-danger">*</span></label>
+                                <select class="form-control" id="miembroTipo" required>
+                                    <option value="">-- Seleccionar --</option>
+                                    <option value="Líder del Grupo">👨‍💼 Líder del Grupo</option>
+                                    <option value="Investigador">🔬 Investigador</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label quill-label">Reseña (Descripción) <span class="text-danger">*</span></label>
+                                <div class="quill-wrapper"><div id="editorMiembro"></div></div>
+                                <input type="hidden" id="miembroResena">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">URL de Imagen (Foto)</label>
+                                <input type="url" class="form-control" id="miembroImagen" placeholder="https://...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="miembroTelefono" placeholder="+57...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="miembroEmail" placeholder="usuario@ejemplo.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <button type="submit" class="btn btn-ceai btn-submit-full w-100" id="btnSubmitMiembro">✅ Agregar Miembro</button>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <button type="button" class="btn btn-outline-secondary btn-submit-full w-100" id="btnCancelMiembro" style="display:none" onclick="cancelarEdicionMiembro()">✖ Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="table-section"><h5 class="mb-3">📋 Miembros del Grupo Registrados</h5><div class="table-responsive" id="listaMiembros"></div></div>
             </div>
 
             <!-- ==================== CONTACTOS ==================== -->
@@ -997,6 +1058,7 @@
         const quillEditSemillero = new Quill('#editorEditSemillero', quillOpts);
         const quillEditProyecto  = new Quill('#editorEditProyecto',  quillOpts);
         const quillEditDocumento = new Quill('#editorEditDocumento', quillOpts);
+        const quillMiembro       = new Quill('#editorMiembro',       quillOpts);
         function getQuillHTML(q) { const h=q.root.innerHTML; return h==='<p><br></p>'?'':h; }
 
         // ===== TOAST =====
@@ -1027,6 +1089,7 @@
                 else if(sec==='semilleros') cargarSemilleros();
                 else if(sec==='proyectos') cargarProyectos();
                 else if(sec==='documentos') cargarDocumentos();
+                else if(sec==='grupo-investigacion') cargarMiembros();
                 else if(sec==='contactos') cargarContactos();
                 if(window.innerWidth<=992) cerrarSidebar();
             });
@@ -1042,6 +1105,7 @@
             else if(sec==='semilleros') cargarSemilleros();
             else if(sec==='proyectos') cargarProyectos();
             else if(sec==='documentos') cargarDocumentos();
+            else if(sec==='grupo-investigacion') cargarMiembros();
             else if(sec==='contactos') cargarContactos();
         }
 
@@ -1060,22 +1124,26 @@
         async function cargarDashboard(){
             document.getElementById('dashSubtitle').textContent='Cargando datos del sistema…';
             try{
-                const [rN,rS,rP,rD,rC]=await Promise.all([
+                const [rN,rS,rP,rD,rC,rM]=await Promise.all([
                     fetch(`${API}/api/noticias`),fetch(`${API}/api/semilleros`),
                     fetch(`${API}/api/proyectos`),fetch(`${API}/api/documentos`),
-                    fetch(`${API}/api/contactos`)
+                    fetch(`${API}/api/contactos`),fetch(`${API}/api/grupo-investigacion`)
                 ]);
-                const [n,s,p,d,c]=await Promise.all([rN.json(),rS.json(),rP.json(),rD.json(),rC.json()]);
+                const [n,s,p,d,c,m]=await Promise.all([rN.json(),rS.json(),rP.json(),rD.json(),rC.json(),rM.json()]);
 
                 document.getElementById('countNoticias').textContent=n.length||0;
                 document.getElementById('countSemilleros').textContent=s.length||0;
                 document.getElementById('countProyectos').textContent=p.length||0;
                 document.getElementById('countContactos').textContent=c.length||0;
+                document.getElementById('countMiembros').textContent=m.length||0;
 
                 const destacadas=n.filter(x=>x.destacada==1).length;
                 document.getElementById('subNoticias').textContent=destacadas>0?`${destacadas} destacadas`:'publicadas';
                 const sinLeer=c.filter(x=>!x.leido).length;
                 document.getElementById('subContactos').textContent=sinLeer>0?`⚠️ ${sinLeer} sin leer`:'todos leídos';
+                const lideres=m.filter(x=>x.tipo==='Líder del Grupo').length;
+                const investigadores=m.filter(x=>x.tipo==='Investigador').length;
+                document.getElementById('subMiembros').textContent=`${lideres} líderes, ${investigadores} investigadores`;
 
                 const badge=document.getElementById('badgeContactos');
                 if(sinLeer>0){badge.textContent=sinLeer;document.getElementById('linkContactos').classList.add('has-badge');}
@@ -1085,7 +1153,7 @@
                 if(sinLeer>0){document.getElementById('alertMensajesText').textContent=`Tienes ${sinLeer} mensaje${sinLeer>1?'s':''} sin leer en tu bandeja de contacto.`;alertEl.classList.remove('hidden');}
                 else{alertEl.classList.add('hidden');}
 
-                document.getElementById('dashSubtitle').textContent=`${n.length} noticias · ${s.length} semilleros · ${p.length} proyectos · ${c.length} mensajes`;
+                document.getElementById('dashSubtitle').textContent=`${n.length} noticias · ${s.length} semilleros · ${p.length} proyectos · ${m.length} miembros · ${c.length} mensajes`;
 
                 const enEjec=p.filter(x=>x.estado==='En ejecución').length;
                 const finalizados=p.filter(x=>x.estado==='Finalizado').length;
@@ -1380,6 +1448,123 @@
             new bootstrap.Modal(document.getElementById('verContactoModal')).show();
         }
 
+        // ===== GRUPO DE INVESTIGACIÓN =====
+        let miembrosCache = [];
+
+        async function initMiembrosForm() {
+            document.getElementById('formMiembro').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const resena = quillMiembro.root.innerHTML;
+                if (resena === '<p><br></p>' || !resena.trim()) {
+                    toast.error('La reseña no puede estar vacía');
+                    return;
+                }
+                
+                const id = document.getElementById('miembroEditId').value;
+                const data = {
+                    nombre: document.getElementById('miembroNombre').value,
+                    tipo: document.getElementById('miembroTipo').value,
+                    resena: resena,
+                    imagen_url: document.getElementById('miembroImagen').value || null,
+                    telefono: document.getElementById('miembroTelefono').value || null,
+                    email: document.getElementById('miembroEmail').value || null
+                };
+
+                try {
+                    const method = id ? 'PUT' : 'POST';
+                    const url = id ? `${API}/api/grupo-investigacion/${id}` : `${API}/api/grupo-investigacion`;
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (res.ok) {
+                        toast.success(id ? 'Miembro actualizado' : 'Miembro agregado');
+                        document.getElementById('formMiembro').reset();
+                        quillMiembro.setContents([]);
+                        document.getElementById('miembroEditId').value = '';
+                        document.getElementById('tituloFormMiembro').textContent = '➕ Nuevo Miembro';
+                        document.getElementById('btnSubmitMiembro').textContent = '✅ Agregar Miembro';
+                        document.getElementById('btnCancelMiembro').style.display = 'none';
+                        cargarMiembros();
+                        cargarDashboard();
+                    } else {
+                        const error = await res.json();
+                        toast.error('Error: ' + error.error);
+                    }
+                } catch (error) {
+                    toast.error('Error: ' + error.message);
+                }
+            });
+        }
+
+        async function cargarMiembros() {
+            try {
+                const res = await fetch(`${API}/api/grupo-investigacion`);
+                miembrosCache = await res.json();
+                
+                const lista = document.getElementById('listaMiembros');
+                if (!miembrosCache.length) {
+                    lista.innerHTML = '<p class="text-muted">No hay miembros registrados</p>';
+                    return;
+                }
+
+                lista.innerHTML = `<table class="table table-hover align-middle"><thead class="table-light"><tr><th>Nombre</th><th>Tipo</th><th>Email</th><th>Teléfono</th><th class="text-center col-acciones">Acciones</th></tr></thead><tbody>${miembrosCache.map(m => `<tr><td><strong>${m.nombre}</strong></td><td><span class="badge ${m.tipo === 'Líder del Grupo' ? 'bg-primary' : 'bg-info'}">${m.tipo}</span></td><td><small>${m.email || '—'}</small></td><td><small>${m.telefono || '—'}</small></td><td class="col-acciones"><div class="table-actions"><button class="btn btn-sm btn-ver" onclick="editarMiembro(${m.id})">✏️ Editar</button><button class="btn btn-sm btn-danger" onclick="eliminarMiembro(${m.id})">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
+            } catch (error) {
+                console.error('Error cargando miembros:', error);
+                document.getElementById('listaMiembros').innerHTML = '<p class="text-danger">Error cargando miembros</p>';
+            }
+        }
+
+        function editarMiembro(id) {
+            const miembro = miembrosCache.find(m => m.id === id);
+            if (!miembro) return;
+
+            document.getElementById('miembroEditId').value = id;
+            document.getElementById('miembroNombre').value = miembro.nombre;
+            document.getElementById('miembroTipo').value = miembro.tipo;
+            document.getElementById('miembroImagen').value = miembro.imagen_url || '';
+            document.getElementById('miembroTelefono').value = miembro.telefono || '';
+            document.getElementById('miembroEmail').value = miembro.email || '';
+            
+            // Limpiar y establecer contenido del editor
+            quillMiembro.setContents([]);
+            quillMiembro.root.innerHTML = miembro.resena || '';
+
+            document.getElementById('tituloFormMiembro').textContent = '✏️ Editar Miembro';
+            document.getElementById('btnSubmitMiembro').textContent = '💾 Actualizar Miembro';
+            document.getElementById('btnCancelMiembro').style.display = 'block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicionMiembro() {
+            document.getElementById('formMiembro').reset();
+            quillMiembro.setContents([]);
+            document.getElementById('miembroEditId').value = '';
+            document.getElementById('tituloFormMiembro').textContent = '➕ Nuevo Miembro';
+            document.getElementById('btnSubmitMiembro').textContent = '✅ Agregar Miembro';
+            document.getElementById('btnCancelMiembro').style.display = 'none';
+        }
+
+        async function eliminarMiembro(id) {
+            if (!confirm('¿Eliminar este miembro?')) return;
+            
+            try {
+                const res = await fetch(`${API}/api/grupo-investigacion/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    toast.info('Miembro eliminado');
+                    cargarMiembros();
+                    cargarDashboard();
+                } else {
+                    toast.error('Error al eliminar');
+                }
+            } catch (error) {
+                toast.error('Error: ' + error.message);
+            }
+        }
+
         // ===== INIT =====
         // Funciones para ver Noticia y Semillero desde las tablas
         function verNoticia(id){
@@ -1408,7 +1593,13 @@
             m.show();
         }
 
-        document.addEventListener('DOMContentLoaded',cargarDashboard);
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarDashboard();
+            initSemillerosForm();
+            initProyectosForm();
+            initMiembrosForm();
+            cargarMiembros();
+        });
     </script>
 </body>
 </html>

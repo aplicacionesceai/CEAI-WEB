@@ -149,6 +149,19 @@ const createTables = async () => {
       )
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS grupo_investigacion (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        tipo TEXT NOT NULL,
+        resena TEXT NOT NULL,
+        imagen_url TEXT,
+        telefono TEXT,
+        email TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     console.log('📊 Tablas creadas/migradas correctamente');
   } catch (err) {
     console.error('❌ Error creando tablas:', err.message);
@@ -445,6 +458,67 @@ app.delete('/api/contactos/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// ============ RUTAS GRUPO INVESTIGACIÓN ============
+app.get('/api/grupo-investigacion', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM grupo_investigacion ORDER BY tipo DESC, nombre');
+    res.json(result.rows || []);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/grupo-investigacion/:id', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM grupo_investigacion WHERE id = $1', [req.params.id]);
+    res.json(result.rows[0] || null);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/grupo-investigacion/tipo/:tipo', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM grupo_investigacion WHERE tipo = $1 ORDER BY nombre', [req.params.tipo]);
+    res.json(result.rows || []);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/grupo-investigacion', async (req, res) => {
+  const { nombre, tipo, resena, imagen_url, telefono, email } = req.body;
+  
+  if (!nombre || !tipo || !resena) {
+    return res.status(400).json({ error: 'Nombre, tipo y reseña son obligatorios' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO grupo_investigacion (nombre, tipo, resena, imagen_url, telefono, email) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+      [nombre, tipo, resena, imagen_url || null, telefono || null, email || null]
+    );
+    res.json({ id: result.rows[0].id, message: 'Miembro agregado al grupo' });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.put('/api/grupo-investigacion/:id', async (req, res) => {
+  const { nombre, tipo, resena, imagen_url, telefono, email } = req.body;
+
+  if (!nombre || !tipo || !resena) {
+    return res.status(400).json({ error: 'Nombre, tipo y reseña son obligatorios' });
+  }
+
+  try {
+    await pool.query(
+      'UPDATE grupo_investigacion SET nombre=$1, tipo=$2, resena=$3, imagen_url=$4, telefono=$5, email=$6 WHERE id=$7',
+      [nombre, tipo, resena, imagen_url || null, telefono || null, email || null, req.params.id]
+    );
+    res.json({ message: 'Miembro actualizado' });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.delete('/api/grupo-investigacion/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM grupo_investigacion WHERE id=$1', [req.params.id]);
+    res.json({ message: 'Miembro eliminado' });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 app.get('/', (req, res) => {
   res.json({
     mensaje: 'API CEAI funcionando con PostgreSQL',
@@ -454,7 +528,8 @@ app.get('/', (req, res) => {
       semilleros_por_categoria: '/api/semilleros/categoria/:categoria',
       proyectos: '/api/proyectos',
       documentos: '/api/documentos',
-      contactos: '/api/contactos'
+      contactos: '/api/contactos',
+      grupo_investigacion: '/api/grupo-investigacion'
     }
   });
 });

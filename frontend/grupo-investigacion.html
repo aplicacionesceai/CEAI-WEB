@@ -81,76 +81,53 @@
             </div>
 
 
-            <!-- Roles y Estructura -->
-            <div class="row mb-5">
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 text-center border-top-ceai">
-                        <div class="card-body">
-                            <div style="font-size: 60px; margin-bottom: 15px;">👨‍💼</div>
-                            <h5 class="card-title">Líder del Grupo</h5>
-                            <p class="card-text small">Responsable de coordinar la investigación, establecer líneas de trabajo y gestionar recursos.</p>
-                        </div>
-                    </div>
+            <!-- Roles y Estructura - NUEVO: Líderes e Investigadores -->
+            <h2 class="mb-5 text-center">Líderes e Investigadores</h2>
+            
+            <!-- Botones para filtrar -->
+            <div class="mb-4 text-center">
+                <button class="btn btn-ceai me-2 btn-filter active" data-filter="all">Todos</button>
+                <button class="btn btn-outline-ceai btn-filter" data-filter="Líder del Grupo">👨‍💼 Líderes</button>
+                <button class="btn btn-outline-ceai btn-filter" data-filter="Investigador">🔬 Investigadores</button>
+            </div>
+
+            <!-- Container para cargar dinámicamente -->
+            <div class="row mb-5" id="miembrosGrupoContainer">
+                <div class="col-12 text-center">
+                    <p class="text-muted">Cargando miembros del grupo...</p>
                 </div>
+            </div>
 
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 text-center border-top-ceai">
-                        <div class="card-body">
-                            <div style="font-size: 60px; margin-bottom: 15px;">🔬</div>
-                            <h5 class="card-title">Investigadores</h5>
-                            <p class="card-text small">Especialistas en tecnologías emergentes que lideran proyectos de investigación aplicada.</p>
+            <!-- Modal para ver detalles -->
+            <div class="modal fade" id="miembroModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom-ceai">
+                            <h5 class="modal-title" id="miembroModalTitle"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 text-center border-top-ceai">
-                        <div class="card-body">
-                            <div style="font-size: 60px; margin-bottom: 15px;">🏫</div>
-                            <h5 class="card-title">Instructores</h5>
-                            <p class="card-text small">Docentes que transfieren conocimiento a aprendices y vinculan la investigación con la formación.</p>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 text-center border-top-ceai">
-                        <div class="card-body">
-                            <div style="font-size: 60px; margin-bottom: 15px;">👨‍🎓</div>
-                            <h5 class="card-title">Aprendices</h5>
-                            <p class="card-text small">Estudiantes que se forman en investigación y tecnología participando en proyectos reales.</p>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 text-center border-top-ceai">
-                        <div class="card-body">
-                            <div style="font-size: 60px; margin-bottom: 15px;">🤝</div>
-                            <h5 class="card-title">Aliados</h5>
-                            <p class="card-text small">Empresas, universidades y organismos que colaboran en la ejecución de proyectos.</p>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 text-center border-top-ceai">
-                        <div class="card-body">
-                            <div style="font-size: 60px; margin-bottom: 15px;">💼</div>
-                            <h5 class="card-title">Administrativos</h5>
-                            <p class="card-text small">Personal de apoyo que gestiona recursos, documentación y logística de proyectos.</p>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-3">
+                                    <img id="miembroModalImagen" src="" alt="Foto" class="img-fluid rounded-circle" style="max-width: 200px;">
+                                </div>
+                                <div class="col-md-8">
+                                    <h6 class="text-ceai-verde mb-3">Reseña</h6>
+                                    <p id="miembroModalResena"></p>
+                                    <div id="miembroModalContacto" class="mt-4 pt-3 border-top">
+                                        <h6 class="text-ceai-verde mb-2">Contacto</h6>
+                                        <p id="miembroModalTelefono" style="display:none;"><strong>Teléfono:</strong> <span></span></p>
+                                        <p id="miembroModalEmail" style="display:none;"><strong>Email:</strong> <span></span></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
 
-            <!-- Competencias -->
+            <!-- SECCIÓN ANTERIOR: Competencias -->
             <section class="py-5" style="background-color: #f8f9fa;">
                 <div class="container">
                     <h2 class="mb-5 text-center">Competencias del Grupo</h2>
@@ -272,5 +249,96 @@
     <!-- ✅ SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
+
+    <script>
+        const API = 'https://ceai-web-production.up.railway.app';
+        let allMiembros = [];
+
+        // Cargar miembros del grupo
+        async function cargarMiembros() {
+            try {
+                const response = await fetch(`${API}/api/grupo-investigacion`);
+                allMiembros = await response.json();
+                mostrarMiembros('all');
+            } catch (error) {
+                console.error('Error cargando miembros:', error);
+                document.getElementById('miembrosGrupoContainer').innerHTML = 
+                    '<div class="col-12 text-center"><p class="text-danger">Error cargando miembros del grupo</p></div>';
+            }
+        }
+
+        // Mostrar miembros según filtro
+        function mostrarMiembros(filtro) {
+            const container = document.getElementById('miembrosGrupoContainer');
+            
+            let miembrosAMostrar = allMiembros;
+            if (filtro !== 'all') {
+                miembrosAMostrar = allMiembros.filter(m => m.tipo === filtro);
+            }
+
+            if (miembrosAMostrar.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay miembros en esta categoría</p></div>';
+                return;
+            }
+
+            container.innerHTML = miembrosAMostrar.map(miembro => `
+                <div class="col-md-6 col-lg-4 mb-4 miembro-card" data-tipo="${miembro.tipo}">
+                    <div class="card h-100 text-center border-top-ceai cursor-pointer" style="cursor: pointer; transition: all 0.3s ease;" 
+                         onclick="mostrarDetalles(${miembro.id})"
+                         onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(57,169,0,0.2)'"
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <div class="card-body">
+                            ${miembro.imagen_url ? `<img src="${miembro.imagen_url}" alt="${miembro.nombre}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">` : '<div style="width: 100px; height: 100px; margin: 0 auto 15px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">👤</div>'}
+                            <h5 class="card-title text-ceai-verde">${miembro.nombre}</h5>
+                            <p class="card-text small text-muted">${miembro.tipo}</p>
+                            <p class="card-text small">${miembro.resena.substring(0, 80)}...</p>
+                            <p class="small" style="color: var(--ceai-verde); font-weight: 600;">Ver más →</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Mostrar detalles en modal
+        function mostrarDetalles(id) {
+            const miembro = allMiembros.find(m => m.id === id);
+            if (!miembro) return;
+
+            document.getElementById('miembroModalTitle').textContent = miembro.nombre;
+            document.getElementById('miembroModalImagen').src = miembro.imagen_url || 'https://via.placeholder.com/200?text=Sin+imagen';
+            document.getElementById('miembroModalResena').textContent = miembro.resena;
+
+            const telefonoEl = document.getElementById('miembroModalTelefono');
+            const emailEl = document.getElementById('miembroModalEmail');
+
+            if (miembro.telefono) {
+                telefonoEl.style.display = 'block';
+                telefonoEl.querySelector('span').textContent = miembro.telefono;
+            } else {
+                telefonoEl.style.display = 'none';
+            }
+
+            if (miembro.email) {
+                emailEl.style.display = 'block';
+                emailEl.querySelector('span').textContent = miembro.email;
+            } else {
+                emailEl.style.display = 'none';
+            }
+
+            new bootstrap.Modal(document.getElementById('miembroModal')).show();
+        }
+
+        // Event listeners para filtros
+        document.querySelectorAll('.btn-filter').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                mostrarMiembros(this.dataset.filter);
+            });
+        });
+
+        // Cargar miembros al abrir la página
+        document.addEventListener('DOMContentLoaded', cargarMiembros);
+    </script>
 </body>
 </html>
