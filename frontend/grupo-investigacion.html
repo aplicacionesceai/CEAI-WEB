@@ -4,9 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grupo de Investigación - CEAI SENA</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        .miembro-card .card {
+            border: none;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .miembro-card .card-body {
+            padding: 2rem 1.2rem;
+        }
+
+        .miembro-avatar {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 4px solid rgba(57, 169, 0, 0.12);
+            display: block;
+        }
+
+        .miembro-avatar-placeholder {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #eef2f3, #dfe6e9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            border: 4px solid rgba(57, 169, 0, 0.12);
+        }
+
+        .border-bottom-ceai {
+            border-bottom: 3px solid var(--ceai-verde, #39a900) !important;
+        }
+
+        .border-top-ceai {
+            border-top: 4px solid var(--ceai-verde, #39a900) !important;
+        }
+
+        .text-ceai-verde {
+            color: var(--ceai-verde, #39a900) !important;
+        }
+
+        .btn-filter.active {
+            background-color: var(--ceai-verde, #39a900) !important;
+            color: #fff !important;
+            border-color: var(--ceai-verde, #39a900) !important;
+        }
+
+        .btn-outline-ceai {
+            border: 1px solid var(--ceai-verde, #39a900);
+            color: var(--ceai-verde, #39a900);
+            background: transparent;
+        }
+
+        .btn-outline-ceai:hover {
+            background: var(--ceai-verde, #39a900);
+            color: #fff;
+        }
+
+        .btn-ceai {
+            background: var(--ceai-verde, #39a900);
+            color: #fff;
+            border: 1px solid var(--ceai-verde, #39a900);
+        }
+
+        .btn-ceai:hover {
+            background: #2f8d00;
+            border-color: #2f8d00;
+            color: #fff;
+        }
+
+        #miembroModalResena p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -24,16 +105,17 @@
                     <span style="color: var(--ceai-verde);">CEAI</span> SENA
                 </span>
             </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="innovacion.html">Área de Innovación</a></li>
                     <li class="nav-item"><a class="nav-link active" href="grupo-investigacion.html">Grupo de Investigación</a></li>
-                    
-                    <!-- ✅ DROPDOWN CORRECTO -->
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="semillerosDropdown" role="button" data-bs-toggle="dropdown">Semilleros</a>
                         <ul class="dropdown-menu" aria-labelledby="semillerosDropdown">
@@ -45,7 +127,7 @@
                             <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
                             <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
                             <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
-                        </ul>    
+                        </ul>
                     </li>
 
                     <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
@@ -56,7 +138,7 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section style="background: linear-gradient(135deg, var(--ceai-azul) 0%, var(--ceai-verde-oscuro) 100%);" class="text-white py-5">
         <div class="container py-5">
             <h1 class="display-4 fw-bold mb-3">Grupo de Investigación</h1>
@@ -64,7 +146,7 @@
         </div>
     </section>
 
-    <!-- Contenido Principal -->
+    <!-- Main -->
     <main class="py-5">
         <div class="container">
             <!-- Descripción -->
@@ -72,52 +154,55 @@
                 <div class="col-lg-8 offset-lg-2">
                     <h2 class="mb-4 text-center">Estructura del Grupo</h2>
                     <p class="text-center lead mb-4">
-                        Nuestro grupo está conformado por investigadores, docentes y aprendices especializados en 
+                        Nuestro grupo está conformado por investigadores, docentes y aprendices especializados en
                         diferentes áreas tecnológicas que trabajan conjuntamente para generar soluciones innovadoras.
                     </p>
                 </div>
             </div>
 
-            <!-- Roles y Estructura - NUEVO: Líderes e Investigadores -->
+            <!-- Líderes e Investigadores -->
             <h2 class="mb-5 text-center">Líderes e Investigadores</h2>
-            
-            <!-- Botones para filtrar -->
+
             <div class="mb-4 text-center">
                 <button class="btn btn-ceai me-2 btn-filter active" data-filter="all">Todos</button>
-                <button class="btn btn-outline-ceai btn-filter" data-filter="Líder del Grupo">👨‍💼 Líderes</button>
+                <button class="btn btn-outline-ceai me-2 btn-filter" data-filter="Líder del Grupo">👨‍💼 Líderes</button>
                 <button class="btn btn-outline-ceai btn-filter" data-filter="Investigador">🔬 Investigadores</button>
             </div>
 
-            <!-- Container para cargar dinámicamente -->
             <div class="row mb-5" id="miembrosGrupoContainer">
                 <div class="col-12 text-center">
-                    <div class="spinner-border text-ceai-verde" role="status">
+                    <div class="spinner-border text-success" role="status">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
-                    <p class="text-muted mt-2">Cargando miembros del grupo...</p>
+                    <p class="text-muted mt-3">Cargando miembros del grupo...</p>
                 </div>
             </div>
 
-            <!-- Modal para ver detalles -->
-            <div class="modal fade" id="miembroModal" tabindex="-1">
-                <div class="modal-dialog modal-lg">
+            <!-- Modal -->
+            <div class="modal fade" id="miembroModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header border-bottom-ceai">
-                            <h5 class="modal-title" id="miembroModalTitle">Miembro del Grupo</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <h5 class="modal-title" id="miembroModalTitle"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-4 text-center mb-3">
-                                    <img id="miembroModalImagen" src="" alt="Foto del miembro" class="img-fluid rounded-circle" style="max-width: 200px; width: 100%; height: 200px; object-fit: cover;">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center mb-3 mb-md-0">
+                                    <img id="miembroModalImagen" src="" alt="Foto del miembro" class="img-fluid rounded-circle" style="max-width: 200px; width: 200px; height: 200px; object-fit: cover;">
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-ceai-verde mb-3">Reseña</h6>
-                                    <div id="miembroModalResena" class="mb-4"></div>
+                                    <div id="miembroModalResena"></div>
+
                                     <div id="miembroModalContacto" class="mt-4 pt-3 border-top">
                                         <h6 class="text-ceai-verde mb-2">Contacto</h6>
-                                        <p id="miembroModalTelefono" style="display:none;"><strong>Teléfono:</strong> <span></span></p>
-                                        <p id="miembroModalEmail" style="display:none;"><strong>Email:</strong> <span></span></p>
+                                        <p id="miembroModalTelefono" style="display:none;">
+                                            <strong>Teléfono:</strong> <span></span>
+                                        </p>
+                                        <p id="miembroModalEmail" style="display:none;">
+                                            <strong>Email:</strong> <span></span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -126,11 +211,12 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN ANTERIOR: Competencias -->
+
+            <!-- Competencias -->
             <section class="py-5" style="background-color: #f8f9fa;">
                 <div class="container">
                     <h2 class="mb-5 text-center">Competencias del Grupo</h2>
-                    
+
                     <div class="row">
                         <div class="col-lg-10 offset-lg-1">
                             <div class="row">
@@ -160,11 +246,11 @@
                 </div>
             </section>
 
-            <!-- Formas de participación -->
+            <!-- Participación -->
             <section class="py-5">
                 <div class="container">
                     <h2 class="mb-5 text-center">¿Cómo Participar?</h2>
-                    
+
                     <div class="row">
                         <div class="col-lg-8 offset-lg-2">
                             <div class="accordion" id="participacionAccordion">
@@ -176,11 +262,12 @@
                                     </h2>
                                     <div id="participacion1" class="accordion-collapse collapse show" data-bs-parent="#participacionAccordion">
                                         <div class="accordion-body">
-                                            Inscríbete en un semillero de investigación de tu interés. Participarás en proyectos reales, 
+                                            Inscríbete en un semillero de investigación de tu interés. Participarás en proyectos reales,
                                             desarrollarás competencias tecnológicas y obtendrás experiencia práctica reconocida en tu formación.
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#participacion2">
@@ -189,11 +276,12 @@
                                     </h2>
                                     <div id="participacion2" class="accordion-collapse collapse" data-bs-parent="#participacionAccordion">
                                         <div class="accordion-body">
-                                            Lidera semilleros de investigación, supervisa proyectos y vincula tu área de enseñanza con 
+                                            Lidera semilleros de investigación, supervisa proyectos y vincula tu área de enseñanza con
                                             investigación aplicada. Contacta al coordinador del CEAI para más información.
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#participacion3">
@@ -202,7 +290,7 @@
                                     </h2>
                                     <div id="participacion3" class="accordion-collapse collapse" data-bs-parent="#participacionAccordion">
                                         <div class="accordion-body">
-                                            Empresas y universidades pueden colaborar en proyectos específicos. Propón tu reto tecnológico 
+                                            Empresas y universidades pueden colaborar en proyectos específicos. Propón tu reto tecnológico
                                             y trabajaremos juntos en la solución. <a href="contacto.html">Contáctanos aquí</a>.
                                         </div>
                                     </div>
@@ -243,158 +331,148 @@
         </div>
     </footer>
 
-    <!-- ✅ SCRIPTS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
 
     <script>
-        const API = 'https://ceai-web-production.up.railway.app';
+        if (!window.CEAI_API) {
+            window.CEAI_API = 'https://ceai-web-production.up.railway.app';
+        }
+
         let allMiembros = [];
 
-        // 🔧 FUNCIÓN MEJORADA: Cargar miembros del grupo
+        function normalizarMiembro(miembro) {
+            return {
+                id: miembro.id || 0,
+                nombre: miembro.nombre || 'Sin nombre',
+                tipo: miembro.tipo || 'Sin tipo',
+                resena: miembro.resena || '',
+                imagen_url: miembro.imagen_url || miembro.imagenurl || '',
+                telefono: miembro.telefono || '',
+                email: miembro.email || ''
+            };
+        }
+
+        function limpiarTexto(html) {
+            if (!html) return '';
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return (div.textContent || div.innerText || '').trim();
+        }
+
         async function cargarMiembros() {
+            const container = document.getElementById('miembrosGrupoContainer');
+
             try {
-                console.log('🔄 Cargando miembros desde:', `${API}/api/grupo-investigacion`);
-                
-                const response = await fetch(`${API}/api/grupo-investigacion`);
-                
+                console.log('Cargando miembros desde:', `${window.CEAI_API}/api/grupo-investigacion`);
+
+                const response = await fetch(`${window.CEAI_API}/api/grupo-investigacion`);
+
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                console.log('✅ Miembros recibidos:', data);
-                
-                // Normalizar datos para compatibilidad
+                console.log('Miembros recibidos:', data);
+
                 allMiembros = Array.isArray(data) ? data.map(normalizarMiembro) : [];
-                console.log('📊 Miembros normalizados:', allMiembros);
-                
                 mostrarMiembros('all');
-                
             } catch (error) {
-                console.error('❌ Error cargando miembros:', error);
-                document.getElementById('miembrosGrupoContainer').innerHTML = 
-                    `<div class="col-12 text-center">
-                        <div class="alert alert-danger">
-                            <h6><i class="bi bi-exclamation-triangle"></i> Error de conexión</h6>
-                            <p>No se pudieron cargar los miembros del grupo.</p>
-                            <p><small>Verifica tu conexión o contacta al administrador.</small></p>
-                        </div>
-                    </div>`;
-            }
-        }
-
-        // 🔧 NORMALIZAR: Soporte para ambos formatos del backend
-        function normalizarMiembro(miembro) {
-            return {
-                id: miembro.id || miembro.ID || 0,
-                nombre: miembro.nombre || miembro.Nombre || 'Sin nombre',
-                tipo: miembro.tipo || miembro.Tipo || 'Sin tipo',
-                resena: miembro.resena || miembro.Resena || miembro.reseña || '',
-                imagen_url: miembro.imagen_url || miembro.imagenurl || miembro.imagenUrl || '',
-                telefono: miembro.telefono || miembro.Telefono || '',
-                email: miembro.email || miembro.Email || ''
-            };
-        }
-
-        // 🔧 LIMPIAR HTML: Extraer texto limpio del editor Quill
-        function limpiarTexto(html) {
-            if (!html) return '';
-            const div = document.createElement('div');
-            div.innerHTML = html;
-            return div.textContent || div.innerText || ''.trim().substring(0, 80);
-        }
-
-        // 🔧 MOSTRAR: Renderizado robusto con fallbacks
-        function mostrarMiembros(filtro) {
-            const container = document.getElementById('miembrosGrupoContainer');
-            
-            let miembrosAMostrar = allMiembros;
-            if (filtro !== 'all') {
-                miembrosAMostrar = allMiembros.filter(m => 
-                    m.tipo.toLowerCase().includes(filtro.toLowerCase())
-                );
-            }
-
-            if (miembrosAMostrar.length === 0) {
+                console.error('Error cargando miembros:', error);
                 container.innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <i class="bi bi-people display-4 text-muted mb-3"></i>
-                        <h5 class="text-muted">No hay miembros en esta categoría</h5>
-                        <p class="text-muted">Prueba con otro filtro o espera a que se actualice el contenido.</p>
+                    <div class="col-12 text-center">
+                        <div class="alert alert-danger">
+                            <h6 class="mb-2">Error cargando miembros</h6>
+                            <p class="mb-1">No se pudieron cargar los miembros del grupo.</p>
+                            <small>${error.message}</small>
+                        </div>
                     </div>
                 `;
+            }
+        }
+
+        function actualizarBadgesFiltros() {
+            const btnLideres = document.querySelector('[data-filter="Líder del Grupo"]');
+            const btnInvestigadores = document.querySelector('[data-filter="Investigador"]');
+
+            if (btnLideres) {
+                const lideresCount = allMiembros.filter(m => m.tipo === 'Líder del Grupo').length;
+                btnLideres.textContent = `👨‍💼 Líderes (${lideresCount})`;
+            }
+
+            if (btnInvestigadores) {
+                const investigadoresCount = allMiembros.filter(m => m.tipo === 'Investigador').length;
+                btnInvestigadores.textContent = `🔬 Investigadores (${investigadoresCount})`;
+            }
+        }
+
+        function mostrarMiembros(filtro) {
+            const container = document.getElementById('miembrosGrupoContainer');
+
+            let miembrosAMostrar = allMiembros;
+
+            if (filtro !== 'all') {
+                miembrosAMostrar = allMiembros.filter(m => m.tipo === filtro);
+            }
+
+            if (!miembrosAMostrar.length) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No hay miembros en esta categoría.</p>
+                    </div>
+                `;
+                actualizarBadgesFiltros();
                 return;
             }
 
             container.innerHTML = miembrosAMostrar.map(miembro => {
                 const imagen = miembro.imagen_url;
-                const resenaTexto = limpiarTexto(miembro.resena);
-                const resumen = resenaTexto ? `${resenaTexto}...` : 'Sin descripción disponible';
+                const resumenLimpio = limpiarTexto(miembro.resena);
+                const resumen = resumenLimpio
+                    ? `${resumenLimpio.substring(0, 90)}${resumenLimpio.length > 90 ? '...' : ''}`
+                    : 'Sin descripción disponible';
 
                 return `
                     <div class="col-md-6 col-lg-4 mb-4 miembro-card" data-tipo="${miembro.tipo}">
-                        <div class="card h-100 text-center border-top-ceai cursor-pointer" 
-                             style="cursor: pointer; transition: all 0.3s ease;" 
-                             onclick="mostrarDetalles(${miembro.id})"
-                             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(57,169,0,0.2)'"
-                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <div class="card h-100 text-center border-top-ceai"
+                            style="cursor:pointer; transition:all 0.3s ease;"
+                            onclick="mostrarDetalles(${miembro.id})"
+                            onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(57,169,0,0.2)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <div class="card-body">
-                                ${imagen ? 
-                                    `<img src="${imagen}" alt="${miembro.nombre}" class="rounded-circle mb-3" 
-                                          style="width: 100px; height: 100px; object-fit: cover;" 
-                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                                          loading="lazy">` :
-                                    `<div style="width: 100px; height: 100px; margin: 0 auto 15px; background: linear-gradient(135deg, #f0f0f0, #e0e0e0); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">
-                                        👤
-                                    </div>`
+                                ${
+                                    imagen
+                                    ? `<img src="${imagen}" alt="${miembro.nombre}" class="miembro-avatar" loading="lazy">`
+                                    : `<div class="miembro-avatar-placeholder">👤</div>`
                                 }
+
                                 <h5 class="card-title text-ceai-verde">${miembro.nombre}</h5>
-                                <p class="card-text small text-muted">${miembro.tipo}</p>
+                                <p class="card-text small text-muted mb-2">${miembro.tipo}</p>
                                 <p class="card-text small">${resumen}</p>
-                                <p class="small fw-bold" style="color: var(--ceai-verde);">Ver más →</p>
+                                <p class="small fw-bold mb-0" style="color: var(--ceai-verde);">Ver más →</p>
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            // Actualizar badges de filtros
             actualizarBadgesFiltros();
         }
 
-        // 🔧 BADGES: Contar miembros por tipo
-        function actualizarBadgesFiltros() {
-            const lideresCount = allMiembros.filter(m => m.tipo === 'Líder del Grupo').length;
-            const investigadoresCount = allMiembros.filter(m => m.tipo === 'Investigador').length;
-            
-            document.querySelector('[data-filter="Líder del Grupo"]').textContent = `👨‍💼 Líderes (${lideresCount})`;
-            document.querySelector('[data-filter="Investigador"]').textContent = `🔬 Investigadores (${investigadoresCount})`;
-        }
-
-        // 🔧 MODAL: Mostrar detalles con manejo robusto
         function mostrarDetalles(id) {
             const miembro = allMiembros.find(m => m.id === id);
-            if (!miembro) {
-                alert('Miembro no encontrado');
-                return;
-            }
+            if (!miembro) return;
 
-            console.log('📋 Mostrando detalles de:', miembro);
-
-            // Imagen con fallback
-            const imagen = miembro.imagen_url || 'https://via.placeholder.com/200x200/f0f0f0/666?text=👤';
-            document.getElementById('miembroModalImagen').src = imagen;
-            document.getElementById('miembroModalImagen').alt = `Foto de ${miembro.nombre}`;
-
-            // Título
             document.getElementById('miembroModalTitle').textContent = miembro.nombre;
 
-            // Reseña (acepta HTML del editor Quill)
-            const reseñaEl = document.getElementById('miembroModalResena');
-            reseñaEl.innerHTML = miembro.resena || '<em>Sin reseña disponible</em>';
+            const img = document.getElementById('miembroModalImagen');
+            img.src = miembro.imagen_url || 'https://via.placeholder.com/200?text=Sin+imagen';
+            img.alt = `Foto de ${miembro.nombre}`;
 
-            // Contacto
+            document.getElementById('miembroModalResena').innerHTML =
+                miembro.resena || '<em>Sin reseña disponible</em>';
+
             const telefonoEl = document.getElementById('miembroModalTelefono');
             const emailEl = document.getElementById('miembroModalEmail');
 
@@ -415,17 +493,14 @@
             new bootstrap.Modal(document.getElementById('miembroModal')).show();
         }
 
-        // 🔧 FILTROS: Mejorados con badges dinámicos
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.btn-filter').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Resetear estilos
+                btn.addEventListener('click', function () {
                     document.querySelectorAll('.btn-filter').forEach(b => {
                         b.classList.remove('active', 'btn-ceai');
                         b.classList.add('btn-outline-ceai');
                     });
 
-                    // Activar botón clickeado
                     this.classList.add('active', 'btn-ceai');
                     this.classList.remove('btn-outline-ceai');
 
@@ -433,15 +508,7 @@
                 });
             });
 
-            // Cargar datos
             cargarMiembros();
-        });
-
-        // 🔧 REINTENTO automático si falla la primera carga
-        window.addEventListener('online', () => {
-            if (allMiembros.length === 0) {
-                setTimeout(cargarMiembros, 1000);
-            }
         });
     </script>
 </body>
