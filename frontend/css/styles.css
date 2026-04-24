@@ -1157,11 +1157,11 @@ input:focus-visible {
 }
 
 .ceai-brand__logo{
-  width: 44px;
-  height: 44px;
+  width: 80px; /* Aumentar el tamaño del logo */
+  height: auto;
   object-fit: contain;
   flex: 0 0 auto;
-  background: rgba(255,255,255,0.95);
+  background-color: transparent; /* Eliminar fondo blanco */
   border-radius: 10px;
   padding: 4px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.10);
@@ -1182,7 +1182,7 @@ input:focus-visible {
   .ceai-brand__logo{
     width: 36px;
     height: 36px;
-    border-radius: 9px;
+    border-radius: 8px;
   }
 }
 
@@ -1209,11 +1209,11 @@ input:focus-visible {
 }
 
 .ceai-brand__logo {
-    width: 44px;
-    height: 44px;
+    width: 80px; /* Aumentar el tamaño del logo */
+    height: auto;
     object-fit: contain;
     flex: 0 0 auto;
-    background: rgba(255, 255, 255, 0.95);
+    background-color: transparent; /* Eliminar fondo blanco */
     border-radius: 10px;
     padding: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
