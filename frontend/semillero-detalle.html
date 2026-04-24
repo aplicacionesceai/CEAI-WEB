@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* ========== TIPOGRAFÍA GLOBAL AJUSTADA ========== */
         body {
             font-family: 'Roboto', sans-serif;
             font-size: 15px;
@@ -16,16 +15,17 @@
             line-height: 1.6;
         }
 
-        /* ========== LAYOUT DETALLE SEMILLERO ========== */
         #semilleroContent .row {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
         }
+
         #semilleroContent .col-md-8 {
             flex: 0 0 66.666667%;
             max-width: 66.666667%;
         }
+
         #semilleroContent .col-md-4 {
             flex: 0 0 33.333333%;
             max-width: 33.333333%;
@@ -33,6 +33,7 @@
             top: 100px;
             align-self: flex-start;
         }
+
         #semilleroContent .col-md-4 img {
             width: 100%;
             height: auto;
@@ -40,13 +41,13 @@
             object-fit: cover;
         }
 
-        /* ========== TÍTULOS ESCALADOS ========== */
         #semilleroContent h1 {
             font-family: 'Montserrat', sans-serif;
             font-size: 1.7rem;
             font-weight: 700;
             margin-bottom: 0.6rem;
         }
+
         #semilleroContent h3 {
             font-family: 'Montserrat', sans-serif;
             font-size: 1.2rem;
@@ -54,32 +55,34 @@
             margin-top: 1.5rem;
             margin-bottom: 0.8rem;
         }
+
         #semilleroContent h5 {
             font-size: 0.95rem;
             font-weight: 700;
         }
+
         #semilleroContent .lead {
             font-size: 0.97rem;
             line-height: 1.7;
             color: #444;
         }
 
-        /* ========== CARD INFORMACIÓN SEMILLERO ========== */
         .info-semillero-card {
             border-radius: 12px;
             border: none;
             box-shadow: 0 3px 12px rgba(0,0,0,0.08);
             margin-bottom: 1.2rem;
         }
+
         .info-semillero-card .card-body {
             padding: 1.1rem 1.3rem;
         }
+
         .info-semillero-card li {
             font-size: 0.88rem;
             margin-bottom: 0.4rem;
         }
 
-        /* ========== SECCIÓN PROYECTOS ========== */
         .proyectos-toggle-btn {
             background: linear-gradient(135deg, var(--ceai-verde, #39a900) 0%, #4dc800 100%);
             color: white;
@@ -96,29 +99,33 @@
             transition: all 0.3s ease;
             margin-bottom: 1rem;
         }
+
         .proyectos-toggle-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(57,169,0,0.45);
         }
+
         .proyectos-toggle-btn .count-badge {
             background: rgba(255,255,255,0.25);
             border-radius: 20px;
             padding: 1px 9px;
             font-size: 0.8rem;
         }
+
         #proyectosListado {
             display: none;
             animation: fadeSlide 0.35s ease;
         }
+
         #proyectosListado.visible {
             display: block;
         }
+
         @keyframes fadeSlide {
             from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========== TARJETAS DE PROYECTO ========== */
         .proyecto-card {
             background: #fff;
             border-radius: 10px;
@@ -128,17 +135,20 @@
             padding: 1rem 1.2rem;
             border-left: 4px solid var(--ceai-verde, #39a900);
         }
+
         .proyecto-card h5 {
             font-size: 0.93rem;
             font-weight: 700;
             margin-bottom: 0.4rem;
             color: var(--ceai-azul, #00304d);
         }
+
         .proyecto-card p {
             font-size: 0.85rem;
             margin-bottom: 0.25rem;
             color: #444;
         }
+
         .estado-badge {
             font-size: 0.75rem;
             font-weight: 700;
@@ -146,52 +156,105 @@
             border-radius: 20px;
         }
 
-        /* ========== SIDEBAR CARDS ========== */
         .sidebar-card {
             border-radius: 12px;
             border: none;
             box-shadow: 0 3px 12px rgba(0,0,0,0.08);
             margin-bottom: 1rem;
         }
+
         .sidebar-card .card-body {
             padding: 1.1rem;
         }
-        .sidebar-card h5 {
+
+        .sidebar-card h5,
+        .sidebar-card h6 {
             font-size: 0.9rem;
             font-weight: 700;
         }
-        .sidebar-card .btn {
-            font-size: 0.85rem;
-        }
+
         .sidebar-card a {
             font-size: 0.85rem;
         }
 
-        /* ========== RESPONSIVE ========== */
+        .sidebar-title {
+            color: var(--ceai-azul);
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            font-size: 0.86rem;
+        }
+
+        .sidebar-links li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-links li:last-child {
+            margin-bottom: 0;
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: #2f7d32;
+            font-weight: 500;
+            display: block;
+            padding: 4px 0;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .sidebar-links a:hover {
+            color: var(--ceai-verde, #39a900);
+            transform: translateX(3px);
+        }
+
         @media (max-width: 768px) {
             #semilleroContent .col-md-8,
             #semilleroContent .col-md-4 {
                 flex: 0 0 100%;
                 max-width: 100%;
             }
+
             #semilleroContent .col-md-4 {
                 position: static;
                 margin-top: 2rem;
             }
-            #semilleroContent h1 { font-size: 1.35rem; }
-            #semilleroContent h3 { font-size: 1.05rem; }
-        }
-    </style>
 
-    <style>
+            #semilleroContent h1 {
+                font-size: 1.35rem;
+            }
+
+            #semilleroContent h3 {
+                font-size: 1.05rem;
+            }
+        }
+
         .ceai-brand__text {
-            margin-left: 10px; /* Separar un poco más el texto del logo */
-            line-height: 1.2; /* Reducir el espacio entre las líneas del texto */
+            margin-left: 10px;
+            line-height: 1.2;
+        }
+
+        .dp-prev, .dp-next {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .dp-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.5);
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-ceai-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold ceai-brand" href="index.html" aria-label="SENNOVA - Ir al inicio">
@@ -222,11 +285,11 @@
                             <li><a class="dropdown-item" href="semilleros.html">📚 Ver todos los semilleros</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Por categoría:</h6></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones%20Digitales">💻 Soluciones Digitales</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatizaci%C3%B3n%20e%20Instrumentaci%C3%B3n">🤖 Automatización e Instrumentación</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
-                        <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones%20Digitales">💻 Soluciones Digitales</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatizaci%C3%B3n%20e%20Instrumentaci%C3%B3n">🤖 Automatización e Instrumentación</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
+                            <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios</a></li>
@@ -237,7 +300,6 @@
         </div>
     </nav>
 
-    <!-- Contenido principal -->
     <main class="py-4">
         <div class="container">
             <button class="btn btn-outline-secondary btn-sm mb-3" onclick="window.history.back()">
@@ -254,7 +316,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-ceai-dark text-white py-4 mt-5">
         <div class="container">
             <div class="row">
@@ -273,8 +334,8 @@
                 <div class="col-md-4 mb-3">
                     <h6 style="font-size:0.9rem;">Enlaces Externos</h6>
                     <ul class="list-unstyled small">
-                        <li><a href="https://www.sena.edu.co" target="_blank" class="text-white-50 text-decoration-none">SENA Colombia</a></li>
-                        <li><a href="https://www.sena.edu.co/es-co/" target="_blank" class="text-white-50 text-decoration-none">Regional Valle</a></li>
+                        <li><a href="https://www.sena.edu.co" target="_blank" rel="noopener noreferrer" class="text-white-50 text-decoration-none">SENA Colombia</a></li>
+                        <li><a href="https://www.sena.edu.co/es-co/" target="_blank" rel="noopener noreferrer" class="text-white-50 text-decoration-none">Regional Valle</a></li>
                     </ul>
                 </div>
             </div>
@@ -285,7 +346,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Modal detalle proyecto -->
     <div class="modal fade" id="detalleProyectoModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -316,11 +376,6 @@
         </div>
     </div>
 
-    <style>
-        /* estilos carousel modal */
-        .dp-prev, .dp-next { width:36px; height:36px; border-radius:50%; }
-        .dp-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer; }
-    </style>
     <script>
         const API = 'https://ceai-web-production.up.railway.app';
 
@@ -329,7 +384,10 @@
             const id = urlParams.get('id');
             const categoria = urlParams.get('categoria');
 
-            if (!id && !categoria) { mostrarError('No se especificó un semillero'); return; }
+            if (!id && !categoria) {
+                mostrarError('No se especificó un semillero');
+                return;
+            }
 
             try {
                 let semilleros = [];
@@ -345,12 +403,17 @@
                     if (response.ok) semilleros = await response.json();
                 }
 
-                if (semilleros.length === 0) { mostrarError('Semillero no encontrado'); return; }
+                if (semilleros.length === 0) {
+                    mostrarError('Semillero no encontrado');
+                    return;
+                }
+
                 if (semilleros.length > 1) {
                     mostrarListaSemilleros(semilleros, categoria);
                 } else {
                     mostrarDetalleSemillero(semilleros[0]);
                 }
+
                 cargarCategoriasSidebar();
             } catch (error) {
                 console.error('Error:', error);
@@ -390,16 +453,19 @@
             try {
                 const response = await fetch(`${API}/api/semilleros`);
                 if (!response.ok) return;
+
                 const semilleros = await response.json();
                 const categorias = [...new Set(semilleros.map(c => (c.categoria || 'Sin categoría').trim()))];
-                categorias.sort((a,b) => a.localeCompare(b, 'es'));
+                categorias.sort((a, b) => a.localeCompare(b, 'es'));
 
                 const list = document.getElementById('sidebarCategorias');
                 if (!list) return;
 
                 list.innerHTML = `
-                    <li><a href="semilleros.html" class="text-decoration-none">📚 Ver todos</a></li>
-                    ${categorias.map(c => `<li><a href="semillero-detalle.html?categoria=${encodeURIComponent(c)}" class="text-decoration-none">• ${c}</a></li>`).join('')}
+                    <li><a href="semilleros.html">📚 Ver todos los semilleros</a></li>
+                    ${categorias.map(c => `
+                        <li><a href="semillero-detalle.html?categoria=${encodeURIComponent(c)}">${c}</a></li>
+                    `).join('')}
                 `;
             } catch (error) {
                 console.error('Error cargando categorías sidebar:', error);
@@ -411,7 +477,6 @@
             const proyectos = await cargarProyectos(semillero.id);
             const totalProyectos = proyectos.length;
 
-            // Renderizar la descripción: si viene con HTML (de Quill), mostrarlo; si no, como texto
             const descHTML = semillero.descripcion && semillero.descripcion.trim().startsWith('<')
                 ? semillero.descripcion
                 : `<p>${semillero.descripcion || ''}</p>`;
@@ -433,7 +498,6 @@
                             </div>
                         </div>
 
-                        <!-- Sección Proyectos con toggle -->
                         <div class="mt-3">
                             <div class="d-flex align-items-center gap-3 mb-2">
                                 <h3 style="color:var(--ceai-azul); margin:0;">🚀 Proyectos</h3>
@@ -478,13 +542,8 @@
 
                         <div class="sidebar-card card">
                             <div class="card-body">
-                                <h6 style="color:var(--ceai-azul); font-size:0.88rem; font-weight:700;"> Ver semilleros por categoría</h6>
-                                <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Soluciones%20Digitales">💻 Soluciones Digitales</a></li>
-                                <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Automatizaci%C3%B3n%20e%20Instrumentaci%C3%B3n">🤖 Automatización e Instrumentación</a></li>
-                                <li><a class="dropdown-item" href="semillero-detalle.html?categoria=F%C3%A1brica%20Digital%20Interactiva">🏭 Fábrica Digital Interactiva</a></li>
-                                <li><a class="dropdown-item" href="semillero-detalle.html?categoria=Gesti%C3%B3n%20Energ%C3%A9tica">⚡ Gestión Energética</a></li>
-                                <li><a class="dropdown-item" href="semillero-detalle.html?categoria=IA%20Aplicada%20al%20Entorno">🧠 IA Aplicada al Entorno</a></li>
-                                <ul id="sidebarCategorias" class="list-unstyled mb-0" style="font-size:0.83rem;"></ul>
+                                <h6 class="sidebar-title">Ver semilleros por categoría</h6>
+                                <ul id="sidebarCategorias" class="sidebar-links"></ul>
                             </div>
                         </div>
 
@@ -536,10 +595,7 @@
             `;
         }
 
-        // Modal para ver detalle de proyecto
-        // ==== nueva función para mostrar detalle usando modal Bootstrap ====
         function mostrarDetalleProyecto(proyecto) {
-            // etiquetas de datos
             document.getElementById('dp_titulo').textContent = proyecto.titulo;
             document.getElementById('dp_estado').textContent = proyecto.estado;
             document.getElementById('dp_estado').className = 'badge ' +
@@ -549,12 +605,10 @@
             document.getElementById('dp_resumen').textContent = proyecto.resumen || '';
             document.getElementById('dp_objetivo').innerHTML = proyecto.objetivo || '';
 
-            // imágenes para carrusel
             dp_imagenes_actual = (proyecto.imagenes || '').split('|').filter(x => x.trim());
             dp_indice_actual = 0;
             actualizarCarrusel();
 
-            // mostrar modal
             new bootstrap.Modal(document.getElementById('detalleProyectoModal')).show();
         }
 
@@ -567,20 +621,27 @@
             const prevBtn = document.querySelector('#dp_carrusel .dp-prev');
             const nextBtn = document.querySelector('#dp_carrusel .dp-next');
             if (!imgEl || !dots) return;
+
             if (dp_imagenes_actual.length === 0) {
                 imgEl.src = '';
                 dots.innerHTML = '';
                 return;
             }
+
             imgEl.src = dp_imagenes_actual[dp_indice_actual];
             dots.innerHTML = dp_imagenes_actual.map((_, i) =>
                 `<span class="dp-dot" data-idx="${i}"></span>`
             ).join('');
+
             document.querySelectorAll('.dp-dot').forEach(dot => {
                 const idx = parseInt(dot.getAttribute('data-idx'));
                 dot.style.background = idx === dp_indice_actual ? 'white' : 'rgba(255,255,255,.5)';
-                dot.onclick = () => { dp_indice_actual = idx; actualizarCarrusel(); };
+                dot.onclick = () => {
+                    dp_indice_actual = idx;
+                    actualizarCarrusel();
+                };
             });
+
             if (prevBtn) prevBtn.onclick = dp_prevImagen;
             if (nextBtn) nextBtn.onclick = dp_nextImagen;
         }
